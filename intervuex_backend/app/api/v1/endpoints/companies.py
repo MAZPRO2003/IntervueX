@@ -1,8 +1,13 @@
 from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, HTTPException
 from datetime import datetime, timedelta
+import asyncio
+import logging
 from app.services.db.store import db_store
 from app.services.ai.factory import get_ai_service
+from app.services.ai.mock_ai_service import MockAIService
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -85,7 +90,8 @@ async def select_company_track(payload: Dict[str, str]):
                 company.setdefault("hiring_programs", []).append(track)
                 db_store.save_company(company)
 
-        ai_service = get_ai_service()
+        primary_ai = get_ai_service()
+        mock_ai = MockAIService()
 
         # Create job data representation
         job_data = {
@@ -101,17 +107,37 @@ async def select_company_track(payload: Dict[str, str]):
         }
         job_id = db_store.save_job(job_data)
 
-        # Analyze process
-        process = await ai_service.analyze_interview_process(
-            company=company["name"],
-            hiring_program=track["name"],
-            role=track["role"],
-            experience="0-2 Years",
-            location="India"
-        )
+        # Analyze process (with timeout + fallback to mock)
+        try:
+            process = await asyncio.wait_for(
+                primary_ai.analyze_interview_process(
+                    company=company["name"],
+                    hiring_program=track["name"],
+                    role=track["role"],
+                    experience="0-2 Years",
+                    location="India"
+                ),
+                timeout=25.0
+            )
+        except Exception as ai_err:
+            logger.warning(f"Primary AI analyze_interview_process failed ({ai_err}), using MockAI fallback.")
+            process = await mock_ai.analyze_interview_process(
+                company=company["name"],
+                hiring_program=track["name"],
+                role=track["role"],
+                experience="0-2 Years",
+                location="India"
+            )
 
-        # Generate questions
-        questions = await ai_service.generate_questions(job_data=job_data, resume_data=None, count=100)
+        # Generate questions (with timeout + fallback to mock, use 50 instead of 100)
+        try:
+            questions = await asyncio.wait_for(
+                primary_ai.generate_questions(job_data=job_data, resume_data=None, count=50),
+                timeout=25.0
+            )
+        except Exception as ai_err:
+            logger.warning(f"Primary AI generate_questions failed ({ai_err}), using MockAI fallback.")
+            questions = await mock_ai.generate_questions(job_data=job_data, resume_data=None, count=50)
 
         # Create pack
         interview_date = (datetime.utcnow() + timedelta(days=7)).strftime("%Y-%m-%d")
@@ -177,8 +203,9 @@ async def select_company_track(payload: Dict[str, str]):
             "company": company,
             "track": track
         }
+    except HTTPException:
+        raise
     except Exception as e:
-        import logging
-        logging.getLogger(__name__).exception("Error in select_company_track")
+        logger.exception("Error in select_company_track")
         raise HTTPException(status_code=500, detail=str(e))
 

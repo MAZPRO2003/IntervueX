@@ -12,8 +12,8 @@ import '../models/leetcode_question_model.dart';
 class ApiService {
   final Dio _dio = Dio(BaseOptions(
     baseUrl: ApiConstants.baseUrl,
-    connectTimeout: const Duration(seconds: 30),
-    receiveTimeout: const Duration(seconds: 30),
+    connectTimeout: const Duration(seconds: 120),
+    receiveTimeout: const Duration(seconds: 120),
     headers: {"Accept": "application/json"},
   ));
 
