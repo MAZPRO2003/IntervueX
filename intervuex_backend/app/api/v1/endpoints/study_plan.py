@@ -103,7 +103,7 @@ class ToggleTaskRequest(BaseModel):
 def recalculate_readiness_and_sync(pack_id: str) -> int:
     plan = db_store.get_study_plan(pack_id)
     if not plan:
-        return 68
+        return 0
 
     pack = db_store.get_pack(pack_id)
     company_name = pack.get("company", "Target Company") if pack else "Target Company"
@@ -128,24 +128,26 @@ def recalculate_readiness_and_sync(pack_id: str) -> int:
     task_ratio = (completed_tasks / max(1, total_tasks)) if total_tasks > 0 else 0
     mastery_ratio = (mastered_count / total_qs)
 
-    base = 65
-    overall = int(base + (days_ratio * 25) + (task_ratio * 5) + (mastery_ratio * 5))
-    overall = min(100, max(base, overall))
+    if completed_days == 0 and completed_tasks == 0 and mastered_count == 0:
+        overall = 0
+    else:
+        overall = int((days_ratio * 70) + (task_ratio * 20) + (mastery_ratio * 10))
+        overall = min(100, max(1, overall))
 
     plan["readiness"] = plan.get("readiness", {})
     plan["readiness"]["overall_percentage"] = overall
-    plan["readiness"]["technical_score"] = min(100, int(overall * 1.05))
-    plan["readiness"]["sql_db_score"] = min(100, int(overall * 0.95))
-    plan["readiness"]["resume_score"] = min(100, int(overall * 1.1))
-    plan["readiness"]["project_score"] = min(100, overall)
-    plan["readiness"]["coding_score"] = min(100, int(overall * 0.98))
-    plan["readiness"]["hr_score"] = min(100, overall)
-    plan["readiness"]["company_score"] = min(100, int(overall * 1.02))
+    plan["readiness"]["technical_score"] = min(100, int(overall * 1.05)) if overall > 0 else 0
+    plan["readiness"]["sql_db_score"] = min(100, int(overall * 0.95)) if overall > 0 else 0
+    plan["readiness"]["resume_score"] = min(100, int(overall * 1.1)) if overall > 0 else 0
+    plan["readiness"]["project_score"] = overall
+    plan["readiness"]["coding_score"] = min(100, int(overall * 0.98)) if overall > 0 else 0
+    plan["readiness"]["hr_score"] = overall
+    plan["readiness"]["company_score"] = min(100, int(overall * 1.02)) if overall > 0 else 0
 
-    if completed_days > 0:
+    if completed_days > 0 or completed_tasks > 0:
         plan["readiness"]["next_best_action"] = f"Great progress! Complete Day {min(total_days, completed_days + 1)} tasks."
     else:
-        plan["readiness"]["next_best_action"] = "Complete Day 1 tasks to kickstart your preparation!"
+        plan["readiness"]["next_best_action"] = "Complete Day 1 check-in tasks to kickstart your preparation!"
 
     db_store.save_study_plan(plan)
 
@@ -246,7 +248,7 @@ async def set_target_date(pack_id: str, req: SetTargetDateRequest):
         plan = {
             "id": f"plan_{pack_id}",
             "pack_id": pack_id,
-            "readiness": {"overall_percentage": 68, "technical_score": 70, "sql_db_score": 65, "resume_score": 75, "project_score": 68, "hr_score": 68, "coding_score": 67, "company_score": 70, "strong_areas": [], "weak_areas": [], "next_best_action": f"Start your {days_remaining}-day plan!"},
+            "readiness": {"overall_percentage": 0, "technical_score": 0, "sql_db_score": 0, "resume_score": 0, "project_score": 0, "hr_score": 0, "coding_score": 0, "company_score": 0, "strong_areas": [], "weak_areas": [], "next_best_action": f"Start your {days_remaining}-day plan!"},
             "created_at": today.isoformat()
         }
 

@@ -65,7 +65,7 @@ async def test_interview_pack_creation_and_questions():
         assert pack_res.status_code == 200
         pack_data = pack_res.json()
         pack_id = pack_data["pack"]["id"]
-        assert pack_data["pack"]["readiness_percentage"] > 50
+        assert pack_data["pack"]["readiness_percentage"] == 0
 
         # 4. Fetch Questions
         q_res = await ac.get(f"/api/v1/questions/{pack_id}")

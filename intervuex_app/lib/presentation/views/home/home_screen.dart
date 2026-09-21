@@ -70,24 +70,6 @@ class HomeScreen extends ConsumerWidget {
             ),
           ],
         ),
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 16),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: AppColors.success.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.success.withOpacity(0.4)),
-            ),
-            child: const Row(
-              children: [
-                Icon(Icons.wifi, color: AppColors.success, size: 14),
-                SizedBox(width: 4),
-                Text('ONLINE', style: TextStyle(color: AppColors.success, fontSize: 11, fontWeight: FontWeight.bold)),
-              ],
-            ),
-          ),
-        ],
       ),
       body: RefreshIndicator(
         onRefresh: () => ref.read(packsListProvider.notifier).loadPacks(),

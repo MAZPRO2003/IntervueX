@@ -204,7 +204,7 @@ class InterviewPackModel {
       hiringProgram: json['hiring_program'] ?? 'Standard Track',
       role: json['role'] ?? 'Software Engineer',
       location: json['location'] ?? 'Hybrid',
-      readinessPercentage: json['readiness_percentage'] ?? 70,
+      readinessPercentage: json['readiness_percentage'] ?? 0,
       daysRemaining: json['days_remaining'] ?? 7,
       interviewDate: json['interview_date'],
       totalQuestions: json['total_questions'] ?? 50,

@@ -97,17 +97,17 @@ class ReadinessBreakdownModel {
 
   factory ReadinessBreakdownModel.fromJson(Map<String, dynamic> json) {
     return ReadinessBreakdownModel(
-      overallPercentage: json['overall_percentage'] ?? 70,
-      technicalScore: json['technical_score'] ?? 80,
-      sqlDbScore: json['sql_db_score'] ?? 65,
-      resumeScore: json['resume_score'] ?? 75,
-      projectScore: json['project_score'] ?? 70,
-      hrScore: json['hr_score'] ?? 60,
-      codingScore: json['coding_score'] ?? 65,
-      companyScore: json['company_score'] ?? 70,
+      overallPercentage: json['overall_percentage'] ?? 0,
+      technicalScore: json['technical_score'] ?? 0,
+      sqlDbScore: json['sql_db_score'] ?? 0,
+      resumeScore: json['resume_score'] ?? 0,
+      projectScore: json['project_score'] ?? 0,
+      hrScore: json['hr_score'] ?? 0,
+      codingScore: json['coding_score'] ?? 0,
+      companyScore: json['company_score'] ?? 0,
       strongAreas: List<String>.from(json['strong_areas'] ?? []),
       weakAreas: List<String>.from(json['weak_areas'] ?? []),
-      nextBestAction: json['next_best_action'] ?? 'Continue practice questions.',
+      nextBestAction: json['next_best_action'] ?? 'Complete Day 1 check-in to boost your readiness!',
     );
   }
 }

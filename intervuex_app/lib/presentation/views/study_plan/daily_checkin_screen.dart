@@ -55,7 +55,7 @@ class _DailyCheckinScreenState extends ConsumerState<DailyCheckinScreen> {
       await _fetchCheckin(targetDay: dayNum);
 
       if (mounted) {
-        final newScore = res['readiness_percentage'] ?? 70;
+        final newScore = res['readiness_percentage'] ?? 0;
         final actionText = !currentlyCompleted ? 'completed' : 'uncompleted';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -84,7 +84,7 @@ class _DailyCheckinScreenState extends ConsumerState<DailyCheckinScreen> {
       ref.invalidate(activePackProvider);
       ref.invalidate(packsListProvider);
       
-      final newScore = res['readiness_percentage'] ?? 80;
+      final newScore = res['readiness_percentage'] ?? 0;
 
       if (!mounted) return;
       showDialog(
@@ -166,7 +166,7 @@ class _DailyCheckinScreenState extends ConsumerState<DailyCheckinScreen> {
       await _fetchCheckin(targetDay: dayNum);
 
       if (mounted) {
-        final newScore = res['readiness_percentage'] ?? 68;
+        final newScore = res['readiness_percentage'] ?? 0;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Day $dayNum marked incomplete. Readiness score set to $newScore%'),
@@ -214,7 +214,7 @@ class _DailyCheckinScreenState extends ConsumerState<DailyCheckinScreen> {
     final carriedForward = List<Map<String, dynamic>>.from(
       (data['carried_forward_tasks'] as List? ?? []).map((e) => Map<String, dynamic>.from(e))
     );
-    final readinessScore = data['readiness_percentage'] ?? 68;
+    final readinessScore = data['readiness_percentage'] ?? 0;
     final isDayDone = data['is_day_completed'] ?? false;
 
     return Scaffold(

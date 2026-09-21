@@ -98,17 +98,17 @@ async def create_interview_pack(req: CreatePackRequest):
 
     # 3. Create Adaptive Study Plan & Readiness Breakdown
     readiness = ReadinessBreakdown(
-        overall_percentage=76 if resume else 68,
-        technical_score=85,
-        sql_db_score=70,
-        resume_score=88 if resume else 50,
-        project_score=80 if resume else 60,
-        hr_score=65,
-        coding_score=72,
-        company_score=75,
+        overall_percentage=0,
+        technical_score=0,
+        sql_db_score=0,
+        resume_score=0,
+        project_score=0,
+        hr_score=0,
+        coding_score=0,
+        company_score=0,
         strong_areas=["Python / OOP", "Project Architecture", "REST APIs"],
         weak_areas=["SQL Joins & Indexing", "HR Conflict Scenarios", "High Concurrency"],
-        next_best_action="Master SQL joins and rehearse your 60-second project architecture pitch."
+        next_best_action="Complete Day 1 check-in tasks to boost your readiness score!"
     )
 
     days_schedule = [
