@@ -5,8 +5,11 @@ import 'core/theme/app_theme.dart';
 import 'presentation/providers/theme_provider.dart';
 import 'presentation/views/shell/main_shell_screen.dart';
 
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const ProviderScope(child: IntervueXApp()));
 }
 
