@@ -4,7 +4,13 @@ import re
 from typing import Dict, Any, List, Optional
 import asyncio
 import httpx
-from ddgs import DDGS
+try:
+    from duckduckgo_search import DDGS
+except ImportError:
+    try:
+        from ddgs import DDGS
+    except ImportError:
+        DDGS = None
 
 from app.core.config import settings
 from app.services.ai.base import AIServiceBase
@@ -129,6 +135,8 @@ class GrokAIService(AIServiceBase):
         search_query = f"{company} {hiring_program} {role} interview process rounds"
         try:
             def _do_search():
+                if DDGS is None:
+                    return []
                 return list(DDGS().text(search_query, max_results=4))
             
             search_results = await asyncio.to_thread(_do_search)
