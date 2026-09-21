@@ -1,0 +1,40 @@
+# Environment & Secrets
+.env
+*.env
+*.pem
+*.key
+google-services.json
+GoogleService-Info.plist
+
+# Python / Backend
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+.pytest_cache/
+*.log
+replay_*.log
+hs_err_*.log
+server_output.log
+
+# Flutter / Mobile
+**/build/
+**/.dart_tool/
+**/.pub-cache/
+**/.pub/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.packages
+*.apk
+*.aab
+
+# IDEs & System
+.idea/
+.vscode/
+*.DS_Store
+Thumbs.db
+
+# Large binaries & temporary outputs
+scratch/
+IntervueX_App.apk

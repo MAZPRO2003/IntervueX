@@ -1,0 +1,2814 @@
+{
+  "comp_tcs": {
+    "id": "comp_tcs",
+    "name": "Tata Consultancy Services",
+    "short_name": "TCS",
+    "category": "IT Services & Consulting",
+    "color_hex": "#0F4C81",
+    "hiring_programs": [
+      {
+        "id": "tcs_ninja",
+        "name": "NQT \u2014 Ninja Track",
+        "role": "Systems Engineer",
+        "package_lpa": "3.36 - 3.6 LPA",
+        "difficulty": "Easy to Medium",
+        "rounds_count": 2,
+        "overview": "Focuses on foundational aptitude, core programming logic, basic SQL, and HR fit.",
+        "typical_rounds": [
+          "National Qualifier Foundation",
+          "Combined Technical & HR Panel"
+        ]
+      },
+      {
+        "id": "tcs_digital",
+        "name": "NQT \u2014 Digital Track",
+        "role": "Digital Software Engineer",
+        "package_lpa": "7.0 - 7.5 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 3,
+        "overview": "Requires strong DSA, web/cloud concepts, microservices, and database indexing.",
+        "typical_rounds": [
+          "Advanced NQT Assessment",
+          "In-Depth Technical Panel",
+          "Managerial & HR Interview"
+        ]
+      },
+      {
+        "id": "tcs_prime",
+        "name": "NQT \u2014 Prime Track",
+        "role": "Prime Systems Architect / R&D",
+        "package_lpa": "9.0 - 11.5 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 3,
+        "overview": "Highest campus tier testing complex graph/tree algorithms, low-level architecture, and AI/ML.",
+        "typical_rounds": [
+          "Prime Coding Challenge",
+          "System Architecture & DSA Bar Raiser",
+          "Executive Leadership Interview"
+        ]
+      }
+    ]
+  },
+  "comp_amazon": {
+    "id": "comp_amazon",
+    "name": "Amazon",
+    "short_name": "Amazon",
+    "category": "Product MNC",
+    "color_hex": "#FF9900",
+    "hiring_programs": [
+      {
+        "id": "amazon_sde1",
+        "name": "SDE I (Software Development Engineer)",
+        "role": "Software Development Engineer I",
+        "package_lpa": "28 - 45 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "LeetCode Medium/Hard DSA and Amazon's 16 Leadership Principles in STAR format.",
+        "typical_rounds": [
+          "Online Assessment",
+          "Technical Round 1: DSA",
+          "Technical Round 2: OOD",
+          "Bar Raiser & Leadership"
+        ]
+      },
+      {
+        "id": "amazon_sde2",
+        "name": "SDE II",
+        "role": "Software Development Engineer II",
+        "package_lpa": "55 - 80 LPA",
+        "difficulty": "Very Hard",
+        "rounds_count": 5,
+        "overview": "High-scale Distributed Systems Design (HLD/LLD), microservices, caching, concurrency.",
+        "typical_rounds": [
+          "Online Coding & System Assessment",
+          "Low-Level Design (LLD)",
+          "High-Level System Design (HLD)",
+          "DSA Optimization",
+          "Bar Raiser"
+        ]
+      }
+    ]
+  },
+  "comp_google": {
+    "id": "comp_google",
+    "name": "Google",
+    "short_name": "Google",
+    "category": "Product MNC",
+    "color_hex": "#4285F4",
+    "hiring_programs": [
+      {
+        "id": "google_swe",
+        "name": "Software Engineer (L3 / Campus)",
+        "role": "Software Engineer",
+        "package_lpa": "35 - 55 LPA",
+        "difficulty": "Very Hard",
+        "rounds_count": 5,
+        "overview": "World-class algorithmic problem solving, clean maintainable code on Google Docs, and Googlyness.",
+        "typical_rounds": [
+          "Google Online Challenge",
+          "Technical Round 1: Data Structures",
+          "Technical Round 2: DP & Graphs",
+          "Technical Round 3: Optimization",
+          "Googleyness & Leadership"
+        ]
+      }
+    ]
+  },
+  "comp_microsoft": {
+    "id": "comp_microsoft",
+    "name": "Microsoft",
+    "short_name": "Microsoft",
+    "category": "Product MNC",
+    "color_hex": "#00A4EF",
+    "hiring_programs": [
+      {
+        "id": "ms_sde",
+        "name": "Software Engineer (New Grad / SDE)",
+        "role": "Software Engineer",
+        "package_lpa": "25 - 45 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Tree/graph algorithms, bit manipulation, OOP architecture, and Growth Mindset.",
+        "typical_rounds": [
+          "Codility Assessment",
+          "Technical Round 1: DSA",
+          "Technical Round 2: OOD & Patterns",
+          "Partner Engineering Round"
+        ]
+      }
+    ]
+  },
+  "comp_infosys": {
+    "id": "comp_infosys",
+    "name": "Infosys",
+    "short_name": "Infosys",
+    "category": "IT Services & Consulting",
+    "color_hex": "#007CC3",
+    "hiring_programs": [
+      {
+        "id": "infy_se",
+        "name": "Systems Engineer",
+        "role": "Systems Engineer",
+        "package_lpa": "3.6 LPA",
+        "difficulty": "Easy to Medium",
+        "rounds_count": 2,
+        "overview": "Aptitude, reasoning, pseudocode debugging, and fundamental technical panel interview.",
+        "typical_rounds": [
+          "Online Test",
+          "Technical + HR Interview"
+        ]
+      },
+      {
+        "id": "infy_sp",
+        "name": "Specialist Programmer (Power Programmer)",
+        "role": "Specialist Programmer",
+        "package_lpa": "8.0 - 9.5 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 2,
+        "overview": "HackWithInfy qualifier, competitive programming questions on DP, greedy, and trees.",
+        "typical_rounds": [
+          "HackWithInfy Coding Qualifier",
+          "Technical Panel on Advanced Algorithms"
+        ]
+      }
+    ]
+  },
+  "comp_cognizant": {
+    "id": "comp_cognizant",
+    "name": "Cognizant",
+    "short_name": "CTS",
+    "category": "IT Services & Consulting",
+    "color_hex": "#1F4388",
+    "hiring_programs": [
+      {
+        "id": "cts_genc",
+        "name": "GenC / GenC Elevate",
+        "role": "Programmer Analyst Trainee",
+        "package_lpa": "4.0 - 5.5 LPA",
+        "difficulty": "Easy to Medium",
+        "rounds_count": 2,
+        "overview": "General aptitude, hands-on coding, SQL queries, OOP principles, and project deep dive.",
+        "typical_rounds": [
+          "Skill Assessment",
+          "Technical & HR Panel"
+        ]
+      },
+      {
+        "id": "cts_next",
+        "name": "GenC Next",
+        "role": "Software Development Engineer",
+        "package_lpa": "6.75 - 9.0 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 3,
+        "overview": "Advanced programming, data structures, cloud fundamentals, and system troubleshooting.",
+        "typical_rounds": [
+          "Advanced Coding Test",
+          "DSA Round",
+          "Architecture & Defense"
+        ]
+      }
+    ]
+  },
+  "comp_zoho": {
+    "id": "comp_zoho",
+    "name": "Zoho Corporation",
+    "short_name": "Zoho",
+    "category": "Product MNC / SaaS",
+    "color_hex": "#E42528",
+    "hiring_programs": [
+      {
+        "id": "zoho_dev",
+        "name": "Software Developer",
+        "role": "Software Developer",
+        "package_lpa": "6.0 - 10.0 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Rigorous on-paper coding without IDEs, matrix/string manipulation, and 3-hour CLI Application Development.",
+        "typical_rounds": [
+          "Round 1: Basic Programming",
+          "Round 2: Advanced Coding (No IDE)",
+          "Round 3: CLI Application Build (Railway/Taxi)",
+          "Round 4: Technical & HR Alignment"
+        ]
+      }
+    ]
+  },
+  "comp_wipro": {
+    "id": "comp_wipro",
+    "name": "Wipro",
+    "short_name": "Wipro",
+    "category": "IT Services & Consulting",
+    "color_hex": "#5E2750",
+    "hiring_programs": [
+      {
+        "id": "wipro_elite",
+        "name": "Elite National Talent Hunt",
+        "role": "Project Engineer",
+        "package_lpa": "3.5 - 6.5 LPA",
+        "difficulty": "Easy to Medium",
+        "rounds_count": 2,
+        "overview": "NLTH Online Test (Aptitude, Written English, Coding) and technical panel.",
+        "typical_rounds": [
+          "NLTH Online Test",
+          "Technical + HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_accenture": {
+    "id": "comp_accenture",
+    "name": "Accenture",
+    "short_name": "Accenture",
+    "category": "IT Services & Consulting",
+    "color_hex": "#A100FF",
+    "hiring_programs": [
+      {
+        "id": "acc_ase",
+        "name": "Associate Software Engineer (ASE / Advanced)",
+        "role": "Associate Software Engineer",
+        "package_lpa": "4.5 - 6.5 LPA",
+        "difficulty": "Easy to Medium",
+        "rounds_count": 3,
+        "overview": "Cognitive & technical assessments, pseudocode analysis, coding, and communication test.",
+        "typical_rounds": [
+          "Cognitive & Technical Test",
+          "Coding Assessment",
+          "Communication & HR"
+        ]
+      }
+    ]
+  },
+  "comp_deloitte": {
+    "id": "comp_deloitte",
+    "name": "Deloitte",
+    "short_name": "Deloitte",
+    "category": "Consulting & Technology",
+    "color_hex": "#86BC25",
+    "hiring_programs": [
+      {
+        "id": "deloitte_analyst",
+        "name": "Associate Analyst / Technology",
+        "role": "Associate Analyst",
+        "package_lpa": "4.5 - 7.6 LPA",
+        "difficulty": "Medium",
+        "rounds_count": 3,
+        "overview": "Analytical problem solving, Versant communication, business case study, and SQL.",
+        "typical_rounds": [
+          "Aptitude & Versant Test",
+          "Case Study & Technical Round",
+          "Partner Interview"
+        ]
+      }
+    ]
+  },
+  "comp_meta": {
+    "id": "comp_meta",
+    "name": "Meta",
+    "short_name": "Meta",
+    "category": "Product MNC",
+    "color_hex": "#0668E1",
+    "hiring_programs": [
+      {
+        "id": "meta_e3",
+        "name": "Software Engineer (E3 / New Grad)",
+        "role": "Software Engineer",
+        "package_lpa": "35 - 55 LPA",
+        "difficulty": "Very Hard",
+        "rounds_count": 4,
+        "overview": "Rapid algorithmic problem solving (2 medium/hard questions in 45 mins) and graph traversals.",
+        "typical_rounds": [
+          "Online Screening",
+          "Coding Round 1 (Speed & Precision)",
+          "Coding Round 2 (Algorithms)",
+          "Behavioral & Meta Values"
+        ]
+      }
+    ]
+  },
+  "comp_apple": {
+    "id": "comp_apple",
+    "name": "Apple",
+    "short_name": "Apple",
+    "category": "Product MNC",
+    "color_hex": "#A2AAAD",
+    "hiring_programs": [
+      {
+        "id": "apple_swe",
+        "name": "Software Engineer (ICT3 / Campus)",
+        "role": "Software Engineer",
+        "package_lpa": "30 - 50 LPA",
+        "difficulty": "Hard to Very Hard",
+        "rounds_count": 5,
+        "overview": "Systems programming, memory management, C++/Swift internals, and low-level architecture.",
+        "typical_rounds": [
+          "Recruiter Tech Screen",
+          "Technical Phone Screen",
+          "Onsite 1: Algorithms & Memory",
+          "Onsite 2: System Architecture",
+          "Engineering Manager"
+        ]
+      }
+    ]
+  },
+  "comp_netflix": {
+    "id": "comp_netflix",
+    "name": "Netflix",
+    "short_name": "Netflix",
+    "category": "Product MNC",
+    "color_hex": "#E50914",
+    "hiring_programs": [
+      {
+        "id": "netflix_swe",
+        "name": "Senior Software Engineer",
+        "role": "Software Engineer",
+        "package_lpa": "60 - 120 LPA",
+        "difficulty": "Very Hard",
+        "rounds_count": 5,
+        "overview": "Ultra high-scale distributed architecture, microservices, concurrency, and Netflix Culture Memo.",
+        "typical_rounds": [
+          "Tech Recruiter Screen",
+          "System Design & Microservices",
+          "Concurrency & Resiliency",
+          "Culture Round 1: Context Not Control",
+          "Executive Director"
+        ]
+      }
+    ]
+  },
+  "comp_uber": {
+    "id": "comp_uber",
+    "name": "Uber",
+    "short_name": "Uber",
+    "category": "Product MNC",
+    "color_hex": "#000000",
+    "hiring_programs": [
+      {
+        "id": "uber_sde1",
+        "name": "Software Engineer I",
+        "role": "Software Engineer",
+        "package_lpa": "30 - 48 LPA",
+        "difficulty": "Hard to Very Hard",
+        "rounds_count": 4,
+        "overview": "Geospatial indexing (H3), graph shortest paths, concurrent algorithms, and low-level system design.",
+        "typical_rounds": [
+          "Uber Online Challenge",
+          "Technical Round 1: Graph/Tree Algorithms",
+          "Technical Round 2: LLD",
+          "Managerial & Culture"
+        ]
+      }
+    ]
+  },
+  "comp_adobe": {
+    "id": "comp_adobe",
+    "name": "Adobe",
+    "short_name": "Adobe",
+    "category": "Product MNC",
+    "color_hex": "#FF0000",
+    "hiring_programs": [
+      {
+        "id": "adobe_mts",
+        "name": "Member of Technical Staff 1 (MTS-1)",
+        "role": "Member of Technical Staff",
+        "package_lpa": "22 - 35 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "C++/Java core fundamentals, graphics/tree algorithms, memory optimization, and OOP design.",
+        "typical_rounds": [
+          "Adobe HackerRank Test",
+          "Technical 1: Data Structures & Pointers",
+          "Technical 2: OS & Algorithms",
+          "Director Interview"
+        ]
+      }
+    ]
+  },
+  "comp_salesforce": {
+    "id": "comp_salesforce",
+    "name": "Salesforce",
+    "short_name": "Salesforce",
+    "category": "Product MNC / SaaS",
+    "color_hex": "#00A1E0",
+    "hiring_programs": [
+      {
+        "id": "sf_amts",
+        "name": "Associate Member of Technical Staff (AMTS)",
+        "role": "Associate Software Engineer",
+        "package_lpa": "25 - 40 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Multi-tenant cloud architecture, distributed systems, clean modular coding, and OOP.",
+        "typical_rounds": [
+          "HackerRank Assessment",
+          "Technical 1: DSA",
+          "Technical 2: OOD & DB Schema",
+          "Values & Behavioral"
+        ]
+      }
+    ]
+  },
+  "comp_oracle": {
+    "id": "comp_oracle",
+    "name": "Oracle",
+    "short_name": "Oracle",
+    "category": "Product MNC / Enterprise",
+    "color_hex": "#C74634",
+    "hiring_programs": [
+      {
+        "id": "oracle_se",
+        "name": "Software Developer (Server Tech / OCI)",
+        "role": "Software Developer",
+        "package_lpa": "18 - 32 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Database engine internals, B+ trees, SQL optimizations, networking protocols, OS concurrency.",
+        "typical_rounds": [
+          "Oracle OA",
+          "Technical 1: OS, DB Internals & Pointers",
+          "Technical 2: DSA & Systems",
+          "Managerial Interview"
+        ]
+      }
+    ]
+  },
+  "comp_cisco": {
+    "id": "comp_cisco",
+    "name": "Cisco",
+    "short_name": "Cisco",
+    "category": "Networking & Cloud",
+    "color_hex": "#1BA0D7",
+    "hiring_programs": [
+      {
+        "id": "cisco_se",
+        "name": "Software Engineer (Technical Graduate)",
+        "role": "Software Engineer",
+        "package_lpa": "15 - 24 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 3,
+        "overview": "Networking (TCP/IP, Sockets, BGP), OS, C/C++ memory mechanics, and DSA.",
+        "typical_rounds": [
+          "Cisco OA",
+          "Technical: Networking & Socket Programming",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_atlassian": {
+    "id": "comp_atlassian",
+    "name": "Atlassian",
+    "short_name": "Atlassian",
+    "category": "Product MNC / SaaS",
+    "color_hex": "#0052CC",
+    "hiring_programs": [
+      {
+        "id": "atl_swe",
+        "name": "Software Engineer (Graduate)",
+        "role": "Software Engineer",
+        "package_lpa": "35 - 55 LPA",
+        "difficulty": "Hard to Very Hard",
+        "rounds_count": 4,
+        "overview": "Code craft, system design, data structures, and Atlassian's 5 Core Values.",
+        "typical_rounds": [
+          "HackerRank Challenge",
+          "Code Craft / Pair Programming",
+          "System Design & LLD",
+          "Values & Behavioral"
+        ]
+      }
+    ]
+  },
+  "comp_goldman": {
+    "id": "comp_goldman",
+    "name": "Goldman Sachs",
+    "short_name": "Goldman",
+    "category": "Fintech & Investment Banking",
+    "color_hex": "#7399C6",
+    "hiring_programs": [
+      {
+        "id": "gs_analyst",
+        "name": "Engineering New Analyst",
+        "role": "Software Engineering Analyst",
+        "package_lpa": "24 - 38 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Mathematical probability, dynamic programming, matrix operations, and financial computing.",
+        "typical_rounds": [
+          "GS Online Assessment (Quant + Coding)",
+          "Technical 1: Algorithms",
+          "Technical 2: Systems & Math",
+          "Engineering Director Panel"
+        ]
+      }
+    ]
+  },
+  "comp_jpmorgan": {
+    "id": "comp_jpmorgan",
+    "name": "JPMorgan Chase",
+    "short_name": "JPMC",
+    "category": "Fintech & Investment Banking",
+    "color_hex": "#1175B5",
+    "hiring_programs": [
+      {
+        "id": "jpmc_sep",
+        "name": "Software Engineer Program (SEP)",
+        "role": "Software Engineer",
+        "package_lpa": "16 - 22 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 3,
+        "overview": "HackerRank CodeVue challenge, Code for Good hackathon evaluation, Java/Spring & SQL.",
+        "typical_rounds": [
+          "Online Assessment",
+          "Code for Good Hackathon / Tech Evaluation",
+          "Technical & HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_flipkart": {
+    "id": "comp_flipkart",
+    "name": "Flipkart",
+    "short_name": "Flipkart",
+    "category": "Product MNC / E-Commerce",
+    "color_hex": "#2874F0",
+    "hiring_programs": [
+      {
+        "id": "fk_sde1",
+        "name": "SDE I",
+        "role": "Software Development Engineer I",
+        "package_lpa": "22 - 32 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Machine Coding round (2 hours live object-oriented CLI app build), DSA, and high-scale e-commerce.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Machine Coding Round (2 Hours LLD)",
+          "DSA & Problem Solving",
+          "Managerial & Culture"
+        ]
+      }
+    ]
+  },
+  "comp_swiggy": {
+    "id": "comp_swiggy",
+    "name": "Swiggy",
+    "short_name": "Swiggy",
+    "category": "Product / Consumer Tech",
+    "color_hex": "#FC8019",
+    "hiring_programs": [
+      {
+        "id": "swiggy_sde1",
+        "name": "SDE I",
+        "role": "Software Engineer",
+        "package_lpa": "20 - 30 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Machine coding round (Food delivery LLD), LeetCode Medium/Hard DSA, and concurrency.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Machine Coding (2 Hours LLD)",
+          "DSA Optimization",
+          "Culture Fit"
+        ]
+      }
+    ]
+  },
+  "comp_zomato": {
+    "id": "comp_zomato",
+    "name": "Zomato",
+    "short_name": "Zomato",
+    "category": "Product / Consumer Tech",
+    "color_hex": "#CB202D",
+    "hiring_programs": [
+      {
+        "id": "zomato_se",
+        "name": "Software Development Engineer",
+        "role": "Software Engineer",
+        "package_lpa": "20 - 32 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Fast execution, clean code architecture, machine coding, database indexing, and system scaling.",
+        "typical_rounds": [
+          "Online Assessment",
+          "Machine Coding / LLD",
+          "Problem Solving & DSA",
+          "Engineering Manager"
+        ]
+      }
+    ]
+  },
+  "comp_paytm": {
+    "id": "comp_paytm",
+    "name": "Paytm",
+    "short_name": "Paytm",
+    "category": "Fintech / Consumer Tech",
+    "color_hex": "#002E6D",
+    "hiring_programs": [
+      {
+        "id": "paytm_se",
+        "name": "Software Engineer",
+        "role": "Software Engineer",
+        "package_lpa": "12 - 20 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 3,
+        "overview": "High throughput payment transaction architecture, database transactions (ACID), SQL, and DSA.",
+        "typical_rounds": [
+          "Online Assessment",
+          "Technical 1: DSA & Concurrency",
+          "Technical 2: System Concepts & DB Transactions"
+        ]
+      }
+    ]
+  },
+  "comp_phonepe": {
+    "id": "comp_phonepe",
+    "name": "PhonePe",
+    "short_name": "PhonePe",
+    "category": "Fintech / Consumer Tech",
+    "color_hex": "#5F259F",
+    "hiring_programs": [
+      {
+        "id": "phonepe_sde1",
+        "name": "Software Engineer I",
+        "role": "Software Engineer",
+        "package_lpa": "22 - 35 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Machine coding round (Payment Gateway / Ledger LLD), transactional consistency, distributed queues.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Machine Coding / LLD (2 Hours)",
+          "DSA & Algorithms",
+          "Engineering Director"
+        ]
+      }
+    ]
+  },
+  "comp_razorpay": {
+    "id": "comp_razorpay",
+    "name": "Razorpay",
+    "short_name": "Razorpay",
+    "category": "Fintech / B2B SaaS",
+    "color_hex": "#0C2340",
+    "hiring_programs": [
+      {
+        "id": "razorpay_sde1",
+        "name": "Software Engineer I",
+        "role": "Software Engineer",
+        "package_lpa": "20 - 32 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Machine coding, financial API design, web security (OAuth, HMAC, webhooks), and DSA.",
+        "typical_rounds": [
+          "Online Screening",
+          "Machine Coding (LLD)",
+          "Problem Solving & Systems",
+          "Culture & Leadership"
+        ]
+      }
+    ]
+  },
+  "comp_capgemini": {
+    "id": "comp_capgemini",
+    "name": "Capgemini",
+    "short_name": "Capgemini",
+    "category": "IT Services & Consulting",
+    "color_hex": "#0070AD",
+    "hiring_programs": [
+      {
+        "id": "capg_analyst",
+        "name": "Analyst / Senior Analyst",
+        "role": "Software Engineer Analyst",
+        "package_lpa": "4.0 - 7.5 LPA",
+        "difficulty": "Easy to Medium",
+        "rounds_count": 3,
+        "overview": "Pseudo-code, game-based aptitude test, hands-on coding, and technical interview.",
+        "typical_rounds": [
+          "Game-based Test & Pseudocode",
+          "Coding Assessment",
+          "Technical & HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_techm": {
+    "id": "comp_techm",
+    "name": "Tech Mahindra",
+    "short_name": "TechM",
+    "category": "IT Services & Consulting",
+    "color_hex": "#E31837",
+    "hiring_programs": [
+      {
+        "id": "techm_se",
+        "name": "Associate Software Engineer",
+        "role": "Associate Software Engineer",
+        "package_lpa": "3.5 - 5.5 LPA",
+        "difficulty": "Easy to Medium",
+        "rounds_count": 3,
+        "overview": "Aptitude, psychometric test, basic coding, and technical panel interview.",
+        "typical_rounds": [
+          "Aptitude & English Test",
+          "Hands-on Coding",
+          "Technical & HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_hcltech": {
+    "id": "comp_hcltech",
+    "name": "HCLTech",
+    "short_name": "HCL",
+    "category": "IT Services & Consulting",
+    "color_hex": "#00569B",
+    "hiring_programs": [
+      {
+        "id": "hcl_engineer",
+        "name": "Software Engineer",
+        "role": "Software Engineer",
+        "package_lpa": "3.6 - 6.0 LPA",
+        "difficulty": "Easy to Medium",
+        "rounds_count": 2,
+        "overview": "Aptitude screening, basic programming in C/Java/Python, SQL, and panel discussion.",
+        "typical_rounds": [
+          "Online Aptitude & MCQ",
+          "Technical & HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_ibm": {
+    "id": "comp_ibm",
+    "name": "IBM",
+    "short_name": "IBM",
+    "category": "IT Services & Consulting",
+    "color_hex": "#052147",
+    "hiring_programs": [
+      {
+        "id": "ibm_se",
+        "name": "Associate System Engineer",
+        "role": "Associate System Engineer",
+        "package_lpa": "4.5 - 7.2 LPA",
+        "difficulty": "Medium",
+        "rounds_count": 3,
+        "overview": "Cognitive Ability Assessment (Cognify game test), English proficiency, coding, and panel.",
+        "typical_rounds": [
+          "IBM Cognify Game Assessment",
+          "Coding Test",
+          "Technical & HR Interview"
+        ]
+      }
+    ]
+  },
+  "comp_cred": {
+    "id": "comp_cred",
+    "name": "CRED",
+    "short_name": "CRED",
+    "category": "Fintech / Product Unicorn",
+    "color_hex": "#1A1A1A",
+    "hiring_programs": [
+      {
+        "id": "cred_backend",
+        "name": "Backend Engineer (SDE I / SDE II)",
+        "role": "Software Development Engineer",
+        "package_lpa": "24 - 45 LPA",
+        "difficulty": "Hard to Very Hard",
+        "rounds_count": 4,
+        "overview": "Machine Coding (2 Hours LLD for rewards/payments), microservices, distributed caching, and bar raiser.",
+        "typical_rounds": [
+          "Online Assessment",
+          "Machine Coding (2 Hours LLD)",
+          "High-Level Distributed System Design",
+          "Bar Raiser"
+        ]
+      }
+    ]
+  },
+  "comp_jio": {
+    "id": "comp_jio",
+    "name": "Reliance Jio",
+    "short_name": "Jio",
+    "category": "Telecom & Digital Ecosystem",
+    "color_hex": "#0F52BA",
+    "hiring_programs": [
+      {
+        "id": "jio_se",
+        "name": "Graduate Engineer Trainee (GET) / SDE",
+        "role": "Software Engineer",
+        "package_lpa": "6.0 - 14.0 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 3,
+        "overview": "Cloud platforms (JioCloud), microservices, database scaling, networking, and 5G applications.",
+        "typical_rounds": [
+          "Jio CodeBytes Test",
+          "Technical 1: DSA & Core CS",
+          "Technical 2: Cloud Systems & Projects",
+          "HR Interview"
+        ]
+      }
+    ]
+  },
+  "comp_ltimindtree": {
+    "id": "comp_ltimindtree",
+    "name": "LTIMindtree",
+    "short_name": "LTIMindtree",
+    "category": "IT Services & Digital Solutions",
+    "color_hex": "#00205B",
+    "hiring_programs": [
+      {
+        "id": "lti_se",
+        "name": "Software Engineer / Specialist",
+        "role": "Software Engineer",
+        "package_lpa": "4.5 - 8.5 LPA",
+        "difficulty": "Easy to Medium",
+        "rounds_count": 3,
+        "overview": "National Qualifier assessment, core OOP, SQL subqueries, cloud basics, and project defense.",
+        "typical_rounds": [
+          "LTIMindtree National Qualifier",
+          "Technical Panel",
+          "Managerial & HR Alignment"
+        ]
+      }
+    ]
+  },
+  "comp_freshworks": {
+    "id": "comp_freshworks",
+    "name": "Freshworks",
+    "short_name": "Freshworks",
+    "category": "Product MNC / B2B SaaS",
+    "color_hex": "#F47721",
+    "hiring_programs": [
+      {
+        "id": "fresh_sde1",
+        "name": "Software Development Engineer I",
+        "role": "Software Engineer",
+        "package_lpa": "15 - 26 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Machine coding (Multi-tenant ticket routing LLD), LeetCode Medium DSA, web performance, SaaS culture.",
+        "typical_rounds": [
+          "Online Coding Test",
+          "Machine Coding (2 Hours LLD)",
+          "DSA & Web Concepts",
+          "Freshworks Culture"
+        ]
+      }
+    ]
+  },
+  "comp_persistent": {
+    "id": "comp_persistent",
+    "name": "Persistent Systems",
+    "short_name": "Persistent",
+    "category": "Product Engineering & IT",
+    "color_hex": "#EC1C24",
+    "hiring_programs": [
+      {
+        "id": "persistent_se",
+        "name": "Software Engineer",
+        "role": "Software Engineer",
+        "package_lpa": "4.7 - 9.0 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 3,
+        "overview": "CS fundamentals (OS, DBMS, Data Structures), hands-on coding, cloud architecture, project defense.",
+        "typical_rounds": [
+          "Persistent Online Test",
+          "Technical 1: DSA & OS",
+          "Technical & HR Leadership"
+        ]
+      }
+    ]
+  },
+  "comp_meesho": {
+    "id": "comp_meesho",
+    "name": "Meesho",
+    "short_name": "Meesho",
+    "category": "Product / E-Commerce Unicorn",
+    "color_hex": "#F43397",
+    "hiring_programs": [
+      {
+        "id": "meesho_sde1",
+        "name": "SDE I",
+        "role": "Software Engineer",
+        "package_lpa": "20 - 32 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Machine coding (Reseller Order Allocation LLD), data structures, high scale e-commerce architecture.",
+        "typical_rounds": [
+          "Online Coding Challenge",
+          "Machine Coding (2 Hours LLD)",
+          "DSA Optimization",
+          "Culture Alignment"
+        ]
+      }
+    ]
+  },
+  "comp_ola": {
+    "id": "comp_ola",
+    "name": "Ola",
+    "short_name": "Ola",
+    "category": "Product / Mobility & EV",
+    "color_hex": "#000000",
+    "hiring_programs": [
+      {
+        "id": "ola_sde1",
+        "name": "SDE I",
+        "role": "Software Engineer",
+        "package_lpa": "18 - 28 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Geospatial calculations, graph algorithms, low-level ride matching system design, fast execution.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Low-Level Design",
+          "DSA & Graph Algorithms",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_zepto": {
+    "id": "comp_zepto",
+    "name": "Zepto",
+    "short_name": "Zepto",
+    "category": "Quick Commerce Unicorn",
+    "color_hex": "#7A22A6",
+    "hiring_programs": [
+      {
+        "id": "comp_zepto_track",
+        "name": "Zepto Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "18 - 30 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Zepto evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Coding Assessment",
+          "Machine Coding (Inventory LLD)",
+          "DSA & System Concepts",
+          "HR Round"
+        ]
+      }
+    ]
+  },
+  "comp_blinkit": {
+    "id": "comp_blinkit",
+    "name": "Blinkit",
+    "short_name": "Blinkit",
+    "category": "Quick Commerce Unicorn",
+    "color_hex": "#F4C430",
+    "hiring_programs": [
+      {
+        "id": "comp_blinkit_track",
+        "name": "Blinkit Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "18 - 32 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Blinkit evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Low Level Design",
+          "Problem Solving",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_urbancompany": {
+    "id": "comp_urbancompany",
+    "name": "Urban Company",
+    "short_name": "Urban Company",
+    "category": "Consumer Tech Unicorn",
+    "color_hex": "#000000",
+    "hiring_programs": [
+      {
+        "id": "comp_urbancompany_track",
+        "name": "Urban Company Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "16 - 28 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Urban Company evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "HackerRank Qualifier",
+          "Machine Coding",
+          "DSA Deep Dive",
+          "Culture Fit"
+        ]
+      }
+    ]
+  },
+  "comp_groww": {
+    "id": "comp_groww",
+    "name": "Groww",
+    "short_name": "Groww",
+    "category": "Fintech Unicorn",
+    "color_hex": "#00D09C",
+    "hiring_programs": [
+      {
+        "id": "comp_groww_track",
+        "name": "Groww Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "20 - 35 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Groww evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Assessment",
+          "Machine Coding (Trading Engine LLD)",
+          "Concurrency & DB Transactions",
+          "Bar Raiser"
+        ]
+      }
+    ]
+  },
+  "comp_zerodha": {
+    "id": "comp_zerodha",
+    "name": "Zerodha",
+    "short_name": "Zerodha",
+    "category": "Fintech Giant",
+    "color_hex": "#387ED1",
+    "hiring_programs": [
+      {
+        "id": "comp_zerodha_track",
+        "name": "Zerodha Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "18 - 30 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Zerodha evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Coding Challenge",
+          "Low Level Architecture",
+          "Go/Python Systems",
+          "Founders Round"
+        ]
+      }
+    ]
+  },
+  "comp_upstox": {
+    "id": "comp_upstox",
+    "name": "Upstox",
+    "short_name": "Upstox",
+    "category": "Fintech Unicorn",
+    "color_hex": "#6C5CE7",
+    "hiring_programs": [
+      {
+        "id": "comp_upstox_track",
+        "name": "Upstox Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "16 - 26 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Upstox evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Test",
+          "Machine Coding",
+          "DSA & Concurrency",
+          "HR Interview"
+        ]
+      }
+    ]
+  },
+  "comp_policybazaar": {
+    "id": "comp_policybazaar",
+    "name": "PolicyBazaar",
+    "short_name": "PolicyBazaar",
+    "category": "Fintech / InsurTech",
+    "color_hex": "#003366",
+    "hiring_programs": [
+      {
+        "id": "comp_policybazaar_track",
+        "name": "PolicyBazaar Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "12 - 22 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for PolicyBazaar evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Aptitude & Coding",
+          "Technical Round 1",
+          "Technical Round 2",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_nykaa": {
+    "id": "comp_nykaa",
+    "name": "Nykaa",
+    "short_name": "Nykaa",
+    "category": "E-Commerce / Fashion",
+    "color_hex": "#FC2779",
+    "hiring_programs": [
+      {
+        "id": "comp_nykaa_track",
+        "name": "Nykaa Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "14 - 24 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Nykaa evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Machine Coding",
+          "Problem Solving",
+          "HR Round"
+        ]
+      }
+    ]
+  },
+  "comp_makemytrip": {
+    "id": "comp_makemytrip",
+    "name": "MakeMyTrip",
+    "short_name": "MakeMyTrip",
+    "category": "Travel Tech Giant",
+    "color_hex": "#E41D24",
+    "hiring_programs": [
+      {
+        "id": "comp_makemytrip_track",
+        "name": "MakeMyTrip Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "16 - 28 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for MakeMyTrip evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Coding Test",
+          "Low Level Design",
+          "DSA & Database Optimization",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_bookmyshow": {
+    "id": "comp_bookmyshow",
+    "name": "BookMyShow",
+    "short_name": "BookMyShow",
+    "category": "Entertainment Tech",
+    "color_hex": "#C82333",
+    "hiring_programs": [
+      {
+        "id": "comp_bookmyshow_track",
+        "name": "BookMyShow Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "12 - 22 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for BookMyShow evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Assessment",
+          "Machine Coding (Seat Allocation)",
+          "Core CS & SQL",
+          "HR Interview"
+        ]
+      }
+    ]
+  },
+  "comp_cars24": {
+    "id": "comp_cars24",
+    "name": "Cars24",
+    "short_name": "Cars24",
+    "category": "AutoTech Unicorn",
+    "color_hex": "#FF6B00",
+    "hiring_programs": [
+      {
+        "id": "comp_cars24_track",
+        "name": "Cars24 Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "14 - 25 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Cars24 evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Coding",
+          "Machine Coding",
+          "DSA & Systems",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_spinny": {
+    "id": "comp_spinny",
+    "name": "Spinny",
+    "short_name": "Spinny",
+    "category": "AutoTech Unicorn",
+    "color_hex": "#004B87",
+    "hiring_programs": [
+      {
+        "id": "comp_spinny_track",
+        "name": "Spinny Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "14 - 24 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Spinny evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Test",
+          "Machine Coding",
+          "DSA Round",
+          "HR Round"
+        ]
+      }
+    ]
+  },
+  "comp_pinelabs": {
+    "id": "comp_pinelabs",
+    "name": "Pine Labs",
+    "short_name": "Pine Labs",
+    "category": "Fintech Merchant SaaS",
+    "color_hex": "#008080",
+    "hiring_programs": [
+      {
+        "id": "comp_pinelabs_track",
+        "name": "Pine Labs Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "16 - 28 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Pine Labs evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Coding Test",
+          "Machine Coding (POS Transaction)",
+          "DB Consistency",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_billdesk": {
+    "id": "comp_billdesk",
+    "name": "BillDesk",
+    "short_name": "BillDesk",
+    "category": "Fintech Payments",
+    "color_hex": "#002B49",
+    "hiring_programs": [
+      {
+        "id": "comp_billdesk_track",
+        "name": "BillDesk Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "12 - 20 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for BillDesk evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Assessment",
+          "Technical Round 1",
+          "Technical Round 2",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_physicswallah": {
+    "id": "comp_physicswallah",
+    "name": "PhysicsWallah",
+    "short_name": "PW",
+    "category": "EdTech Unicorn",
+    "color_hex": "#1B1B1B",
+    "hiring_programs": [
+      {
+        "id": "comp_physicswallah_track",
+        "name": "PW Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "12 - 22 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for PhysicsWallah evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Test",
+          "Technical Coding",
+          "System Architecture",
+          "HR Interview"
+        ]
+      }
+    ]
+  },
+  "comp_unacademy": {
+    "id": "comp_unacademy",
+    "name": "Unacademy",
+    "short_name": "Unacademy",
+    "category": "EdTech Unicorn",
+    "color_hex": "#08BD80",
+    "hiring_programs": [
+      {
+        "id": "comp_unacademy_track",
+        "name": "Unacademy Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "15 - 26 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Unacademy evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Machine Coding",
+          "DSA Deep Dive",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_eruditus": {
+    "id": "comp_eruditus",
+    "name": "Eruditus",
+    "short_name": "Eruditus",
+    "category": "EdTech Unicorn",
+    "color_hex": "#13294B",
+    "hiring_programs": [
+      {
+        "id": "comp_eruditus_track",
+        "name": "Eruditus Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "14 - 24 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Eruditus evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Test",
+          "Technical 1",
+          "Technical 2",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_sharechat": {
+    "id": "comp_sharechat",
+    "name": "ShareChat",
+    "short_name": "ShareChat",
+    "category": "Social Media Unicorn",
+    "color_hex": "#FF8C00",
+    "hiring_programs": [
+      {
+        "id": "comp_sharechat_track",
+        "name": "ShareChat Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "22 - 38 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for ShareChat evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Assessment",
+          "Machine Coding",
+          "DSA & Distributed Systems",
+          "Culture Fit"
+        ]
+      }
+    ]
+  },
+  "comp_pocketfm": {
+    "id": "comp_pocketfm",
+    "name": "Pocket FM",
+    "short_name": "Pocket FM",
+    "category": "Audio Streaming Unicorn",
+    "color_hex": "#E50914",
+    "hiring_programs": [
+      {
+        "id": "comp_pocketfm_track",
+        "name": "Pocket FM Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "18 - 30 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Pocket FM evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Machine Coding",
+          "DSA & Systems",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_inmobi": {
+    "id": "comp_inmobi",
+    "name": "InMobi",
+    "short_name": "InMobi",
+    "category": "AdTech Unicorn",
+    "color_hex": "#1A73E8",
+    "hiring_programs": [
+      {
+        "id": "comp_inmobi_track",
+        "name": "InMobi Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "20 - 35 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for InMobi evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "HackerRank Challenge",
+          "Machine Coding",
+          "DSA & Data Architecture",
+          "Bar Raiser"
+        ]
+      }
+    ]
+  },
+  "comp_glance": {
+    "id": "comp_glance",
+    "name": "Glance",
+    "short_name": "Glance",
+    "category": "Consumer Tech Unicorn",
+    "color_hex": "#00E676",
+    "hiring_programs": [
+      {
+        "id": "comp_glance_track",
+        "name": "Glance Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "20 - 32 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Glance evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Test",
+          "Machine Coding",
+          "Problem Solving",
+          "HR Interview"
+        ]
+      }
+    ]
+  },
+  "comp_verse": {
+    "id": "comp_verse",
+    "name": "Dailyhunt (VerSe)",
+    "short_name": "Dailyhunt",
+    "category": "Media Tech Unicorn",
+    "color_hex": "#FF3D00",
+    "hiring_programs": [
+      {
+        "id": "comp_verse_track",
+        "name": "Dailyhunt Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "16 - 28 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Dailyhunt (VerSe) evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Machine Coding",
+          "DSA & Systems",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_mpl": {
+    "id": "comp_mpl",
+    "name": "Mobile Premier League",
+    "short_name": "MPL",
+    "category": "Gaming Unicorn",
+    "color_hex": "#D32F2F",
+    "hiring_programs": [
+      {
+        "id": "comp_mpl_track",
+        "name": "MPL Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "18 - 32 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Mobile Premier League evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Test",
+          "Machine Coding (Matchmaking LLD)",
+          "Concurrency",
+          "Culture Fit"
+        ]
+      }
+    ]
+  },
+  "comp_dream11": {
+    "id": "comp_dream11",
+    "name": "Dream11",
+    "short_name": "Dream11",
+    "category": "Sports Tech Unicorn",
+    "color_hex": "#E10600",
+    "hiring_programs": [
+      {
+        "id": "comp_dream11_track",
+        "name": "Dream11 Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "22 - 40 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Dream11 evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Machine Coding (Leaderboard LLD)",
+          "High Scale HLD",
+          "Bar Raiser"
+        ]
+      }
+    ]
+  },
+  "comp_games24x7": {
+    "id": "comp_games24x7",
+    "name": "Games24x7",
+    "short_name": "Games24x7",
+    "category": "Gaming Unicorn",
+    "color_hex": "#1E88E5",
+    "hiring_programs": [
+      {
+        "id": "comp_games24x7_track",
+        "name": "Games24x7 Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "18 - 32 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Games24x7 evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Assessment",
+          "Machine Coding",
+          "DSA & System Concepts",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_winzo": {
+    "id": "comp_winzo",
+    "name": "WinZO",
+    "short_name": "WinZO",
+    "category": "Gaming Tech",
+    "color_hex": "#FFB300",
+    "hiring_programs": [
+      {
+        "id": "comp_winzo_track",
+        "name": "WinZO Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "14 - 25 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for WinZO evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Coding Test",
+          "Machine Coding",
+          "DSA Round",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_lenskart": {
+    "id": "comp_lenskart",
+    "name": "Lenskart",
+    "short_name": "Lenskart",
+    "category": "D2C Retail Unicorn",
+    "color_hex": "#000042",
+    "hiring_programs": [
+      {
+        "id": "comp_lenskart_track",
+        "name": "Lenskart Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "14 - 26 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Lenskart evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Machine Coding",
+          "DSA & Web Concepts",
+          "HR Interview"
+        ]
+      }
+    ]
+  },
+  "comp_firstcry": {
+    "id": "comp_firstcry",
+    "name": "FirstCry",
+    "short_name": "FirstCry",
+    "category": "E-Commerce Giant",
+    "color_hex": "#FF4081",
+    "hiring_programs": [
+      {
+        "id": "comp_firstcry_track",
+        "name": "FirstCry Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "12 - 22 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for FirstCry evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Assessment",
+          "Technical 1",
+          "Technical 2",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_shiprocket": {
+    "id": "comp_shiprocket",
+    "name": "Shiprocket",
+    "short_name": "Shiprocket",
+    "category": "Logistics Tech Unicorn",
+    "color_hex": "#4E2A84",
+    "hiring_programs": [
+      {
+        "id": "comp_shiprocket_track",
+        "name": "Shiprocket Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "15 - 26 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Shiprocket evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Machine Coding",
+          "DSA & SQL",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_delhivery": {
+    "id": "comp_delhivery",
+    "name": "Delhivery",
+    "short_name": "Delhivery",
+    "category": "Logistics Tech Giant",
+    "color_hex": "#232F3E",
+    "hiring_programs": [
+      {
+        "id": "comp_delhivery_track",
+        "name": "Delhivery Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "16 - 28 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Delhivery evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Machine Coding (Route Optimization LLD)",
+          "DSA",
+          "Hiring Manager"
+        ]
+      }
+    ]
+  },
+  "comp_shadowfax": {
+    "id": "comp_shadowfax",
+    "name": "Shadowfax",
+    "short_name": "Shadowfax",
+    "category": "Logistics Tech",
+    "color_hex": "#FB8C00",
+    "hiring_programs": [
+      {
+        "id": "comp_shadowfax_track",
+        "name": "Shadowfax Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "12 - 22 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Shadowfax evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Test",
+          "Technical 1",
+          "Technical 2",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_porter": {
+    "id": "comp_porter",
+    "name": "Porter",
+    "short_name": "Porter",
+    "category": "Logistics Tech Unicorn",
+    "color_hex": "#1976D2",
+    "hiring_programs": [
+      {
+        "id": "comp_porter_track",
+        "name": "Porter Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "14 - 25 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Porter evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Machine Coding",
+          "DSA & DB Design",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_udaan": {
+    "id": "comp_udaan",
+    "name": "Udaan",
+    "short_name": "Udaan",
+    "category": "B2B E-Commerce Unicorn",
+    "color_hex": "#388E3C",
+    "hiring_programs": [
+      {
+        "id": "comp_udaan_track",
+        "name": "Udaan Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "18 - 30 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Udaan evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Challenge",
+          "Machine Coding",
+          "DSA & Distributed Systems",
+          "Culture Fit"
+        ]
+      }
+    ]
+  },
+  "comp_moglix": {
+    "id": "comp_moglix",
+    "name": "Moglix",
+    "short_name": "Moglix",
+    "category": "B2B E-Commerce Unicorn",
+    "color_hex": "#C2185B",
+    "hiring_programs": [
+      {
+        "id": "comp_moglix_track",
+        "name": "Moglix Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "14 - 24 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Moglix evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Assessment",
+          "Technical 1",
+          "Technical 2",
+          "HR Round"
+        ]
+      }
+    ]
+  },
+  "comp_zetwerk": {
+    "id": "comp_zetwerk",
+    "name": "Zetwerk",
+    "short_name": "Zetwerk",
+    "category": "Manufacturing Tech Unicorn",
+    "color_hex": "#00796B",
+    "hiring_programs": [
+      {
+        "id": "comp_zetwerk_track",
+        "name": "Zetwerk Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "16 - 28 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Zetwerk evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Test",
+          "Machine Coding",
+          "DSA & Systems",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_highradius": {
+    "id": "comp_highradius",
+    "name": "HighRadius",
+    "short_name": "HighRadius",
+    "category": "Fintech SaaS Unicorn",
+    "color_hex": "#0D47A1",
+    "hiring_programs": [
+      {
+        "id": "comp_highradius_track",
+        "name": "HighRadius Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "12 - 22 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for HighRadius evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Test",
+          "Technical 1: Java/SQL",
+          "Technical 2: Projects",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_postman": {
+    "id": "comp_postman",
+    "name": "Postman",
+    "short_name": "Postman",
+    "category": "API Platform Unicorn",
+    "color_hex": "#FF6C37",
+    "hiring_programs": [
+      {
+        "id": "comp_postman_track",
+        "name": "Postman Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "24 - 45 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Postman evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "HackerRank Qualifier",
+          "Code Craft / API Design",
+          "System Architecture",
+          "Values Round"
+        ]
+      }
+    ]
+  },
+  "comp_chargebee": {
+    "id": "comp_chargebee",
+    "name": "Chargebee",
+    "short_name": "Chargebee",
+    "category": "Subscription SaaS Unicorn",
+    "color_hex": "#4A154B",
+    "hiring_programs": [
+      {
+        "id": "comp_chargebee_track",
+        "name": "Chargebee Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "18 - 30 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Chargebee evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Machine Coding",
+          "DSA & Web Architecture",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_hackerrank": {
+    "id": "comp_hackerrank",
+    "name": "HackerRank",
+    "short_name": "HackerRank",
+    "category": "Dev Tools SaaS",
+    "color_hex": "#2EC4B6",
+    "hiring_programs": [
+      {
+        "id": "comp_hackerrank_track",
+        "name": "HackerRank Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "18 - 32 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for HackerRank evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "HackerRank Challenge",
+          "Code Craft",
+          "System Design",
+          "Cultural Alignment"
+        ]
+      }
+    ]
+  },
+  "comp_scaler": {
+    "id": "comp_scaler",
+    "name": "Scaler / InterviewBit",
+    "short_name": "Scaler",
+    "category": "EdTech / Dev Tools",
+    "color_hex": "#2B2D42",
+    "hiring_programs": [
+      {
+        "id": "comp_scaler_track",
+        "name": "Scaler Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "18 - 32 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Scaler / InterviewBit evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "DSA Deep Dive",
+          "System Design",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_browserstack": {
+    "id": "comp_browserstack",
+    "name": "BrowserStack",
+    "short_name": "BrowserStack",
+    "category": "Dev Tools Unicorn",
+    "color_hex": "#00B4D8",
+    "hiring_programs": [
+      {
+        "id": "comp_browserstack_track",
+        "name": "BrowserStack Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "20 - 36 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for BrowserStack evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Machine Coding (Browser Engine LLD)",
+          "DSA & Systems",
+          "Bar Raiser"
+        ]
+      }
+    ]
+  },
+  "comp_hasura": {
+    "id": "comp_hasura",
+    "name": "Hasura",
+    "short_name": "Hasura",
+    "category": "GraphQL SaaS Unicorn",
+    "color_hex": "#1EB4D4",
+    "hiring_programs": [
+      {
+        "id": "comp_hasura_track",
+        "name": "Hasura Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "22 - 40 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Hasura evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Coding Challenge",
+          "Compiler/GraphQL Systems",
+          "DSA & Architecture",
+          "Founders Round"
+        ]
+      }
+    ]
+  },
+  "comp_darwinbox": {
+    "id": "comp_darwinbox",
+    "name": "Darwinbox",
+    "short_name": "Darwinbox",
+    "category": "HR Tech SaaS Unicorn",
+    "color_hex": "#6C5CE7",
+    "hiring_programs": [
+      {
+        "id": "comp_darwinbox_track",
+        "name": "Darwinbox Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "15 - 26 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Darwinbox evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Machine Coding",
+          "DSA & Database Design",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_icertis": {
+    "id": "comp_icertis",
+    "name": "Icertis",
+    "short_name": "Icertis",
+    "category": "Enterprise SaaS Unicorn",
+    "color_hex": "#005691",
+    "hiring_programs": [
+      {
+        "id": "comp_icertis_track",
+        "name": "Icertis Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "14 - 24 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Icertis evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Test",
+          "Technical 1",
+          "Technical 2",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_innovaccer": {
+    "id": "comp_innovaccer",
+    "name": "Innovaccer",
+    "short_name": "Innovaccer",
+    "category": "HealthTech Unicorn",
+    "color_hex": "#00A86B",
+    "hiring_programs": [
+      {
+        "id": "comp_innovaccer_track",
+        "name": "Innovaccer Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "18 - 30 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Innovaccer evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Machine Coding",
+          "DSA & Systems",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_pharmeasy": {
+    "id": "comp_pharmeasy",
+    "name": "PharmEasy",
+    "short_name": "PharmEasy",
+    "category": "HealthTech Unicorn",
+    "color_hex": "#108276",
+    "hiring_programs": [
+      {
+        "id": "comp_pharmeasy_track",
+        "name": "PharmEasy Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "14 - 25 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for PharmEasy evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Machine Coding",
+          "DSA & DB Design",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_tata1mg": {
+    "id": "comp_tata1mg",
+    "name": "Tata 1mg",
+    "short_name": "Tata 1mg",
+    "category": "HealthTech Giant",
+    "color_hex": "#FF6F61",
+    "hiring_programs": [
+      {
+        "id": "comp_tata1mg_track",
+        "name": "Tata 1mg Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "15 - 26 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Tata 1mg evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Test",
+          "Machine Coding",
+          "DSA & System Concepts",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_cultfit": {
+    "id": "comp_cultfit",
+    "name": "Cult.fit",
+    "short_name": "Cult.fit",
+    "category": "Fitness & HealthTech",
+    "color_hex": "#FF3366",
+    "hiring_programs": [
+      {
+        "id": "comp_cultfit_track",
+        "name": "Cult.fit Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "16 - 28 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Cult.fit evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Machine Coding",
+          "DSA Round",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_airtel": {
+    "id": "comp_airtel",
+    "name": "Bharti Airtel (Xlabs)",
+    "short_name": "Airtel Xlabs",
+    "category": "Telecom Tech Giant",
+    "color_hex": "#E40000",
+    "hiring_programs": [
+      {
+        "id": "comp_airtel_track",
+        "name": "Airtel Xlabs Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "14 - 25 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Bharti Airtel (Xlabs) evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Test",
+          "Technical 1: Core CS & Networking",
+          "Technical 2: Cloud Systems",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_tataneu": {
+    "id": "comp_tataneu",
+    "name": "Tata Digital (Tata Neu)",
+    "short_name": "Tata Digital",
+    "category": "E-Commerce SuperApp",
+    "color_hex": "#5C0632",
+    "hiring_programs": [
+      {
+        "id": "comp_tataneu_track",
+        "name": "Tata Digital Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "18 - 30 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Tata Digital (Tata Neu) evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Machine Coding",
+          "DSA & Systems",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_bajajfinserv": {
+    "id": "comp_bajajfinserv",
+    "name": "Bajaj Finserv Health",
+    "short_name": "Bajaj Finserv",
+    "category": "Fintech Giant",
+    "color_hex": "#00529B",
+    "hiring_programs": [
+      {
+        "id": "comp_bajajfinserv_track",
+        "name": "Bajaj Finserv Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "12 - 22 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Bajaj Finserv Health evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Assessment",
+          "Technical 1",
+          "Technical 2",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_hdfc": {
+    "id": "comp_hdfc",
+    "name": "HDFC Bank Digital",
+    "short_name": "HDFC Digital",
+    "category": "Banking Tech",
+    "color_hex": "#004B8D",
+    "hiring_programs": [
+      {
+        "id": "comp_hdfc_track",
+        "name": "HDFC Digital Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "10 - 18 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 3,
+        "overview": "Comprehensive verified recruitment track for HDFC Bank Digital evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Aptitude & Coding",
+          "Technical Panel",
+          "HR Interview"
+        ]
+      }
+    ]
+  },
+  "comp_icicibank": {
+    "id": "comp_icicibank",
+    "name": "ICICI Bank Tech",
+    "short_name": "ICICI Tech",
+    "category": "Banking Tech",
+    "color_hex": "#F37023",
+    "hiring_programs": [
+      {
+        "id": "comp_icicibank_track",
+        "name": "ICICI Tech Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "9 - 16 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 3,
+        "overview": "Comprehensive verified recruitment track for ICICI Bank Tech evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Test",
+          "Technical Panel",
+          "HR Interview"
+        ]
+      }
+    ]
+  },
+  "comp_kotak": {
+    "id": "comp_kotak",
+    "name": "Kotak 811 Tech",
+    "short_name": "Kotak 811",
+    "category": "Banking Tech",
+    "color_hex": "#ED1C24",
+    "hiring_programs": [
+      {
+        "id": "comp_kotak_track",
+        "name": "Kotak 811 Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "12 - 20 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Kotak 811 Tech evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Assessment",
+          "Technical 1",
+          "Technical 2",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_morganstanley": {
+    "id": "comp_morganstanley",
+    "name": "Morgan Stanley",
+    "short_name": "Morgan Stanley",
+    "category": "Investment Banking",
+    "color_hex": "#002A54",
+    "hiring_programs": [
+      {
+        "id": "comp_morganstanley_track",
+        "name": "Morgan Stanley Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "22 - 36 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Morgan Stanley evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online OA (Math + Coding)",
+          "Technical 1: DSA",
+          "Technical 2: Systems & C++",
+          "Director Panel"
+        ]
+      }
+    ]
+  },
+  "comp_barclays": {
+    "id": "comp_barclays",
+    "name": "Barclays",
+    "short_name": "Barclays",
+    "category": "Investment Banking",
+    "color_hex": "#00AEA9",
+    "hiring_programs": [
+      {
+        "id": "comp_barclays_track",
+        "name": "Barclays Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "16 - 26 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Barclays evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Hackerrank",
+          "Technical 1: Java/Spring & SQL",
+          "Technical 2: System Design",
+          "Values Round"
+        ]
+      }
+    ]
+  },
+  "comp_wellsfargo": {
+    "id": "comp_wellsfargo",
+    "name": "Wells Fargo",
+    "short_name": "Wells Fargo",
+    "category": "Financial Services MNC",
+    "color_hex": "#D71E28",
+    "hiring_programs": [
+      {
+        "id": "comp_wellsfargo_track",
+        "name": "Wells Fargo Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "16 - 26 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Wells Fargo evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Test",
+          "Technical 1: DSA & SQL",
+          "Technical 2: Java/Python",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_amex": {
+    "id": "comp_amex",
+    "name": "American Express",
+    "short_name": "Amex",
+    "category": "Fintech & Cards MNC",
+    "color_hex": "#006FCF",
+    "hiring_programs": [
+      {
+        "id": "comp_amex_track",
+        "name": "Amex Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "18 - 30 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for American Express evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Test",
+          "Technical 1: DSA & Logic",
+          "Technical 2: DB Transactions",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_paypal": {
+    "id": "comp_paypal",
+    "name": "PayPal",
+    "short_name": "PayPal",
+    "category": "Fintech MNC",
+    "color_hex": "#003087",
+    "hiring_programs": [
+      {
+        "id": "comp_paypal_track",
+        "name": "PayPal Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "22 - 38 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for PayPal evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Qualifier",
+          "Machine Coding",
+          "DSA & Transactions",
+          "Bar Raiser"
+        ]
+      }
+    ]
+  },
+  "comp_stripe": {
+    "id": "comp_stripe",
+    "name": "Stripe",
+    "short_name": "Stripe",
+    "category": "Fintech SaaS MNC",
+    "color_hex": "#635BFF",
+    "hiring_programs": [
+      {
+        "id": "comp_stripe_track",
+        "name": "Stripe Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "35 - 65 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Stripe evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Bug Fix Screen",
+          "System Design & API Integration",
+          "Coding Craft",
+          "Culture Fit"
+        ]
+      }
+    ]
+  },
+  "comp_visa": {
+    "id": "comp_visa",
+    "name": "Visa",
+    "short_name": "Visa",
+    "category": "Payments Tech MNC",
+    "color_hex": "#1A1F71",
+    "hiring_programs": [
+      {
+        "id": "comp_visa_track",
+        "name": "Visa Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "18 - 32 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Visa evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online OA",
+          "Technical 1: DSA & Sockets",
+          "Technical 2: Payments Architecture",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_mastercard": {
+    "id": "comp_mastercard",
+    "name": "Mastercard",
+    "short_name": "Mastercard",
+    "category": "Payments Tech MNC",
+    "color_hex": "#FF5F00",
+    "hiring_programs": [
+      {
+        "id": "comp_mastercard_track",
+        "name": "Mastercard Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "18 - 30 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Mastercard evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Test",
+          "Technical 1: Core CS & Java",
+          "Technical 2: System Security",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_intel": {
+    "id": "comp_intel",
+    "name": "Intel",
+    "short_name": "Intel",
+    "category": "Semiconductor MNC",
+    "color_hex": "#0071C5",
+    "hiring_programs": [
+      {
+        "id": "comp_intel_track",
+        "name": "Intel Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "16 - 28 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Intel evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Assessment",
+          "Technical 1: C/C++, OS & Pointers",
+          "Technical 2: Architecture",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_amd": {
+    "id": "comp_amd",
+    "name": "AMD",
+    "short_name": "AMD",
+    "category": "Semiconductor MNC",
+    "color_hex": "#ED1C24",
+    "hiring_programs": [
+      {
+        "id": "comp_amd_track",
+        "name": "AMD Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "16 - 28 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for AMD evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Test",
+          "Technical 1: C/C++ & Microprocessors",
+          "Technical 2: Memory Layout",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_nvidia": {
+    "id": "comp_nvidia",
+    "name": "Nvidia",
+    "short_name": "Nvidia",
+    "category": "AI Hardware & Compute",
+    "color_hex": "#76B900",
+    "hiring_programs": [
+      {
+        "id": "comp_nvidia_track",
+        "name": "Nvidia Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "28 - 50 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Nvidia evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Screening",
+          "Technical 1: C++, CUDA & Memory",
+          "Technical 2: GPU Systems",
+          "Director Round"
+        ]
+      }
+    ]
+  },
+  "comp_qualcomm": {
+    "id": "comp_qualcomm",
+    "name": "Qualcomm",
+    "short_name": "Qualcomm",
+    "category": "Wireless & Embedded MNC",
+    "color_hex": "#3253DC",
+    "hiring_programs": [
+      {
+        "id": "comp_qualcomm_track",
+        "name": "Qualcomm Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "18 - 32 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Qualcomm evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online OA (C MCQs + Coding)",
+          "Technical 1: C/C++ & OS Kernel",
+          "Technical 2: Embedded Systems",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_samsung": {
+    "id": "comp_samsung",
+    "name": "Samsung R&D (SSIR)",
+    "short_name": "Samsung R&D",
+    "category": "Electronics & SW MNC",
+    "color_hex": "#1428A0",
+    "hiring_programs": [
+      {
+        "id": "comp_samsung_track",
+        "name": "Samsung R&D Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "16 - 28 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Samsung R&D (SSIR) evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Samsung Advanced SW Competency Test (3 hrs 1 problem)",
+          "Technical 1: DSA & OS",
+          "Technical 2: System Code",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_sony": {
+    "id": "comp_sony",
+    "name": "Sony India Software",
+    "short_name": "Sony",
+    "category": "Software & Media MNC",
+    "color_hex": "#000000",
+    "hiring_programs": [
+      {
+        "id": "comp_sony_track",
+        "name": "Sony Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "12 - 22 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Sony India Software evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Test",
+          "Technical 1: C++/Python & DSA",
+          "Technical 2: Systems",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_bosch": {
+    "id": "comp_bosch",
+    "name": "Bosch (RBEI)",
+    "short_name": "Bosch",
+    "category": "Engineering Tech MNC",
+    "color_hex": "#EA0016",
+    "hiring_programs": [
+      {
+        "id": "comp_bosch_track",
+        "name": "Bosch Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "10 - 18 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Bosch (RBEI) evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Aptitude & Tech MCQs",
+          "Technical 1: C/C++ & Embedded",
+          "Technical 2: Projects",
+          "HR Panel"
+        ]
+      }
+    ]
+  },
+  "comp_sap": {
+    "id": "comp_sap",
+    "name": "SAP Labs India",
+    "short_name": "SAP",
+    "category": "Enterprise Software MNC",
+    "color_hex": "#008FD3",
+    "hiring_programs": [
+      {
+        "id": "comp_sap_track",
+        "name": "SAP Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "16 - 28 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for SAP Labs India evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Hackerrank",
+          "Technical 1: Data Structures & OOP",
+          "Technical 2: System Architecture",
+          "HR & Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_vmware": {
+    "id": "comp_vmware",
+    "name": "VMware (Broadcom)",
+    "short_name": "VMware",
+    "category": "Cloud & Virtualization",
+    "color_hex": "#607D8B",
+    "hiring_programs": [
+      {
+        "id": "comp_vmware_track",
+        "name": "VMware Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "20 - 35 LPA",
+        "difficulty": "Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for VMware (Broadcom) evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online OA",
+          "Technical 1: OS, Networking & Memory",
+          "Technical 2: Virtualization LLD",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_servicenow": {
+    "id": "comp_servicenow",
+    "name": "ServiceNow",
+    "short_name": "ServiceNow",
+    "category": "Enterprise SaaS MNC",
+    "color_hex": "#293E40",
+    "hiring_programs": [
+      {
+        "id": "comp_servicenow_track",
+        "name": "ServiceNow Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "22 - 38 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for ServiceNow evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Test",
+          "Technical 1: DSA & JS/Java",
+          "Technical 2: System Architecture",
+          "Bar Raiser"
+        ]
+      }
+    ]
+  },
+  "comp_intuit": {
+    "id": "comp_intuit",
+    "name": "Intuit",
+    "short_name": "Intuit",
+    "category": "Fintech SaaS MNC",
+    "color_hex": "#0077C5",
+    "hiring_programs": [
+      {
+        "id": "comp_intuit_track",
+        "name": "Intuit Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "24 - 42 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Intuit evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Karat Tech Screen",
+          "Craft Demo / Live System Coding",
+          "DSA & Architecture",
+          "Values Round"
+        ]
+      }
+    ]
+  },
+  "comp_paloalto": {
+    "id": "comp_paloalto",
+    "name": "Palo Alto Networks",
+    "short_name": "Palo Alto",
+    "category": "Cybersecurity MNC",
+    "color_hex": "#FA4616",
+    "hiring_programs": [
+      {
+        "id": "comp_paloalto_track",
+        "name": "Palo Alto Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "22 - 40 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Palo Alto Networks evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online OA",
+          "Technical 1: Networking & Sockets",
+          "Technical 2: Systems & C++/Go",
+          "Managerial"
+        ]
+      }
+    ]
+  },
+  "comp_snowflake": {
+    "id": "comp_snowflake",
+    "name": "Snowflake",
+    "short_name": "Snowflake",
+    "category": "Data Cloud MNC",
+    "color_hex": "#29B5E8",
+    "hiring_programs": [
+      {
+        "id": "comp_snowflake_track",
+        "name": "Snowflake Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "35 - 65 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Snowflake evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Challenge",
+          "Technical 1: Distributed Systems & DSA",
+          "Technical 2: Database Internals",
+          "Director Round"
+        ]
+      }
+    ]
+  },
+  "comp_databricks": {
+    "id": "comp_databricks",
+    "name": "Databricks",
+    "short_name": "Databricks",
+    "category": "Data & AI MNC",
+    "color_hex": "#FF3621",
+    "hiring_programs": [
+      {
+        "id": "comp_databricks_track",
+        "name": "Databricks Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "35 - 65 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for Databricks evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Coding Screen",
+          "System Architecture & Spark/C++",
+          "DSA & Optimization",
+          "Bar Raiser"
+        ]
+      }
+    ]
+  },
+  "comp_mongodb": {
+    "id": "comp_mongodb",
+    "name": "MongoDB",
+    "short_name": "MongoDB",
+    "category": "Database Systems MNC",
+    "color_hex": "#13AA52",
+    "hiring_programs": [
+      {
+        "id": "comp_mongodb_track",
+        "name": "MongoDB Software Engineering Track",
+        "role": "Software Development Engineer",
+        "package_lpa": "25 - 45 LPA",
+        "difficulty": "Medium to Hard",
+        "rounds_count": 4,
+        "overview": "Comprehensive verified recruitment track for MongoDB evaluating core DSA, system design, database optimization, and cultural alignment.",
+        "typical_rounds": [
+          "Online Test",
+          "Technical 1: Database Engine Mechanics & DSA",
+          "Technical 2: Systems Coding",
+          "Culture Fit"
+        ]
+      }
+    ]
+  }
+}
