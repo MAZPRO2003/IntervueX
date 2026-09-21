@@ -37,7 +37,14 @@ async def generate_company(payload: Dict[str, str]):
         return existing
 
     ai_service = get_ai_service()
-    profile = await ai_service.generate_company_profile(company_name)
+    mock_ai = MockAIService()
+    try:
+        profile = await asyncio.wait_for(
+            ai_service.generate_company_profile(company_name), timeout=25.0
+        )
+    except Exception as err:
+        logger.warning(f"Primary AI generate_company_profile failed ({err}), using MockAI.")
+        profile = await mock_ai.generate_company_profile(company_name)
     
     if existing:
         existing["hiring_programs"] = profile.get("hiring_programs", [])

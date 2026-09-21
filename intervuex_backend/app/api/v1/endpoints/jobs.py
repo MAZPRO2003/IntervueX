@@ -1,10 +1,14 @@
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from typing import Optional
+import asyncio
+import logging
 from app.schemas.job import JobInput, JobAnalysisResult
 from app.services.parsers.job_parser import JobParser
 from app.services.ai.factory import get_ai_service
+from app.services.ai.mock_ai_service import MockAIService
 from app.services.db.store import db_store
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 @router.post("/analyze", response_model=JobAnalysisResult)
@@ -35,6 +39,11 @@ async def analyze_job(
         raise HTTPException(status_code=400, detail="Must provide job URL, raw text, or upload a PDF.")
 
     ai = get_ai_service()
-    job_dict = await ai.analyze_job(extracted_text)
+    mock_ai = MockAIService()
+    try:
+        job_dict = await asyncio.wait_for(ai.analyze_job(extracted_text), timeout=25.0)
+    except Exception as err:
+        logger.warning(f"Primary AI analyze_job failed ({err}), using MockAI.")
+        job_dict = await mock_ai.analyze_job(extracted_text)
     db_store.save_job(job_dict)
     return JobAnalysisResult(**job_dict)

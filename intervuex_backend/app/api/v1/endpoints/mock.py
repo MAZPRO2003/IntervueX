@@ -1,12 +1,16 @@
 from fastapi import APIRouter, HTTPException
 from typing import Dict, Any
 import uuid
+import asyncio
+import logging
 from datetime import datetime
 
 from app.schemas.mock import MockSessionCreate, MockSession, MockTurn, SubmitAnswerRequest, AnswerEvaluation
 from app.services.db.store import db_store
 from app.services.ai.factory import get_ai_service
+from app.services.ai.mock_ai_service import MockAIService
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 @router.post("/sessions", response_model=MockSession)
@@ -74,14 +78,26 @@ async def submit_mock_answer(req: SubmitAnswerRequest):
     current_turn.candidate_answer = req.candidate_answer
 
     ai = get_ai_service()
+    mock_ai_fallback = MockAIService()
     pack = db_store.get_pack(session.pack_id) or {"role": "Software Engineer", "company": "TechCorp"}
 
     # 1. Evaluate Candidate Answer
-    eval_dict = await ai.evaluate_mock_answer(
-        question=current_turn.interviewer_question,
-        candidate_answer=req.candidate_answer,
-        role_context=pack
-    )
+    try:
+        eval_dict = await asyncio.wait_for(
+            ai.evaluate_mock_answer(
+                question=current_turn.interviewer_question,
+                candidate_answer=req.candidate_answer,
+                role_context=pack
+            ),
+            timeout=25.0
+        )
+    except Exception as ai_err:
+        logger.warning(f"Primary AI evaluate_mock_answer failed ({ai_err}), using MockAI.")
+        eval_dict = await mock_ai_fallback.evaluate_mock_answer(
+            question=current_turn.interviewer_question,
+            candidate_answer=req.candidate_answer,
+            role_context=pack
+        )
     current_turn.evaluation = AnswerEvaluation(**eval_dict)
 
     # 2. Check if we should advance to next question or complete
@@ -102,12 +118,24 @@ async def submit_mock_answer(req: SubmitAnswerRequest):
             {"question": t.interviewer_question, "answer": t.candidate_answer}
             for t in session.turns if t.candidate_answer
         ]
-        next_q_data = await ai.generate_next_mock_question(
-            history=history,
-            role_context=pack,
-            mode=session.mode,
-            difficulty=session.difficulty
-        )
+        try:
+            next_q_data = await asyncio.wait_for(
+                ai.generate_next_mock_question(
+                    history=history,
+                    role_context=pack,
+                    mode=session.mode,
+                    difficulty=session.difficulty
+                ),
+                timeout=25.0
+            )
+        except Exception as ai_err:
+            logger.warning(f"Primary AI generate_next_mock_question failed ({ai_err}), using MockAI.")
+            next_q_data = await mock_ai_fallback.generate_next_mock_question(
+                history=history,
+                role_context=pack,
+                mode=session.mode,
+                difficulty=session.difficulty
+            )
         new_turn = MockTurn(
             turn_index=next_turn_idx,
             interviewer_question=next_q_data.get("interviewer_question", "Next question."),

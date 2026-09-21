@@ -1,10 +1,14 @@
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from typing import Optional
+import asyncio
+import logging
 from app.schemas.resume import ResumeAnalysisResult
 from app.services.parsers.resume_parser import ResumeParser
 from app.services.ai.factory import get_ai_service
+from app.services.ai.mock_ai_service import MockAIService
 from app.services.db.store import db_store
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 @router.post("/analyze", response_model=ResumeAnalysisResult)
@@ -33,7 +37,14 @@ async def analyze_resume(
 
     job_context = db_store.get_job(job_id) if job_id else None
     ai = get_ai_service()
-    resume_dict = await ai.analyze_resume(extracted_text, job_context=job_context)
+    mock_ai = MockAIService()
+    try:
+        resume_dict = await asyncio.wait_for(
+            ai.analyze_resume(extracted_text, job_context=job_context), timeout=25.0
+        )
+    except Exception as err:
+        logger.warning(f"Primary AI analyze_resume failed ({err}), using MockAI.")
+        resume_dict = await mock_ai.analyze_resume(extracted_text, job_context=job_context)
     db_store.save_resume(resume_dict)
     return ResumeAnalysisResult(**resume_dict)
 
