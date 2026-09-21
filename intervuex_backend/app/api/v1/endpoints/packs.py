@@ -2,13 +2,17 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 import uuid
+import asyncio
+import logging
 from datetime import datetime
 
 from app.schemas.study_plan import InterviewPackDetail, StudyPlan, DaySchedule, ReadinessBreakdown, SpacedRevisionItem
 from app.schemas.interview import InterviewProcess
 from app.services.ai.factory import get_ai_service
+from app.services.ai.mock_ai_service import MockAIService
 from app.services.db.store import db_store
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 class CreatePackRequest(BaseModel):
@@ -27,6 +31,7 @@ async def create_interview_pack(req: CreatePackRequest):
 
     resume = db_store.get_resume(req.resume_id) if req.resume_id else None
     ai = get_ai_service()
+    mock_ai = MockAIService()
     pack_id = f"pack_{uuid.uuid4().hex[:8]}"
 
     if job_data:
@@ -40,14 +45,23 @@ async def create_interview_pack(req: CreatePackRequest):
         role = "Software Engineer"
         loc = "Any"
     
-    # 1. Analyze reported interview process
-    process_data = await ai.analyze_interview_process(
-        company=company_name, hiring_program=program, role=role, experience="Experienced", location=loc
-    )
+    # 1. Analyze reported interview process (with timeout + fallback)
+    try:
+        process_data = await asyncio.wait_for(
+            ai.analyze_interview_process(
+                company=company_name, hiring_program=program, role=role, experience="Experienced", location=loc
+            ),
+            timeout=25.0
+        )
+    except Exception as ai_err:
+        logger.warning(f"Primary AI analyze_interview_process failed in create_pack ({ai_err}), using MockAI.")
+        process_data = await mock_ai.analyze_interview_process(
+            company=company_name, hiring_program=program, role=role, experience="Experienced", location=loc
+        )
     process_data["pack_id"] = pack_id
     db_store.save_process(pack_id, process_data)
 
-    # 2. Generate Evidence-Ranked Question Bank
+    # 2. Generate Evidence-Ranked Question Bank (with timeout + fallback)
     questions = []
     if req.target_companies:
         for comp in req.target_companies:
@@ -58,11 +72,22 @@ async def create_interview_pack(req: CreatePackRequest):
                 questions.extend(q)
             
     if not questions:
-        questions = await ai.generate_questions(
-            job_data=job_data or {"company": company_name, "job_title": role},
-            resume_data=resume,
-            count=req.initial_question_count
-        )
+        try:
+            questions = await asyncio.wait_for(
+                ai.generate_questions(
+                    job_data=job_data or {"company": company_name, "job_title": role},
+                    resume_data=resume,
+                    count=req.initial_question_count
+                ),
+                timeout=25.0
+            )
+        except Exception as ai_err:
+            logger.warning(f"Primary AI generate_questions failed in create_pack ({ai_err}), using MockAI.")
+            questions = await mock_ai.generate_questions(
+                job_data=job_data or {"company": company_name, "job_title": role},
+                resume_data=resume,
+                count=req.initial_question_count
+            )
     else:
         questions = questions[:req.initial_question_count]
 

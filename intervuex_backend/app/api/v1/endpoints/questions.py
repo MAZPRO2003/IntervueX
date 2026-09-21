@@ -1,10 +1,13 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import Optional, List, Dict, Any
+import asyncio
+import logging
 from app.services.db.store import db_store
 from app.services.ai.factory import get_ai_service
+from app.services.ai.mock_ai_service import MockAIService
 from app.services.leetcode.leetcode_service import leetcode_service
 
-
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 from app.api.v1.endpoints.companies import COMPANIES_CATALOG
@@ -77,31 +80,28 @@ async def get_pack_questions(
                 is_stale = True
                 break
             seen_q_set.add(q_txt)
-
-            s_ans = q_chk.get("how_to_answer", {}).get("short_answer_en", "")
-            c_code = q_chk.get("how_to_answer", {}).get("code_example", "")
-            if "Core definition and production mechanics" in s_ans or "Provide a structured answer covering definition" in q_chk.get("how_to_answer", {}).get("explanation_en", ""):
-                is_stale = True
-                break
-            if not c_code or "# --- PYTHON ---" not in c_code:
-                is_stale = True
-                break
-            if not q_chk.get("question_sources") or not q_chk.get("answer_sources") or not q_chk.get("verification_status"):
-                is_stale = True
-                break
+            # Only mark stale if company completely mismatches
             if q_chk.get("company") and q_chk.get("company").lower() != company_name.lower():
                 is_stale = True
                 break
 
     if not questions or is_stale:
-        # Seed company-specific questions with 100% unique deduplication
-        ai = get_ai_service()
+        # Seed company-specific questions with fallback to mock
+        primary_ai = get_ai_service()
+        mock_ai = MockAIService()
         job = (db_store.get_job(pack.get("job_id", "")) if pack else None) or {
             "job_title": pack.get("role", "Software Engineer") if pack else "Software Engineer",
             "company": company_name,
             "hiring_program": pack.get("hiring_program", "") if pack else ""
         }
-        questions = await ai.generate_questions(job, None, count=100)
+        try:
+            questions = await asyncio.wait_for(
+                primary_ai.generate_questions(job, None, count=50),
+                timeout=25.0
+            )
+        except Exception as ai_err:
+            logger.warning(f"Primary AI generate_questions failed for questions page ({ai_err}), using MockAI.")
+            questions = await mock_ai.generate_questions(job, None, count=50)
         for q in questions:
             q["pack_id"] = pack_id
             q["company"] = company_name
@@ -214,8 +214,18 @@ async def generate_more_questions(pack_id: str, count: int = Query(25)):
     # Request enough questions to generate new unique items beyond existing count
     total_needed = len(existing) + count + 50
 
-    ai = get_ai_service()
-    new_batch = await ai.generate_questions(job, resume, count=total_needed)
+    primary_ai = get_ai_service()
+    mock_ai = MockAIService()
+    # Request enough questions to generate new unique items beyond existing count
+    total_needed = min(len(existing) + count + 20, 75)
+    try:
+        new_batch = await asyncio.wait_for(
+            primary_ai.generate_questions(job, resume, count=total_needed),
+            timeout=25.0
+        )
+    except Exception as ai_err:
+        logger.warning(f"Primary AI generate_more failed ({ai_err}), using MockAI.")
+        new_batch = await mock_ai.generate_questions(job, resume, count=total_needed)
     
     # Semantic deduplication by normalized question text
     seen_texts = {q.get("question", "").lower().strip() for q in existing}

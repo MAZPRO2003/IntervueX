@@ -93,50 +93,7 @@ def build_dynamic_day_schedule(total_days: int, start_date: Optional[date] = Non
 
     return days
 
-@router.get("/{pack_id}", response_model=StudyPlan)
-async def get_study_plan(pack_id: str):
-    plan = db_store.get_study_plan(pack_id)
-    company_name = "Target Company"
-    pack = db_store.get_pack(pack_id)
-    if pack and pack.get("company"):
-        company_name = pack.get("company")
 
-    if not plan:
-        target_date_str = pack.get("interview_date", "2026-09-27") if pack else "2026-09-27"
-        try:
-            target_dt = date.fromisoformat(target_date_str)
-        except ValueError:
-            target_dt = date.today() + timedelta(days=7)
-            target_date_str = target_dt.isoformat()
-
-        days_remaining = max(1, (target_dt - date.today()).days)
-
-        default_days = build_dynamic_day_schedule(days_remaining, start_date=date.today())
-
-        plan = {
-            "id": f"plan_{pack_id}",
-            "pack_id": pack_id,
-            "duration_days": days_remaining,
-            "interview_date": target_date_str,
-            "days_remaining": days_remaining,
-            "days": default_days,
-            "spaced_revisions": [],
-            "readiness": {
-                "overall_percentage": 0,
-                "technical_score": 0,
-                "sql_db_score": 0,
-                "resume_score": 0,
-                "project_score": 0,
-                "hr_score": 0,
-                "coding_score": 0,
-                "company_score": 0,
-                "strong_areas": ["Ready to start"],
-                "weak_areas": ["Needs assessment"],
-                "next_best_action": "Complete Day 1 to kickstart your preparation!"
-            },
-            "created_at": date.today().isoformat()
-        }
-        db_store.save_study_plan(plan)
 
 class ToggleTaskRequest(BaseModel):
     day_number: int
