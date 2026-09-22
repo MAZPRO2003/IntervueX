@@ -85,7 +85,7 @@ class _MockInterviewScreenState extends ConsumerState<MockInterviewScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AI Mock Interview', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text('Mock Interview', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),

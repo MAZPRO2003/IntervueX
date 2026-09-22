@@ -5,7 +5,6 @@ import 'package:intervuex_app/core/widgets/app_button.dart';
 import 'package:intervuex_app/core/widgets/app_card.dart';
 import 'package:intervuex_app/core/widgets/evidence_badge.dart';
 import 'package:intervuex_app/data/models/pack_model.dart';
-import 'package:intervuex_app/data/services/api_service.dart';
 import 'package:intervuex_app/presentation/providers/pack_provider.dart';
 import 'package:intervuex_app/presentation/views/questions/question_list_screen.dart';
 import 'package:intervuex_app/presentation/views/mock/mock_interview_screen.dart';
@@ -21,30 +20,6 @@ class PackDashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _PackDashboardScreenState extends ConsumerState<PackDashboardScreen> {
-  bool isDownloadingPdf = false;
-
-  Future<void> _downloadPdf(String packId) async {
-    setState(() => isDownloadingPdf = true);
-    try {
-      final bytes = await ApiService.instance.downloadPdfBytes(packId);
-      setState(() => isDownloadingPdf = false);
-
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Downloaded IntervueX Workbook (${(bytes.length / 1024).toStringAsFixed(1)} KB) successfully!'),
-          backgroundColor: AppColors.success,
-        ),
-      );
-    } catch (e) {
-      setState(() => isDownloadingPdf = false);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error downloading PDF: $e'), backgroundColor: AppColors.danger),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final packAsync = ref.watch(activePackProvider);
@@ -53,20 +28,6 @@ class _PackDashboardScreenState extends ConsumerState<PackDashboardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Interview Pack', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-        actions: [
-          IconButton(
-            icon: isDownloadingPdf
-                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                : const Icon(Icons.picture_as_pdf_outlined),
-            tooltip: 'Download PDF Workbook',
-            onPressed: () {
-              final packId = ref.read(activePackIdProvider);
-              if (packId != null) {
-                _downloadPdf(packId);
-              }
-            },
-          ),
-        ],
       ),
       body: packAsync.when(
         data: (pack) {
@@ -174,8 +135,8 @@ class _PackDashboardScreenState extends ConsumerState<PackDashboardScreen> {
                   children: [
                     Expanded(
                       child: AppButton(
-                        label: 'Start Mock',
-                        icon: Icons.mic,
+                        label: 'Mock Interview',
+                        icon: Icons.mic_rounded,
                         onPressed: () {
                           Navigator.push(context, MaterialPageRoute(builder: (_) => const MockInterviewScreen()));
                         },
@@ -222,14 +183,6 @@ class _PackDashboardScreenState extends ConsumerState<PackDashboardScreen> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                AppButton(
-                  label: 'Download PDF Workbook',
-                  icon: Icons.download,
-                  width: double.infinity,
-                  variant: AppButtonVariant.outline,
-                  isLoading: isDownloadingPdf,
-                  onPressed: () => _downloadPdf(pack.id),
-                ),
 
                 const SizedBox(height: 28),
 

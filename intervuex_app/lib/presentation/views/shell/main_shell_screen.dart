@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intervuex_app/core/theme/app_colors.dart';
 import 'package:intervuex_app/presentation/views/home/home_screen.dart';
-import 'package:intervuex_app/presentation/views/packs/packs_list_screen.dart';
 import 'package:intervuex_app/presentation/views/questions/question_list_screen.dart';
-import 'package:intervuex_app/presentation/views/study_plan/study_plan_screen.dart';
+import 'package:intervuex_app/presentation/views/mock/mock_interview_screen.dart';
+import 'package:intervuex_app/presentation/views/ai_coach/ai_coach_screen.dart';
 import 'package:intervuex_app/presentation/views/profile/profile_screen.dart';
+
+/// Shell nav index provider — lets child screens change the active tab
+final shellNavIndexProvider = StateProvider<int>((ref) => 0);
 
 class MainShellScreen extends ConsumerStatefulWidget {
   const MainShellScreen({super.key});
@@ -15,53 +17,109 @@ class MainShellScreen extends ConsumerStatefulWidget {
 }
 
 class _MainShellScreenState extends ConsumerState<MainShellScreen> {
-  int _currentIndex = 0;
-
   final List<Widget> _pages = const [
     HomeScreen(),
-    PacksListScreen(),
     QuestionListScreen(),
-    StudyPlanScreen(),
+    MockInterviewScreen(),
+    AiCoachScreen(),
     ProfileScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final currentIndex = ref.watch(shellNavIndexProvider);
+    final primary = Theme.of(context).colorScheme.primary;
+    final secondary = Theme.of(context).colorScheme.secondary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       body: IndexedStack(
-        index: _currentIndex,
+        index: currentIndex,
         children: _pages,
       ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (idx) => setState(() => _currentIndex = idx),
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.dashboard_outlined),
-            selectedIcon: Icon(Icons.dashboard, color: AppColors.indigoLight),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.work_outline),
-            selectedIcon: Icon(Icons.work, color: AppColors.indigoLight),
-            label: 'Interviews',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.quiz_outlined),
-            selectedIcon: Icon(Icons.quiz, color: AppColors.indigoLight),
-            label: 'Practice',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.trending_up),
-            selectedIcon: Icon(Icons.trending_up, color: AppColors.indigoLight),
-            label: 'Progress',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person_outline),
-            selectedIcon: Icon(Icons.person, color: AppColors.indigoLight),
-            label: 'Profile',
-          ),
-        ],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(isDark ? 0.4 : 0.08),
+              blurRadius: 20,
+              offset: const Offset(0, -4),
+            ),
+          ],
+        ),
+        child: NavigationBar(
+          selectedIndex: currentIndex,
+          onDestinationSelected: (idx) {
+            ref.read(shellNavIndexProvider.notifier).state = idx;
+          },
+          destinations: [
+            NavigationDestination(
+              icon: const Icon(Icons.dashboard_outlined),
+              selectedIcon: Icon(Icons.dashboard_rounded, color: secondary),
+              label: 'Home',
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.quiz_outlined),
+              selectedIcon: Icon(Icons.quiz_rounded, color: secondary),
+              label: 'Practice',
+            ),
+            // Mock Interview — center prominent tab
+            NavigationDestination(
+              icon: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      primary.withOpacity(0.15),
+                      secondary.withOpacity(0.1),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: currentIndex == 2
+                        ? primary.withOpacity(0.6)
+                        : primary.withOpacity(0.2),
+                    width: 1.5,
+                  ),
+                ),
+                child: Icon(
+                  Icons.mic_rounded,
+                  color: currentIndex == 2 ? primary : primary.withOpacity(0.5),
+                  size: 22,
+                ),
+              ),
+              selectedIcon: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [primary, secondary],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Icon(
+                  Icons.mic_rounded,
+                  color: Colors.white,
+                  size: 22,
+                ),
+              ),
+              label: 'Mock',
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.auto_awesome_outlined),
+              selectedIcon: Icon(Icons.auto_awesome_rounded, color: secondary),
+              label: 'AI Coach',
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.person_outline_rounded),
+              selectedIcon: Icon(Icons.person_rounded, color: secondary),
+              label: 'Profile',
+            ),
+          ],
+        ),
       ),
     );
   }

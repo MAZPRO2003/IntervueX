@@ -14,82 +14,27 @@ class CodeSandboxScreen extends ConsumerStatefulWidget {
 
 class _CodeSandboxScreenState extends ConsumerState<CodeSandboxScreen> {
   String _selectedLanguage = 'Python 3';
-  String _selectedProblem = 'Two Sum (Hash Map)';
   late TextEditingController _codeController;
   bool _isExecuting = false;
   Map<String, dynamic>? _executionResult;
 
-  final Map<String, String> _templates = {
-    'Two Sum (Hash Map)': '''def twoSum(nums, target):
-    # Write your optimal O(N) solution here
-    seen = {}
-    for i, num in enumerate(nums):
-        diff = target - num
-        if diff in seen:
-            return [seen[diff], i]
-        seen[num] = i
-    return []
-''',
-    'LRU Cache Structure': '''class LRUCache:
-    def __init__(self, capacity: int):
-        self.capacity = capacity
-        self.cache = {}
-
-    def get(self, key: int) -> int:
-        if key not in self.cache:
-            return -1
-        val = self.cache.pop(key)
-        self.cache[key] = val
-        return val
-
-    def put(self, key: int, value: int) -> None:
-        if key in self.cache:
-            self.cache.pop(key)
-        elif len(self.cache) >= self.capacity:
-            # Evict oldest
-            next_key = next(iter(self.cache))
-            self.cache.pop(next_key)
-        self.cache[key] = value
-''',
-    'SQL CTE High Earners': '''WITH DeptMaxSalary AS (
-    SELECT 
-        department_id,
-        MAX(salary) AS max_sal
-    FROM employees
-    GROUP BY department_id
-)
-SELECT 
-    e.id,
-    e.name,
-    e.salary,
-    d.name AS department
-FROM employees e
-JOIN DeptMaxSalary ms ON e.department_id = ms.department_id AND e.salary = ms.max_sal
-JOIN departments d ON e.department_id = d.id;
-'''
-  };
+  static const List<String> _languages = [
+    'Python 3',
+    'JavaScript',
+    'Java',
+    'PostgreSQL',
+  ];
 
   @override
   void initState() {
     super.initState();
-    _codeController = TextEditingController(text: _templates['Two Sum (Hash Map)']);
+    _codeController = TextEditingController(text: '');
   }
 
   @override
   void dispose() {
     _codeController.dispose();
     super.dispose();
-  }
-
-  void _onProblemSelected(String? problem) {
-    if (problem != null && _templates.containsKey(problem)) {
-      setState(() {
-        _selectedProblem = problem;
-        _selectedLanguage = problem.contains('SQL') ? 'PostgreSQL' : 'Python 3';
-        _codeController.text = _templates[problem]!;
-        _executionResult = null;
-      });
-    }
   }
 
   void _insertSnippet(String snippet) {
@@ -110,11 +55,18 @@ JOIN departments d ON e.department_id = d.id;
     });
 
     try {
-      final langKey = _selectedLanguage.toLowerCase().contains('sql') ? 'sql' : 'python';
+      final langKey = _selectedLanguage.toLowerCase().contains('sql')
+          ? 'sql'
+          : _selectedLanguage.toLowerCase().contains('java') &&
+                  !_selectedLanguage.toLowerCase().contains('javascript')
+              ? 'java'
+              : _selectedLanguage.toLowerCase().contains('javascript')
+                  ? 'javascript'
+                  : 'python';
       final res = await ApiService.instance.executeCode(
         code: _codeController.text,
         language: langKey,
-        problemId: _selectedProblem,
+        problemId: null,
       );
 
       setState(() {
@@ -138,35 +90,41 @@ JOIN departments d ON e.department_id = d.id;
       appBar: AppBar(
         backgroundColor: const Color(0xFF161B22),
         elevation: 0,
-        title: DropdownButtonHideUnderline(
-          child: DropdownButton<String>(
-            value: _selectedProblem,
-            dropdownColor: const Color(0xFF161B22),
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
-            icon: const Icon(Icons.arrow_drop_down, color: AppColors.indigoLight),
-            items: _templates.keys.map((prob) {
-              return DropdownMenuItem<String>(
-                value: prob,
-                child: Text(prob),
-              );
-            }).toList(),
-            onChanged: _onProblemSelected,
-          ),
+        title: Row(
+          children: [
+            const Icon(Icons.code_rounded, color: AppColors.indigoLight, size: 20),
+            const SizedBox(width: 8),
+            const Text('Code Sandbox',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16)),
+          ],
         ),
         actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 12),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: AppColors.electricIndigo.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: AppColors.electricIndigo.withOpacity(0.4)),
-            ),
-            child: Text(
-              _selectedLanguage,
-              style: const TextStyle(color: AppColors.indigoLight, fontSize: 11, fontWeight: FontWeight.bold),
+          DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              value: _selectedLanguage,
+              dropdownColor: const Color(0xFF161B22),
+              style: const TextStyle(
+                  color: AppColors.indigoLight,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13),
+              icon: const Icon(Icons.arrow_drop_down,
+                  color: AppColors.indigoLight),
+              underline: const SizedBox(),
+              items: _languages.map((lang) {
+                return DropdownMenuItem<String>(
+                  value: lang,
+                  child: Text(lang),
+                );
+              }).toList(),
+              onChanged: (val) {
+                if (val != null) setState(() => _selectedLanguage = val);
+              },
             ),
           ),
+          const SizedBox(width: 8),
         ],
       ),
       body: SafeArea(

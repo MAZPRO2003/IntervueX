@@ -9,6 +9,7 @@ import 'package:intervuex_app/data/models/question_model.dart';
 import 'package:intervuex_app/presentation/providers/language_provider.dart';
 import 'package:intervuex_app/presentation/providers/question_provider.dart';
 import 'package:intervuex_app/presentation/views/mock/mock_interview_screen.dart';
+import 'package:intervuex_app/presentation/views/questions/code_sandbox_screen.dart';
 
 class QuestionDetailScreen extends ConsumerStatefulWidget {
   final QuestionModel question;
@@ -402,6 +403,18 @@ class _QuestionDetailScreenState extends ConsumerState<QuestionDetailScreen> {
                     },
                   ),
                 ),
+                if (q.category.toLowerCase().contains('coding') || q.category.toLowerCase().contains('sql')) ...[
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: AppButton(
+                      label: 'Code Sandbox',
+                      icon: Icons.code,
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const CodeSandboxScreen()));
+                      },
+                    ),
+                  ),
+                ],
                 const SizedBox(width: 12),
                 Expanded(
                   child: AppButton(
@@ -415,6 +428,7 @@ class _QuestionDetailScreenState extends ConsumerState<QuestionDetailScreen> {
                 ),
               ],
             ),
+
             const SizedBox(height: 20),
           ],
         ),

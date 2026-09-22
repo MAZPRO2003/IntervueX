@@ -318,5 +318,31 @@ class ApiService {
     final res = await _dio.get(url);
     return Map<String, dynamic>.from(res.data);
   }
+
+  /// Ask the AI Coach a question. Falls back gracefully if the endpoint doesn't exist.
+  Future<Map<String, dynamic>> askAiCoach({
+    required String question,
+    String packId = '',
+  }) async {
+    try {
+      final res = await _dio.post("/questions/ai_coach", data: {
+        "question": question,
+        "pack_id": packId,
+      });
+      return Map<String, dynamic>.from(res.data);
+    } catch (_) {
+      // Fallback: use mock Q&A endpoint
+      final res = await _dio.post("/mock/sessions", data: {
+        "pack_id": packId.isNotEmpty ? packId : "general",
+        "mode": "AI Coach",
+        "difficulty": "Normal",
+        "total_turns": 1,
+      });
+      final session = Map<String, dynamic>.from(res.data);
+      return {
+        "answer": session["current_question"] ?? "I'm your AI Coach. Ask me anything!",
+      };
+    }
+  }
 }
 

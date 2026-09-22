@@ -224,17 +224,7 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
           ),
         ),
         const SizedBox(height: 8),
-        Row(
-          children: [
-            TextButton.icon(
-              icon: const Icon(Icons.auto_fix_high, size: 14),
-              label: const Text('Load Sample Resume', style: TextStyle(fontSize: 12)),
-              onPressed: () {
-                textCtrl.text = "Alex Mercer\nEmail: alex.mercer@dev.io | Phone: +91 9876543210\nEducation: B.Tech Computer Science (2025), CGPA: 8.8\nSkills: Python, FastAPI, PostgreSQL, SQL, Docker, Redis, AWS, Git, Data Structures.\nProjects:\n1. Scalable Microservices Inventory Engine: Built asynchronous inventory API with FastAPI and PostgreSQL handling 10,000 requests/min.\n2. Real-time Pub/Sub Messaging Service: Implemented WebSockets with Redis pub/sub for instant notifications.";
-              },
-            ),
-          ],
-        ),
+        const SizedBox(height: 8),
 
         const SizedBox(height: 20),
         AppButton(
@@ -438,7 +428,7 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
               icon: const Icon(Icons.picture_as_pdf, size: 14, color: AppColors.danger),
               label: const Text('Visual PDF Map ->', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.danger)),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const PdfResumeRiskViewerScreen()));
+                Navigator.push(context, MaterialPageRoute(builder: (_) => PdfResumeRiskViewerScreen(resumeId: res['id'] as String?)));
               },
             ),
           ],

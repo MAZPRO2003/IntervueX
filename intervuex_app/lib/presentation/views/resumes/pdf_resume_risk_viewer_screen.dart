@@ -93,7 +93,7 @@ class _PdfResumeRiskViewerScreenState extends ConsumerState<PdfResumeRiskViewerS
                             children: [
                               // Resume Header
                               Text(data['candidate_name'] ?? 'Candidate Resume', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                              const Text('Senior Software Engineer • San Francisco, CA', style: TextStyle(fontSize: 11, color: AppColors.textDarkMuted)),
+                              Text('${data['job_title'] ?? 'Software Engineer'} • ${data['location'] ?? 'Unknown Location'}', style: const TextStyle(fontSize: 11, color: AppColors.textDarkMuted)),
                               const Divider(height: 20),
 
                               const Text('PROFESSIONAL EXPERIENCE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 0.5, color: AppColors.indigoLight)),

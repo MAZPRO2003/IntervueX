@@ -3,7 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/app_theme.dart';
 import 'presentation/providers/theme_provider.dart';
-import 'presentation/views/shell/main_shell_screen.dart';
+import 'presentation/views/auth/auth_gate_screen.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 
@@ -19,12 +19,13 @@ class IntervueXApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeModeProvider);
+    final variant = ref.watch(themeVariantProvider);
 
     return MaterialApp(
       title: 'IntervueX',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
+      theme: AppTheme.lightTheme(variant),
+      darkTheme: AppTheme.darkTheme(variant),
       themeMode: themeMode,
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
@@ -32,11 +33,11 @@ class IntervueXApp extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: const [
-        Locale('en', ''), // English
-        Locale('ta', ''), // Tamil
-        Locale('hi', ''), // Hindi
+        Locale('en', ''),
+        Locale('ta', ''),
+        Locale('hi', ''),
       ],
-      home: const MainShellScreen(),
+      home: const AuthGateScreen(),
     );
   }
 }
