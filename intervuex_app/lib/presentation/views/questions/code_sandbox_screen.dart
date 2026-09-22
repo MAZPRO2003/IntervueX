@@ -85,6 +85,8 @@ class _CodeSandboxScreenState extends ConsumerState<CodeSandboxScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+
     return Scaffold(
       backgroundColor: const Color(0xFF0D1117), // GitHub Dark IDE style
       appBar: AppBar(
@@ -92,7 +94,7 @@ class _CodeSandboxScreenState extends ConsumerState<CodeSandboxScreen> {
         elevation: 0,
         title: Row(
           children: [
-            const Icon(Icons.code_rounded, color: AppColors.indigoLight, size: 20),
+            Icon(Icons.code_rounded, color: primary, size: 20),
             const SizedBox(width: 8),
             const Text('Code Sandbox',
                 style: TextStyle(
@@ -106,12 +108,11 @@ class _CodeSandboxScreenState extends ConsumerState<CodeSandboxScreen> {
             child: DropdownButton<String>(
               value: _selectedLanguage,
               dropdownColor: const Color(0xFF161B22),
-              style: const TextStyle(
-                  color: AppColors.indigoLight,
+              style: TextStyle(
+                  color: primary,
                   fontWeight: FontWeight.bold,
                   fontSize: 13),
-              icon: const Icon(Icons.arrow_drop_down,
-                  color: AppColors.indigoLight),
+              icon: Icon(Icons.arrow_drop_down, color: primary),
               underline: const SizedBox(),
               items: _languages.map((lang) {
                 return DropdownMenuItem<String>(

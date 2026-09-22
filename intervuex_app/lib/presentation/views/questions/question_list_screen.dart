@@ -105,12 +105,14 @@ class _QuestionListScreenState extends ConsumerState<QuestionListScreen> {
       );
     }
 
+    final primary = Theme.of(context).colorScheme.primary;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Question Bank', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
         actions: [
           IconButton(
-            icon: const Icon(Icons.style, color: AppColors.electricIndigo),
+            icon: Icon(Icons.style, color: primary),
             tooltip: 'Swipe Flashcards',
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (_) => const FlashcardsScreen()));
@@ -156,7 +158,7 @@ class _QuestionListScreenState extends ConsumerState<QuestionListScreen> {
           ),
 
           PopupMenuButton<String>(
-            icon: Icon(Icons.filter_list, color: filter.difficulty != 'All' ? AppColors.electricIndigo : null),
+            icon: Icon(Icons.filter_list, color: filter.difficulty != 'All' ? primary : null),
             tooltip: 'Filter Difficulty (${filter.difficulty})',
             onSelected: (val) {
               ref.read(questionFilterProvider.notifier).state = filter.copyWith(difficulty: val);
@@ -198,18 +200,18 @@ class _QuestionListScreenState extends ConsumerState<QuestionListScreen> {
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 decoration: BoxDecoration(
-                  color: AppColors.electricIndigo.withOpacity(0.12),
+                  color: primary.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.electricIndigo.withOpacity(0.3)),
+                  border: Border.all(color: primary.withOpacity(0.3)),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.verified, color: AppColors.indigoLight, size: 16),
+                    Icon(Icons.verified, color: primary, size: 16),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         'Target: ${pack.company} — ${pack.hiringProgram}',
-                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.indigoLight),
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: primary),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -246,7 +248,7 @@ class _QuestionListScreenState extends ConsumerState<QuestionListScreen> {
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                          color: activeTab == 0 ? AppColors.electricIndigo : Colors.transparent,
+                          color: activeTab == 0 ? primary : Colors.transparent,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         alignment: Alignment.center,
@@ -268,7 +270,7 @@ class _QuestionListScreenState extends ConsumerState<QuestionListScreen> {
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                          color: activeTab == 1 ? AppColors.electricIndigo : Colors.transparent,
+                          color: activeTab == 1 ? primary : Colors.transparent,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         alignment: Alignment.center,
@@ -338,9 +340,9 @@ class _QuestionListScreenState extends ConsumerState<QuestionListScreen> {
                     child: FilterChip(
                       label: Text(cat, style: TextStyle(fontSize: 12, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
                       selected: isSelected,
-                      selectedColor: AppColors.electricIndigo.withOpacity(0.2),
-                      checkmarkColor: AppColors.indigoLight,
-                      side: BorderSide(color: isSelected ? AppColors.electricIndigo : (isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1))),
+                      selectedColor: primary.withOpacity(0.2),
+                      checkmarkColor: primary,
+                      side: BorderSide(color: isSelected ? primary : (isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1))),
                       onSelected: (_) {
                         ref.read(questionFilterProvider.notifier).state = filter.copyWith(category: cat);
                         ref.read(questionsListProvider.notifier).loadQuestions();
@@ -365,6 +367,7 @@ class _QuestionListScreenState extends ConsumerState<QuestionListScreen> {
   }
 
   Widget _buildGeneralQuestionsList(AsyncValue questionsAsync) {
+    final primary = Theme.of(context).colorScheme.primary;
     return questionsAsync.when(
       data: (questions) {
         if (questions.isEmpty) {
@@ -393,16 +396,16 @@ class _QuestionListScreenState extends ConsumerState<QuestionListScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: AppColors.electricIndigo, width: 1.5),
+                    side: BorderSide(color: primary, width: 1.5),
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                   icon: isGenerating
-                      ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.electricIndigo))
-                      : const Icon(Icons.add, color: AppColors.electricIndigo),
+                      ? SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: primary))
+                      : Icon(Icons.add, color: primary),
                   label: Text(
                     isGenerating ? 'Generating 25 Unique Questions...' : 'Generate 25 More Questions (Semantic Deduplication)',
-                    style: const TextStyle(color: AppColors.electricIndigo, fontWeight: FontWeight.bold),
+                    style: TextStyle(color: primary, fontWeight: FontWeight.bold),
                   ),
                   onPressed: isGenerating
                       ? null
@@ -433,7 +436,7 @@ class _QuestionListScreenState extends ConsumerState<QuestionListScreen> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
-                            color: AppColors.electricIndigo.withOpacity(0.12),
+                            color: primary.withOpacity(0.12),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(

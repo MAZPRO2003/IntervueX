@@ -102,6 +102,7 @@ class StudyPlanScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final studyPlanAsync = ref.watch(activeStudyPlanProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primary = Theme.of(context).colorScheme.primary;
 
     return Scaffold(
       appBar: AppBar(
@@ -109,7 +110,7 @@ class StudyPlanScreen extends ConsumerWidget {
         actions: [
           IconButton(
             tooltip: 'Pick Interview Date Calendar',
-            icon: const Icon(Icons.calendar_month, color: AppColors.electricIndigo),
+            icon: Icon(Icons.calendar_month, color: primary),
             onPressed: () => _pickCalendarTargetDate(context, ref),
           ),
         ],
@@ -152,10 +153,10 @@ class StudyPlanScreen extends ConsumerWidget {
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: AppColors.electricIndigo.withOpacity(0.12),
+                          color: primary.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: const Icon(Icons.calendar_today, color: AppColors.electricIndigo, size: 24),
+                        child: Icon(Icons.calendar_today, color: primary, size: 24),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -168,7 +169,7 @@ class StudyPlanScreen extends ConsumerWidget {
                               plan.targetInterviewDate != null && plan.targetInterviewDate!.isNotEmpty
                                   ? plan.targetInterviewDate!
                                   : 'Not set (Select below)',
-                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.electricIndigo),
+                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: primary),
                             ),
                           ],
                         ),
@@ -178,7 +179,7 @@ class StudyPlanScreen extends ConsumerWidget {
                         icon: const Icon(Icons.edit_calendar, size: 16),
                         label: const Text('Calendar', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.electricIndigo,
+                          backgroundColor: primary,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -201,9 +202,9 @@ class StudyPlanScreen extends ConsumerWidget {
                     decoration: BoxDecoration(
                       gradient: isDark ? AppColors.darkCardGradient : AppColors.primaryGradient,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: AppColors.electricIndigo.withOpacity(0.5)),
+                      border: Border.all(color: primary.withOpacity(0.5)),
                       boxShadow: [
-                        BoxShadow(color: AppColors.electricIndigo.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 4)),
+                        BoxShadow(color: primary.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 4)),
                       ],
                     ),
                     child: Row(
@@ -288,20 +289,20 @@ class StudyPlanScreen extends ConsumerWidget {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: AppColors.electricIndigo.withOpacity(0.12),
+                          color: primary.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: AppColors.electricIndigo.withOpacity(0.3)),
+                          border: Border.all(color: primary.withOpacity(0.3)),
                         ),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Icon(Icons.recommend, color: AppColors.indigoLight, size: 20),
+                            Icon(Icons.recommend, color: primary, size: 20),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text('NEXT BEST ACTION', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.indigoLight)),
+                                  Text('NEXT BEST ACTION', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: primary)),
                                   const SizedBox(height: 2),
                                   Text(r.nextBestAction, style: const TextStyle(fontSize: 12, height: 1.35)),
                                 ],
@@ -315,7 +316,7 @@ class StudyPlanScreen extends ConsumerWidget {
                       const Text('Skill & Domain Breakdown:', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 10),
 
-                      _skillBar('Technical & OOP', r.technicalScore, AppColors.electricIndigo, isDark),
+                      _skillBar('Technical & OOP', r.technicalScore, primary, isDark),
                       _skillBar('Resume Claims', r.resumeScore, AppColors.indigoLight, isDark),
                       _skillBar('Project Defense', r.projectScore, AppColors.cyanAccent, isDark),
                       _skillBar('Coding & DSA', r.codingScore, AppColors.warning, isDark),
@@ -400,7 +401,7 @@ class StudyPlanScreen extends ConsumerWidget {
                               Expanded(
                                 child: Text(
                                   'DAY ${day.dayNumber}: ${day.title.toUpperCase()}',
-                                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.indigoLight),
+                                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: primary),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
@@ -411,7 +412,7 @@ class StudyPlanScreen extends ConsumerWidget {
                                   const SizedBox(width: 4),
                                   Text('${day.estimatedMinutes}m', style: const TextStyle(fontSize: 12, color: AppColors.textDarkMuted)),
                                   const SizedBox(width: 6),
-                                  const Icon(Icons.arrow_forward_ios, size: 12, color: AppColors.indigoLight),
+                                  Icon(Icons.arrow_forward_ios, size: 12, color: primary),
                                 ],
                               ),
                             ],
@@ -445,7 +446,7 @@ class StudyPlanScreen extends ConsumerWidget {
                                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
                                     ),
                                   ),
-                                  const Icon(Icons.arrow_right, size: 16, color: AppColors.electricIndigo),
+                                  Icon(Icons.arrow_right, size: 16, color: primary),
                                 ],
                               ),
                             ),
@@ -458,13 +459,13 @@ class StudyPlanScreen extends ConsumerWidget {
                               icon: Icon(
                                 day.dayNumber == 6 ? Icons.mic : Icons.play_arrow,
                                 size: 16,
-                                color: AppColors.electricIndigo,
+                                color: primary,
                               ),
                               label: Text(
                                 day.dayNumber == 6
                                     ? 'Start Voice AI Mock Simulation →'
                                     : 'Practice Day ${day.dayNumber} Questions (${day.title}) →',
-                                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.electricIndigo),
+                                style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: primary),
                               ),
                             ),
                           ),

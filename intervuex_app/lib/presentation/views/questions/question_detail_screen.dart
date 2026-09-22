@@ -38,6 +38,7 @@ class _QuestionDetailScreenState extends ConsumerState<QuestionDetailScreen> {
     };
 
     final isVerified = q.verificationStatus.toUpperCase().contains('VERIFIED');
+    final primary = Theme.of(context).colorScheme.primary;
 
     return Scaffold(
       appBar: AppBar(
@@ -74,18 +75,18 @@ class _QuestionDetailScreenState extends ConsumerState<QuestionDetailScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 margin: const EdgeInsets.only(bottom: 12),
                 decoration: BoxDecoration(
-                  color: AppColors.electricIndigo.withOpacity(0.1),
+                  color: primary.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.electricIndigo.withOpacity(0.2)),
+                  border: Border.all(color: primary.withOpacity(0.2)),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.business, size: 16, color: AppColors.indigoLight),
+                    Icon(Icons.business, size: 16, color: primary),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         '${q.company.toUpperCase()}${q.role.isNotEmpty ? ' • ${q.role}' : ''}${q.round.isNotEmpty ? ' • ${q.round}' : ''}${q.questionYear.isNotEmpty ? ' (${q.questionYear})' : ''}',
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.indigoLight, letterSpacing: 0.5),
+                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: primary, letterSpacing: 0.5),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -103,12 +104,12 @@ class _QuestionDetailScreenState extends ConsumerState<QuestionDetailScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColors.electricIndigo.withOpacity(0.12),
+                    color: primary.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
                     q.category.toUpperCase(),
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.indigoLight),
+                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: primary),
                   ),
                 ),
                 _badge(q.difficulty, AppColors.warning),

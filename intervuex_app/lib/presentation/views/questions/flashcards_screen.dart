@@ -115,15 +115,16 @@ class _FlashcardsScreenState extends ConsumerState<FlashcardsScreen> with Ticker
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primary = Theme.of(context).colorScheme.primary;
     final cardsAsync = ref.watch(flashcardsProvider(_selectedCategory));
 
     return Scaffold(
       appBar: AppBar(
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.style, color: AppColors.electricIndigo, size: 22),
-            SizedBox(width: 8),
-            Text('Swipe Flashcards', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            Icon(Icons.style, color: primary, size: 22),
+            const SizedBox(width: 8),
+            const Text('Swipe Flashcards', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           ],
         ),
         actions: [
@@ -151,8 +152,8 @@ class _FlashcardsScreenState extends ConsumerState<FlashcardsScreen> with Ticker
                       child: FilterChip(
                         selected: isSel,
                         label: Text(cat, style: TextStyle(fontSize: 12, fontWeight: isSel ? FontWeight.bold : FontWeight.normal)),
-                        selectedColor: AppColors.electricIndigo.withOpacity(0.2),
-                        checkmarkColor: AppColors.electricIndigo,
+                        selectedColor: primary.withOpacity(0.2),
+                        checkmarkColor: primary,
                         onSelected: (val) {
                           if (val) {
                             setState(() {

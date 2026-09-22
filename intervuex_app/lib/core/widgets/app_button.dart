@@ -27,21 +27,24 @@ class AppButton extends StatelessWidget {
     Color fg;
     BorderSide? border;
 
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     switch (variant) {
       case AppButtonVariant.primary:
-        bg = AppColors.electricIndigo;
+        bg = primaryColor;
         fg = Colors.white;
         border = null;
         break;
       case AppButtonVariant.secondary:
-        bg = const Color(0xFF1E293B);
-        fg = Colors.white;
-        border = const BorderSide(color: Color(0xFF334155));
+        bg = isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0);
+        fg = isDark ? Colors.white : AppColors.textLightPrimary;
+        border = BorderSide(color: isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1));
         break;
       case AppButtonVariant.outline:
         bg = Colors.transparent;
-        fg = AppColors.electricIndigo;
-        border = const BorderSide(color: AppColors.electricIndigo, width: 1.5);
+        fg = primaryColor;
+        border = BorderSide(color: primaryColor, width: 1.5);
         break;
       case AppButtonVariant.danger:
         bg = AppColors.danger.withOpacity(0.15);

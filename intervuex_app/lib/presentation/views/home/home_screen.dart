@@ -19,6 +19,7 @@ import 'package:intervuex_app/data/models/pack_model.dart';
 import 'package:intervuex_app/presentation/views/questions/flashcards_screen.dart';
 import 'package:intervuex_app/presentation/views/questions/code_sandbox_screen.dart';
 import 'package:intervuex_app/presentation/views/shell/main_shell_screen.dart';
+import 'package:intervuex_app/presentation/views/profile/profile_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -91,10 +92,13 @@ class HomeScreen extends ConsumerWidget {
           ],
         ),
         actions: [
-          // Profile avatar — taps to Profile tab
+          // Profile avatar — taps to open Profile screen
           GestureDetector(
             onTap: () {
-              ref.read(shellNavIndexProvider.notifier).state = 4;
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProfileScreen()),
+              );
             },
             child: Container(
               margin: const EdgeInsets.only(right: 16),

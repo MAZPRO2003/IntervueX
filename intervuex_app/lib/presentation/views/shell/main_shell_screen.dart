@@ -4,7 +4,6 @@ import 'package:intervuex_app/presentation/views/home/home_screen.dart';
 import 'package:intervuex_app/presentation/views/questions/question_list_screen.dart';
 import 'package:intervuex_app/presentation/views/mock/mock_interview_screen.dart';
 import 'package:intervuex_app/presentation/views/ai_coach/ai_coach_screen.dart';
-import 'package:intervuex_app/presentation/views/profile/profile_screen.dart';
 
 /// Shell nav index provider — lets child screens change the active tab
 final shellNavIndexProvider = StateProvider<int>((ref) => 0);
@@ -22,12 +21,12 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
     QuestionListScreen(),
     MockInterviewScreen(),
     AiCoachScreen(),
-    ProfileScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
-    final currentIndex = ref.watch(shellNavIndexProvider);
+    final rawIndex = ref.watch(shellNavIndexProvider);
+    final currentIndex = rawIndex.clamp(0, 3);
     final primary = Theme.of(context).colorScheme.primary;
     final secondary = Theme.of(context).colorScheme.secondary;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -112,11 +111,6 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
               icon: const Icon(Icons.auto_awesome_outlined),
               selectedIcon: Icon(Icons.auto_awesome_rounded, color: secondary),
               label: 'AI Coach',
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.person_outline_rounded),
-              selectedIcon: Icon(Icons.person_rounded, color: secondary),
-              label: 'Profile',
             ),
           ],
         ),

@@ -319,7 +319,7 @@ class ApiService {
     return Map<String, dynamic>.from(res.data);
   }
 
-  /// Ask the AI Coach a question. Falls back gracefully if the endpoint doesn't exist.
+  /// Ask the AI Coach a question with robust server & offline fallback support.
   Future<Map<String, dynamic>> askAiCoach({
     required String question,
     String packId = '',
@@ -330,18 +330,39 @@ class ApiService {
         "pack_id": packId,
       });
       return Map<String, dynamic>.from(res.data);
-    } catch (_) {
-      // Fallback: use mock Q&A endpoint
-      final res = await _dio.post("/mock/sessions", data: {
-        "pack_id": packId.isNotEmpty ? packId : "general",
-        "mode": "AI Coach",
-        "difficulty": "Normal",
-        "total_turns": 1,
-      });
-      final session = Map<String, dynamic>.from(res.data);
-      return {
-        "answer": session["current_question"] ?? "I'm your AI Coach. Ask me anything!",
-      };
+    } catch (e) {
+      // Offline / Local Smart AI Coach Fallback Response
+      final qLower = question.toLowerCase();
+      String answer;
+      if (qLower.contains("solid")) {
+        answer = "**SOLID Principles Blueprint:**\n\n"
+            "1. **Single Responsibility (SRP):** One reason to change.\n"
+            "2. **Open/Closed (OCP):** Open for extension, closed for modification.\n"
+            "3. **Liskov Substitution (LSP):** Derived classes must be substitutable for base classes.\n"
+            "4. **Interface Segregation (ISP):** Small, focused interfaces over monolithic ones.\n"
+            "5. **Dependency Inversion (DIP):** Depend on abstractions, not concretions.\n\n"
+            "💡 *Tip:* Highlight how OCP + DIP enable modular microservices and easy test mocking!";
+      } else if (qLower.contains("system design")) {
+        answer = "**System Design Interview Framework:**\n\n"
+            "1. **Requirements & Constraints:** Latency, QPS, Storage & Read/Write ratios.\n"
+            "2. **Data & Schema:** SQL vs NoSQL trade-offs.\n"
+            "3. **High-Level Design:** LB -> API Gateway -> Workers -> Cache (Redis) -> DB.\n"
+            "4. **Deep Dive & Bottlenecks:** Sharding, Replication & Rate Limiting.\n\n"
+            "💡 *Tip:* Always identify Single Points of Failure (SPOF) proactively!";
+      } else if (qLower.contains("tell me about yourself") || qLower.contains("yourself")) {
+        answer = "**2-Minute Elevator Pitch Template:**\n\n"
+            "• **Present (30s):** Current role, tech stack, and key impact metric.\n"
+            "• **Past (40s):** Key engineering wins and technical progression.\n"
+            "• **Future (20s):** Why this role and company align with your career goals.";
+      } else {
+        answer = "**AI Coach Insight on '$question':**\n\n"
+            "Structure your response covering:\n"
+            "1. **Core Concept:** Direct, precise definition.\n"
+            "2. **Practical Example:** Real-world project application.\n"
+            "3. **Trade-offs:** Time/Space complexity or architectural trade-offs.\n\n"
+            "Ask another prompt or tap a quick chip below to keep practicing!";
+      }
+      return {"answer": answer, "status": "fallback"};
     }
   }
 }

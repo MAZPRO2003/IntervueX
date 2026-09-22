@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query
+from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 import asyncio
 import logging
@@ -528,6 +529,105 @@ async def refresh_pack_questions(pack_id: str):
             q["asked_by_companies"].append(company_name)
     db_store.save_questions(company_name, questions)
     return {"message": "Questions refreshed successfully with 100% unique items", "total_questions": len(questions), "questions": questions}
+
+class AICoachRequest(BaseModel):
+    question: str
+    pack_id: Optional[str] = ""
+
+@router.post("/ai_coach")
+async def ask_ai_coach(req: AICoachRequest):
+    q = req.question.strip()
+    if not q:
+        raise HTTPException(status_code=400, detail="Question cannot be empty.")
+
+    q_lower = q.lower()
+    
+    # Try primary AI or fallback
+    primary_ai = get_ai_service()
+    try:
+        job = {"job_title": q, "company": "Target Company", "hiring_program": ""}
+        questions = await asyncio.wait_for(
+            primary_ai.generate_questions(job, None, count=1),
+            timeout=15.0
+        )
+        if questions and len(questions) > 0:
+            q_item = questions[0]
+            how = q_item.get("how_to_answer", {})
+            expl = how.get("explanation_en") or q_item.get("why_matters") or "Here is key interview insight."
+            sample = how.get("natural_sample_answer_en") or how.get("short_answer_en") or ""
+            tip = how.get("interview_tip") or "Structure your answer with clear bullet points."
+            answer = f"**Key Concept:**\n{expl}\n\n**Sample Interview Response:**\n{sample}\n\n💡 **Pro Tip:** {tip}"
+        else:
+            raise ValueError("No questions generated")
+    except Exception as ai_err:
+        logger.warning(f"Primary AI ask_ai_coach failed ({ai_err}), using structured fallback coach response.")
+        if "solid" in q_lower:
+            answer = (
+                "**SOLID Principles for Technical Interviews:**\n\n"
+                "1. **Single Responsibility (SRP):** A class should have one, and only one, reason to change.\n"
+                "2. **Open/Closed (OCP):** Software entities should be open for extension, but closed for modification.\n"
+                "3. **Liskov Substitution (LSP):** Subtypes must be substitutable for their base types without breaking application behavior.\n"
+                "4. **Interface Segregation (ISP):** Clients should not be forced to depend on interfaces they do not use.\n"
+                "5. **Dependency Inversion (DIP):** High-level modules should depend upon abstractions, not concrete implementations.\n\n"
+                "💡 **Interview Tip:** Emphasize how OCP and DIP enable scalable microservices and modular unit testing with mock interfaces!"
+            )
+        elif "system design" in q_lower:
+            answer = (
+                "**Mastering System Design Interviews:**\n\n"
+                "1. **Requirements & Scope:** Clarify Functional vs. Non-Functional requirements (latency, throughput, availability).\n"
+                "2. **Back-of-the-Envelope Estimation:** Estimate QPS, read/write ratios, storage growth, and memory cache size.\n"
+                "3. **API & DB Schema Design:** Define endpoints (REST/gRPC) and SQL vs NoSQL storage trade-offs.\n"
+                "4. **High-Level Architecture:** Sketch Client -> CDN -> Load Balancer -> Microservices -> Cache -> DB.\n"
+                "5. **Scaling & Resilience:** Address Sharding, Replication, Circuit Breakers, and Kafka Message Queues.\n\n"
+                "💡 **Interview Tip:** Proactively identify single points of failure (SPOF) and bottleneck mitigations."
+            )
+        elif "tell me about yourself" in q_lower or "yourself" in q_lower:
+            answer = (
+                "**Winning 2-Minute 'Tell Me About Yourself' Blueprint:**\n\n"
+                "1. **Present (30s):** Your current role, tech stack, and primary technical impact.\n"
+                "2. **Past (40s):** Key project wins, engineering accomplishments, and technical growth.\n"
+                "3. **Future (20s):** Why you're passionate about this company and role specifically.\n\n"
+                "💡 **Example:** 'I'm a Software Engineer specializing in scalable backend APIs and mobile systems. Recently, I optimized a high-volume microservice using Redis and FastAPI, boosting throughput by 40%...'"
+            )
+        elif "sql" in q_lower and "join" in q_lower:
+            answer = (
+                "**SQL JOIN Types Explained:**\n\n"
+                "• **INNER JOIN:** Returns records with matching values in both tables.\n"
+                "• **LEFT (OUTER) JOIN:** Returns all records from left table, and matched records from right.\n"
+                "• **RIGHT (OUTER) JOIN:** Returns all records from right table, and matched records from left.\n"
+                "• **FULL (OUTER) JOIN:** Returns all records when there is a match in either left or right table.\n\n"
+                "💡 **Interview Tip:** Mention index optimizations on Foreign Keys to ensure O(M + N) join execution times."
+            )
+        elif "dynamic programming" in q_lower or "dp" in q_lower:
+            answer = (
+                "**How to Spot & Solve Dynamic Programming Questions:**\n\n"
+                "1. **Identify Properties:** Look for **Overlapping Subproblems** and **Optimal Substructure**.\n"
+                "2. **Define State:** `dp[i]` = optimal answer for input of size `i`.\n"
+                "3. **State Transition:** Formulate recursive relation (e.g. `dp[i] = dp[i-1] + dp[i-2]`).\n"
+                "4. **Optimization:** Transition from Top-Down (Memoization) to Bottom-Up (Tabulation) or Space-Optimized O(1).\n\n"
+                "💡 **Common Patterns:** 0/1 Knapsack, Longest Common Subsequence (LCS), Longest Increasing Subsequence (LIS)."
+            )
+        elif "behavioral" in q_lower or "star" in q_lower:
+            answer = (
+                "**The STAR Method for Behavioral Interviews:**\n\n"
+                "• **S - Situation:** Set the context and background (1-2 sentences).\n"
+                "• **T - Task:** Describe the specific challenge or goal.\n"
+                "• **A - Action:** Explain your individual technical contributions (60% of answer).\n"
+                "• **R - Result:** Quantify outcomes with metrics (e.g. 'reduced latency by 35%').\n\n"
+                "💡 **Interview Tip:** Always highlight ownership, conflict resolution, and cross-team collaboration."
+            )
+        else:
+            answer = (
+                f"**AI Coach Analysis on '{q}':**\n\n"
+                "Structure your technical answer using these 3 golden steps:\n\n"
+                "1. **Core Definition:** State the principle clearly without filler words.\n"
+                "2. **Production Context:** Give a concrete example from your past technical projects.\n"
+                "3. **Trade-offs & Alternatives:** Explain time/space complexity or architectural trade-offs.\n\n"
+                "Ask me another question or pick a prompt below to keep practicing!"
+            )
+
+    return {"answer": answer, "status": "success"}
+
 
 
 
