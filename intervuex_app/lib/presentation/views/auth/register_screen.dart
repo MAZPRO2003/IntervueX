@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intervuex_app/core/theme/app_colors.dart';
 import 'package:intervuex_app/data/services/firebase_service.dart';
+import 'package:intervuex_app/presentation/providers/theme_provider.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
@@ -74,7 +76,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primary = Theme.of(context).colorScheme.primary;
+    final variant = ref.watch(themeVariantProvider);
+    final primary = variant.primary;
 
     return Scaffold(
       appBar: AppBar(
@@ -84,6 +87,57 @@ class _RegisterScreenState extends State<RegisterScreen> {
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => Navigator.pop(context),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+              size: 20,
+            ),
+            tooltip: isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode',
+            onPressed: () {
+              ref.read(themeModeProvider.notifier).setThemeMode(
+                    isDark ? ThemeMode.light : ThemeMode.dark,
+                  );
+            },
+          ),
+          PopupMenuButton<AppThemeVariant>(
+            icon: const Icon(Icons.palette_outlined, size: 20),
+            tooltip: 'Change Accent Theme',
+            onSelected: (v) {
+              ref.read(themeVariantProvider.notifier).setVariant(v);
+            },
+            itemBuilder: (context) => AppThemeVariant.values.map((v) {
+              return PopupMenuItem<AppThemeVariant>(
+                value: v,
+                child: Row(
+                  children: [
+                    Container(
+                      width: 14,
+                      height: 14,
+                      decoration: BoxDecoration(
+                        color: v.primary,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      v.displayName,
+                      style: TextStyle(
+                        fontWeight:
+                            v == variant ? FontWeight.bold : FontWeight.normal,
+                      ),
+                    ),
+                    if (v == variant) ...[
+                      const SizedBox(width: 8),
+                      Icon(Icons.check, size: 16, color: v.primary),
+                    ],
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -99,14 +153,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        primary.withOpacity(0.15),
-                        primary.withOpacity(0.05),
+                        primary.withOpacity(0.18),
+                        primary.withOpacity(0.06),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: primary.withOpacity(0.2)),
+                    border: Border.all(color: primary.withOpacity(0.25)),
                   ),
                   child: Row(
                     children: [
@@ -114,10 +168,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         width: 48,
                         height: 48,
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [primary, primary.withOpacity(0.7)],
-                          ),
+                          gradient: variant.gradient,
                           borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                              color: primary.withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                         ),
                         child: const Icon(Icons.person_add_rounded,
                             color: Colors.white, size: 26),
@@ -331,3 +390,4 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
+

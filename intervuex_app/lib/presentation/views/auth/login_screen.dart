@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intervuex_app/core/theme/app_colors.dart';
 import 'package:intervuex_app/data/services/firebase_service.dart';
+import 'package:intervuex_app/presentation/providers/theme_provider.dart';
 import 'package:intervuex_app/presentation/views/auth/register_screen.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
@@ -86,8 +88,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primary = Theme.of(context).colorScheme.primary;
-    final secondaryColor = Theme.of(context).colorScheme.secondary;
+    final variant = ref.watch(themeVariantProvider);
+    final primary = variant.primary;
 
     return Scaffold(
       body: SafeArea(
@@ -99,11 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Container(
                 height: 260,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [primary, primary.withOpacity(0.7)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+                  gradient: variant.gradient,
                 ),
                 child: Stack(
                   children: [
@@ -130,6 +128,76 @@ class _LoginScreenState extends State<LoginScreen> {
                           shape: BoxShape.circle,
                           color: Colors.white.withOpacity(0.08),
                         ),
+                      ),
+                    ),
+                    // Quick Theme Controls (Light/Dark mode & Accent Palette)
+                    Positioned(
+                      top: 12,
+                      right: 12,
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              isDark
+                                  ? Icons.light_mode_rounded
+                                  : Icons.dark_mode_rounded,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            tooltip: isDark
+                                ? 'Switch to Light Mode'
+                                : 'Switch to Dark Mode',
+                            onPressed: () {
+                              ref.read(themeModeProvider.notifier).setThemeMode(
+                                    isDark
+                                        ? ThemeMode.light
+                                        : ThemeMode.dark,
+                                  );
+                            },
+                          ),
+                          PopupMenuButton<AppThemeVariant>(
+                            icon: const Icon(Icons.palette_outlined,
+                                color: Colors.white, size: 20),
+                            tooltip: 'Change Accent Theme',
+                            onSelected: (v) {
+                              ref
+                                  .read(themeVariantProvider.notifier)
+                                  .setVariant(v);
+                            },
+                            itemBuilder: (context) =>
+                                AppThemeVariant.values.map((v) {
+                              return PopupMenuItem<AppThemeVariant>(
+                                value: v,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 14,
+                                      height: 14,
+                                      decoration: BoxDecoration(
+                                        color: v.primary,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      v.displayName,
+                                      style: TextStyle(
+                                        fontWeight: v == variant
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                      ),
+                                    ),
+                                    if (v == variant) ...[
+                                      const SizedBox(width: 8),
+                                      Icon(Icons.check,
+                                          size: 16, color: v.primary),
+                                    ],
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ],
                       ),
                     ),
                     Padding(
@@ -332,7 +400,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               _isAnonymousLoading ? null : _signInAnonymously,
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(
-                                color: primary.withOpacity(0.5), width: 1.5),
+                                color: primary.withOpacity(0.6), width: 1.5),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(14)),
                           ),
@@ -401,6 +469,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             backgroundColor: isDark
                                 ? AppColors.surfaceDark
                                 : AppColors.surfaceLightElevated,
+                            side: BorderSide(
+                                color: primary.withOpacity(0.25), width: 1),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(14)),
                           ),
@@ -409,7 +479,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
-                                color: secondaryColor),
+                                color: primary),
                           ),
                         ),
                       ),
@@ -436,3 +506,4 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
