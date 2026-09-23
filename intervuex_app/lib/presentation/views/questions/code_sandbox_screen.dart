@@ -192,8 +192,12 @@ class _CodeSandboxScreenState extends ConsumerState<CodeSandboxScreen> {
         actions: [
           if (_selectedQuestion != null) ...[
             TextButton.icon(
-              icon: Icon(Icons.swap_horiz, color: primary, size: 18),
-              label: Text('Change Question', style: TextStyle(color: primary, fontSize: 12, fontWeight: FontWeight.bold)),
+              style: TextButton.styleFrom(
+                visualDensity: VisualDensity.compact,
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+              ),
+              icon: Icon(Icons.swap_horiz, color: primary, size: 16),
+              label: Text('Change Question', style: TextStyle(color: primary, fontSize: 11, fontWeight: FontWeight.bold)),
               onPressed: () {
                 setState(() {
                   _selectedQuestion = null;
@@ -500,18 +504,33 @@ class _CodeSandboxScreenState extends ConsumerState<CodeSandboxScreen> {
                       ),
                       child: Text(q.source.toUpperCase(), style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: primary)),
                     ),
-                    const Spacer(),
+                    const SizedBox(width: 8),
                     if (q.complexity != null && q.complexity!.isNotEmpty)
-                      Row(
-                        children: [
-                          const Icon(Icons.timer_outlined, size: 14, color: AppColors.warning),
-                          const SizedBox(width: 4),
-                          Text(q.complexity!, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.warning)),
-                        ],
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            const Icon(Icons.timer_outlined, size: 13, color: AppColors.warning),
+                            const SizedBox(width: 4),
+                            Flexible(
+                              child: Text(
+                                q.complexity!,
+                                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.warning),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                   ],
                 ),
                 const SizedBox(height: 8),
+                Text(
+                  q.title,
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
                 Text(q.description, style: TextStyle(fontSize: 12, height: 1.4, color: isDark ? const Color(0xFFC9D1D9) : const Color(0xFF334155))),
               ],
             ),
