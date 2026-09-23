@@ -94,13 +94,89 @@ class _CodeSandboxScreenState extends ConsumerState<CodeSandboxScreen> {
     'PostgreSQL',
   ];
 
+  static String _detectBestLanguage(SandboxQuestionItem item) {
+    final fullText = '${item.title} ${item.category} ${item.topics.join(" ")} ${item.description}'.toLowerCase();
+
+    if (fullText.contains('sql') ||
+        fullText.contains('query') ||
+        fullText.contains('queries') ||
+        fullText.contains('select ') ||
+        fullText.contains('database') ||
+        fullText.contains('table') ||
+        fullText.contains('postgres') ||
+        fullText.contains('mysql') ||
+        fullText.contains('join ') ||
+        fullText.contains('group by') ||
+        item.category.toLowerCase().contains('database') ||
+        item.category.toLowerCase().contains('sql')) {
+      return 'PostgreSQL';
+    }
+
+    if (fullText.contains('javascript') ||
+        fullText.contains('js') ||
+        fullText.contains('node') ||
+        fullText.contains('react') ||
+        fullText.contains('frontend') ||
+        fullText.contains('dom') ||
+        fullText.contains('async/await') ||
+        fullText.contains('promise') ||
+        item.category.toLowerCase().contains('javascript') ||
+        item.category.toLowerCase().contains('frontend')) {
+      return 'JavaScript';
+    }
+
+    if (fullText.contains('java ') ||
+        fullText.contains('java8') ||
+        fullText.contains('spring') ||
+        fullText.contains('jvm') ||
+        item.category.toLowerCase().contains('java')) {
+      return 'Java';
+    }
+
+    return 'Python 3';
+  }
+
+  static String _getStarterCodeTemplate(String language, String questionTitle) {
+    switch (language) {
+      case 'PostgreSQL':
+        return '-- PostgreSQL Query Solution for "$questionTitle"\n'
+            '-- Write your SQL query below:\n\n'
+            'SELECT *\n'
+            'FROM table_name;\n';
+      case 'JavaScript':
+        return '// JavaScript Solution for "$questionTitle"\n'
+            'function solution() {\n'
+            '    // Write your solution here\n'
+            '    return null;\n'
+            '}\n';
+      case 'Java':
+        return '// Java Solution for "$questionTitle"\n'
+            'public class Solution {\n'
+            '    public static void main(String[] args) {\n'
+            '        // Write your solution here\n'
+            '    }\n'
+            '}\n';
+      case 'Python 3':
+      default:
+        return '# Python 3 Solution for "$questionTitle"\n'
+            'def solution():\n'
+            '    # Write your solution here\n'
+            '    pass\n';
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _codeController = TextEditingController(text: '');
     if (widget.initialQuestion != null) {
       _selectedQuestion = SandboxQuestionItem.fromQuestionModel(widget.initialQuestion!);
-      _codeController.text = '# Write your $_selectedLanguage solution for "${_selectedQuestion!.title}"\n';
+      _selectedLanguage = _detectBestLanguage(_selectedQuestion!);
+      if (_selectedQuestion!.codeExample != null && _selectedQuestion!.codeExample!.trim().isNotEmpty) {
+        _codeController.text = _selectedQuestion!.codeExample!;
+      } else {
+        _codeController.text = _getStarterCodeTemplate(_selectedLanguage, _selectedQuestion!.title);
+      }
     }
   }
 
@@ -112,10 +188,16 @@ class _CodeSandboxScreenState extends ConsumerState<CodeSandboxScreen> {
   }
 
   void _selectQuestion(SandboxQuestionItem item) {
+    final detectedLang = _detectBestLanguage(item);
     setState(() {
       _selectedQuestion = item;
+      _selectedLanguage = detectedLang;
       _executionResult = null;
-      _codeController.text = '# Write your $_selectedLanguage solution for "${item.title}"\n';
+      if (item.codeExample != null && item.codeExample!.trim().isNotEmpty) {
+        _codeController.text = item.codeExample!;
+      } else {
+        _codeController.text = _getStarterCodeTemplate(detectedLang, item.title);
+      }
     });
   }
 
@@ -221,8 +303,14 @@ class _CodeSandboxScreenState extends ConsumerState<CodeSandboxScreen> {
                   if (val != null) {
                     setState(() {
                       _selectedLanguage = val;
-                      if (_codeController.text.startsWith('# Write your')) {
-                        _codeController.text = '# Write your $_selectedLanguage solution for "${_selectedQuestion!.title}"\n';
+                      final text = _codeController.text;
+                      if (text.isEmpty ||
+                          text.startsWith('# Write your') ||
+                          text.startsWith('# Python 3') ||
+                          text.startsWith('-- PostgreSQL') ||
+                          text.startsWith('// JavaScript') ||
+                          text.startsWith('// Java')) {
+                        _codeController.text = _getStarterCodeTemplate(_selectedLanguage, _selectedQuestion!.title);
                       }
                     });
                   }
@@ -536,26 +624,8 @@ class _CodeSandboxScreenState extends ConsumerState<CodeSandboxScreen> {
             ),
           ),
 
-          // Code Editor Toolbar
-          Container(
-            color: isDark ? const Color(0xFF161B22) : const Color(0xFFF1F5F9),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  _toolbarBtn('tab', () => _insertSnippet('    ')),
-                  _toolbarBtn('def', () => _insertSnippet('def ')),
-                  _toolbarBtn('return', () => _insertSnippet('return ')),
-                  _toolbarBtn('for', () => _insertSnippet('for i in range():')),
-                  _toolbarBtn('print()', () => _insertSnippet('print()')),
-                  _toolbarBtn('SELECT', () => _insertSnippet('SELECT ')),
-                  _toolbarBtn('WHERE', () => _insertSnippet('WHERE ')),
-                  _toolbarBtn('JOIN', () => _insertSnippet('JOIN ')),
-                ],
-              ),
-            ),
-          ),
+          // Language-Aware Code Editor Toolbar
+          _buildToolbarForLanguage(isDark),
 
           // Monospaced Code Text Area
           Expanded(
@@ -611,6 +681,60 @@ class _CodeSandboxScreenState extends ConsumerState<CodeSandboxScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildToolbarForLanguage(bool isDark) {
+    final List<Widget> buttons = [
+      _toolbarBtn('tab', () => _insertSnippet('    ')),
+    ];
+
+    if (_selectedLanguage == 'PostgreSQL') {
+      buttons.addAll([
+        _toolbarBtn('SELECT', () => _insertSnippet('SELECT ')),
+        _toolbarBtn('FROM', () => _insertSnippet('FROM ')),
+        _toolbarBtn('WHERE', () => _insertSnippet('WHERE ')),
+        _toolbarBtn('JOIN', () => _insertSnippet('JOIN ')),
+        _toolbarBtn('GROUP BY', () => _insertSnippet('GROUP BY ')),
+        _toolbarBtn('ORDER BY', () => _insertSnippet('ORDER BY ')),
+        _toolbarBtn('COUNT()', () => _insertSnippet('COUNT()')),
+      ]);
+    } else if (_selectedLanguage == 'JavaScript') {
+      buttons.addAll([
+        _toolbarBtn('const', () => _insertSnippet('const ')),
+        _toolbarBtn('function', () => _insertSnippet('function ')),
+        _toolbarBtn('return', () => _insertSnippet('return ')),
+        _toolbarBtn('console.log', () => _insertSnippet('console.log()')),
+        _toolbarBtn('=>', () => _insertSnippet(' => ')),
+        _toolbarBtn('async/await', () => _insertSnippet('async ')),
+      ]);
+    } else if (_selectedLanguage == 'Java') {
+      buttons.addAll([
+        _toolbarBtn('public', () => _insertSnippet('public ')),
+        _toolbarBtn('class', () => _insertSnippet('class ')),
+        _toolbarBtn('return', () => _insertSnippet('return ')),
+        _toolbarBtn('println', () => _insertSnippet('System.out.println();')),
+        _toolbarBtn('int', () => _insertSnippet('int ')),
+        _toolbarBtn('String', () => _insertSnippet('String ')),
+      ]);
+    } else {
+      buttons.addAll([
+        _toolbarBtn('def', () => _insertSnippet('def ')),
+        _toolbarBtn('return', () => _insertSnippet('return ')),
+        _toolbarBtn('for in', () => _insertSnippet('for i in range():')),
+        _toolbarBtn('print()', () => _insertSnippet('print()')),
+        _toolbarBtn('len()', () => _insertSnippet('len()')),
+        _toolbarBtn('self', () => _insertSnippet('self')),
+      ]);
+    }
+
+    return Container(
+      color: isDark ? const Color(0xFF161B22) : const Color(0xFFF1F5F9),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(children: buttons),
       ),
     );
   }
