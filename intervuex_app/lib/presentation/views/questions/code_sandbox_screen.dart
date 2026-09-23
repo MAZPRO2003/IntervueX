@@ -573,6 +573,8 @@ class _CodeSandboxScreenState extends ConsumerState<CodeSandboxScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final q = _selectedQuestion!;
 
+    _codeController.isDark = isDark;
+
     return SafeArea(
       child: Column(
         children: [
@@ -927,7 +929,7 @@ class _CodeSandboxScreenState extends ConsumerState<CodeSandboxScreen> {
 // ─── REAL IDE SYNTAX HIGHLIGHTING CONTROLLER ────────────────────────────────
 class CodeSyntaxController extends TextEditingController {
   String language;
-  final bool isDark;
+  bool isDark;
 
   CodeSyntaxController({
     super.text,
@@ -1155,6 +1157,7 @@ class _RealCodeEditorState extends State<RealCodeEditor> {
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
     final isDark = widget.isDark;
+    widget.controller.isDark = isDark;
 
     final editorBg = isDark ? const Color(0xFF0D1117) : const Color(0xFFFFFFFF);
     final gutterBg = isDark ? const Color(0xFF161B22) : const Color(0xFFF1F5F9);
@@ -1236,95 +1239,99 @@ class _RealCodeEditorState extends State<RealCodeEditor> {
 
         // IDE Bottom Status Bar (Cursor position, stats, formatting controls)
         Container(
+          width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
             color: statusBarBg,
             border: Border(top: BorderSide(color: borderColor)),
           ),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: primary.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  widget.language,
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: primary),
-                ),
-              ),
-              const SizedBox(width: 10),
-
-              Text(
-                'Ln $_currentLine, Col $_currentCol',
-                style: GoogleFonts.firaCode(fontSize: 10, color: gutterText, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(width: 8),
-              Text('•', style: TextStyle(fontSize: 10, color: gutterText)),
-              const SizedBox(width: 8),
-
-              Text(
-                '$_lineCount lines (${widget.controller.text.length} chars)',
-                style: GoogleFonts.firaCode(fontSize: 10, color: gutterText),
-              ),
-
-              const Spacer(),
-
-              Tooltip(
-                message: 'Auto-Format & Trim Spacing',
-                child: InkWell(
-                  onTap: _autoFormatCode,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                    child: Row(
-                      children: [
-                        Icon(Icons.cleaning_services_outlined, size: 13, color: primary),
-                        const SizedBox(width: 4),
-                        Text('Format', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: primary)),
-                      ],
-                    ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: primary.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    widget.language,
+                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: primary),
                   ),
                 ),
-              ),
-              const SizedBox(width: 10),
-
-              Tooltip(
-                message: 'Copy Code',
-                child: InkWell(
-                  onTap: () {
-                    Clipboard.setData(ClipboardData(text: widget.controller.text));
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Code copied to clipboard!'), duration: Duration(seconds: 1)),
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                    child: Row(
-                      children: [
-                        Icon(Icons.copy, size: 12, color: primary),
-                        const SizedBox(width: 4),
-                        Text('Copy', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: primary)),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-
-              if (widget.onResetTemplate != null) ...[
                 const SizedBox(width: 10),
+
+                Text(
+                  'Ln $_currentLine, Col $_currentCol',
+                  style: GoogleFonts.firaCode(fontSize: 10, color: gutterText, fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(width: 8),
+                Text('•', style: TextStyle(fontSize: 10, color: gutterText)),
+                const SizedBox(width: 8),
+
+                Text(
+                  '$_lineCount lines (${widget.controller.text.length} chars)',
+                  style: GoogleFonts.firaCode(fontSize: 10, color: gutterText),
+                ),
+
+                const SizedBox(width: 16),
+
                 Tooltip(
-                  message: 'Reset to Starter Code',
+                  message: 'Auto-Format & Trim Spacing',
                   child: InkWell(
-                    onTap: widget.onResetTemplate,
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                      child: Icon(Icons.restart_alt, size: 14, color: AppColors.warning),
+                    onTap: _autoFormatCode,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                      child: Row(
+                        children: [
+                          Icon(Icons.cleaning_services_outlined, size: 13, color: primary),
+                          const SizedBox(width: 4),
+                          Text('Format', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: primary)),
+                        ],
+                      ),
                     ),
                   ),
                 ),
+                const SizedBox(width: 10),
+
+                Tooltip(
+                  message: 'Copy Code',
+                  child: InkWell(
+                    onTap: () {
+                      Clipboard.setData(ClipboardData(text: widget.controller.text));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Code copied to clipboard!'), duration: Duration(seconds: 1)),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                      child: Row(
+                        children: [
+                          Icon(Icons.copy, size: 12, color: primary),
+                          const SizedBox(width: 4),
+                          Text('Copy', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: primary)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+                if (widget.onResetTemplate != null) ...[
+                  const SizedBox(width: 10),
+                  Tooltip(
+                    message: 'Reset to Starter Code',
+                    child: InkWell(
+                      onTap: widget.onResetTemplate,
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                        child: Icon(Icons.restart_alt, size: 14, color: AppColors.warning),
+                      ),
+                    ),
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ],
