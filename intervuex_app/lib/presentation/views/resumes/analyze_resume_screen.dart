@@ -307,39 +307,77 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
         ),
         const SizedBox(height: 16),
 
-        // 1. OVERALL RESUME QUALITY SCORE CARD (Transparent 9-Factor Breakdown)
-        AppCard(
+        // 1. OVERALL RESUME QUALITY SCORE CARD (Transparent Multi-Factor Breakdown)
+        Container(
+          width: double.infinity,
           padding: const EdgeInsets.all(16),
-          borderColor: primary.withOpacity(0.4),
+          decoration: BoxDecoration(
+            gradient: variant.gradient,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(color: primary.withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 4)),
+            ],
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Stack(
+                    alignment: Alignment.center,
                     children: [
-                      const Text('OVERALL RESUME QUALITY SCORE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted, letterSpacing: 0.5)),
-                      const SizedBox(height: 2),
-                      Text('Dynamic Content & Format Audit', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: secondary)),
+                      SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: CircularProgressIndicator(
+                          value: (qualityScore is num ? qualityScore.toDouble() : 75.0) / 100.0,
+                          strokeWidth: 6,
+                          backgroundColor: Colors.white24,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        '$qualityScore',
+                        style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
                     ],
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: primary.withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(10),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'OVERALL RESUME QUALITY SCORE',
+                          style: TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          (qualityScore is num && qualityScore >= 80)
+                              ? 'Strong Competitive Resume'
+                              : ((qualityScore is num && qualityScore >= 65) ? 'Good — Needs Quantifiable Polish' : 'Critical Formatting & Evidence Gaps'),
+                          style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Multi-factor transparent audit derived from actual uploaded resume content.',
+                          style: TextStyle(color: Colors.white.withOpacity(0.85), fontSize: 11),
+                        ),
+                      ],
                     ),
-                    child: Text('$qualityScore/100', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: primary)),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
-              const Text('TRANSPARENT QUALITY FACTORS', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted, letterSpacing: 0.5)),
-              const SizedBox(height: 8),
+              const Divider(color: Colors.white24, height: 1),
+              const SizedBox(height: 14),
+              const Text(
+                'TRANSPARENT QUALITY FACTORS (10 METRICS)',
+                style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 0.5),
+              ),
+              const SizedBox(height: 10),
 
-              // 9-Factor Breakdown Grid
+              // 10-Factor Breakdown Grid
               _buildQualityFactorGrid(qualityBreakdown, isDark, variant),
             ],
           ),
@@ -824,50 +862,75 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
 
   Widget _buildQualityFactorGrid(Map<String, dynamic> breakdown, bool isDark, AppThemeVariant variant) {
     final factors = [
-      {'key': 'ats_compatibility', 'label': 'ATS Compatibility'},
-      {'key': 'content_quality', 'label': 'Content Quality'},
-      {'key': 'resume_structure', 'label': 'Resume Structure'},
-      {'key': 'skills_score', 'label': 'Skills Support'},
-      {'key': 'experience_score', 'label': 'Experience Depth'},
-      {'key': 'projects_score', 'label': 'Project Evidence'},
-      {'key': 'job_relevance', 'label': 'Job Relevance'},
-      {'key': 'readability', 'label': 'Readability'},
-      {'key': 'formatting', 'label': 'Formatting'},
+      {'key': 'ats_compatibility', 'label': 'ATS Compatibility', 'icon': Icons.smart_toy_outlined},
+      {'key': 'content_quality', 'label': 'Content Quality', 'icon': Icons.article_outlined},
+      {'key': 'resume_structure', 'label': 'Resume Structure', 'icon': Icons.account_tree_outlined},
+      {'key': 'skills_score', 'label': 'Skills Support', 'icon': Icons.psychology_outlined},
+      {'key': 'experience_score', 'label': 'Experience Depth', 'icon': Icons.work_history_outlined},
+      {'key': 'projects_score', 'label': 'Project Evidence', 'icon': Icons.folder_special_outlined},
+      {'key': 'job_relevance', 'label': 'Job Alignment', 'icon': Icons.tune_outlined},
+      {'key': 'readability', 'label': 'Readability', 'icon': Icons.visibility_outlined},
+      {'key': 'formatting', 'label': 'Formatting', 'icon': Icons.space_dashboard_outlined},
+      {'key': 'quantified_metrics', 'label': 'Impact Metrics', 'icon': Icons.assessment_outlined},
     ];
 
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: factors.map((f) {
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: factors.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 2.5,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+      ),
+      itemBuilder: (context, idx) {
+        final f = factors[idx];
         final val = (breakdown[f['key']] ?? 75) as int;
         final label = f['label'] as String;
-        Color valColor = variant.primary;
-        if (val >= 80) valColor = AppColors.success;
-        if (val < 65) valColor = AppColors.warning;
+        final icon = f['icon'] as IconData;
+
+        Color valColor = Colors.white;
+        if (val >= 80) {
+          valColor = const Color(0xFF6EE7B7);
+        } else if (val < 65) {
+          valColor = const Color(0xFFFDE047);
+        }
 
         return Container(
-          width: MediaQuery.of(context).size.width > 360 ? (MediaQuery.of(context).size.width - 56) / 2 : double.infinity,
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
-            borderRadius: BorderRadius.circular(8),
+            color: Colors.black.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.white.withOpacity(0.15)),
           ),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(child: Text(label, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis)),
-                  Text('$val', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: valColor)),
+                  Icon(icon, size: 13, color: Colors.white70),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Text(
+                    '$val%',
+                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: valColor),
+                  ),
                 ],
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 5),
               ClipRRect(
                 borderRadius: BorderRadius.circular(4),
                 child: LinearProgressIndicator(
                   value: val / 100.0,
-                  backgroundColor: valColor.withOpacity(0.15),
+                  backgroundColor: Colors.white24,
                   color: valColor,
                   minHeight: 4,
                 ),
@@ -875,7 +938,7 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
             ],
           ),
         );
-      }).toList(),
+      },
     );
   }
 

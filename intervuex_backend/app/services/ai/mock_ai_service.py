@@ -360,18 +360,19 @@ class MockAIService(AIServiceBase):
         has_metrics = any(char in text_clean for char in ["%", "ms", "k", "QPS", "reduced", "increased", "optimized"])
         has_standard_headers = any(h in text_clean.lower() for h in ["skills", "projects", "education", "experience"])
         
-        ats_comp = min(98, max(55, 70 + (10 if "skills" in text_clean.lower() else 0) + (10 if has_standard_headers else -10) + (5 if len(extracted_skills) >= 4 else 0)))
-        content_qual = min(98, max(50, 68 + (12 if has_metrics else 0) + (10 if len(lines) >= 20 else -10)))
-        structure_score = min(98, max(60, 72 + (10 if proj_lines else 0) + (10 if edu_lines else 0) + (8 if email_match else 0)))
-        skills_score = min(98, max(45, 50 + len(extracted_skills) * 4))
-        exp_score = min(98, max(50, 65 + len(experience_lines) * 5))
-        proj_score = min(98, max(50, 65 + len(extracted_projects) * 8))
-        job_rel = overall_match_percentage if is_job_targeted else min(95, max(65, 70 + len(extracted_skills) * 2))
-        readability_score = min(98, max(60, 80 + (10 if 15 <= len(lines) <= 90 else -10)))
-        formatting_score = min(98, max(65, 78 + (10 if has_standard_headers else 0)))
+        quant_metrics_score = min(98, max(20, 88 if has_metrics else 35))
+        ats_comp = min(98, max(25, 40 + (15 if "skills" in text_clean.lower() else 0) + (15 if has_standard_headers else 0) + (10 if len(extracted_skills) >= 4 else 0)))
+        content_qual = min(98, max(25, 45 + (20 if has_metrics else 0) + (15 if len(lines) >= 15 else 0)))
+        structure_score = min(98, max(25, 30 + (20 if proj_lines else 0) + (20 if edu_lines else 0) + (15 if email_match else 0)))
+        skills_score = min(98, max(20, 25 + len(extracted_skills) * 6))
+        exp_score = min(98, max(20, 30 + len(experience_lines) * 8))
+        proj_score = min(98, max(20, 30 + len(extracted_projects) * 12))
+        job_rel = overall_match_percentage if is_job_targeted else min(95, max(30, 45 + len(extracted_skills) * 4))
+        readability_score = min(98, max(30, 50 + (25 if 15 <= len(lines) <= 90 else 0)))
+        formatting_score = min(98, max(30, 40 + (30 if has_standard_headers else 0)))
 
         overall_quality_score = int(
-            (ats_comp + content_qual + structure_score + skills_score + exp_score + proj_score + job_rel + readability_score + formatting_score) / 9
+            (ats_comp + content_qual + structure_score + skills_score + exp_score + proj_score + job_rel + readability_score + formatting_score + quant_metrics_score) / 10
         )
 
         quality_breakdown = {
@@ -384,7 +385,8 @@ class MockAIService(AIServiceBase):
             "projects_score": proj_score,
             "job_relevance": job_rel,
             "readability": readability_score,
-            "formatting": formatting_score
+            "formatting": formatting_score,
+            "quantified_metrics": quant_metrics_score
         }
 
         # Strengths & Weaknesses

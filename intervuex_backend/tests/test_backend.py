@@ -40,6 +40,17 @@ async def test_resume_analysis():
         assert len(data["risks"]) > 0 # High AWS claim flagged
 
 @pytest.mark.asyncio
+async def test_non_resume_rejection():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        response = await ac.post(
+            "/api/v1/resumes/analyze",
+            data={"raw_text": "The quick brown fox jumps over the lazy dog. This is a generic essay about nature and wildlife in North America."}
+        )
+        assert response.status_code == 400
+        assert "valid Resume" in response.json()["detail"] or "standard resume" in response.json()["detail"]
+
+@pytest.mark.asyncio
 async def test_interview_pack_creation_and_questions():
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:

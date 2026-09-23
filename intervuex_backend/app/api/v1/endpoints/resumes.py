@@ -27,20 +27,31 @@ async def analyze_resume(
             try:
                 layout_data = ResumeParser.extract_pdf_with_layout(content)
                 extracted_text = layout_data["text"]
+            except ValueError as ve:
+                raise HTTPException(status_code=400, detail=str(ve))
             except Exception as e:
                 raise HTTPException(status_code=400, detail=f"Could not read PDF resume: {str(e)}")
         elif filename.endswith(".docx"):
             try:
                 extracted_text = ResumeParser.extract_from_docx(content)
+            except ValueError as ve:
+                raise HTTPException(status_code=400, detail=str(ve))
             except Exception as e:
                 raise HTTPException(status_code=400, detail=f"Could not read DOCX resume: {str(e)}")
         else:
             try:
                 extracted_text = content.decode("utf-8").strip()
+                ResumeParser.validate_resume_content(extracted_text)
+            except ValueError as ve:
+                raise HTTPException(status_code=400, detail=str(ve))
             except Exception:
                 raise HTTPException(status_code=400, detail="Unsupported resume format. Please upload PDF, DOCX, or text.")
     elif raw_text:
         extracted_text = raw_text.strip()
+        try:
+            ResumeParser.validate_resume_content(extracted_text)
+        except ValueError as ve:
+            raise HTTPException(status_code=400, detail=str(ve))
     else:
         raise HTTPException(status_code=400, detail="Must provide resume file or raw text.")
 
