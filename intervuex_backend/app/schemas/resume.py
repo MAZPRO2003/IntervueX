@@ -17,6 +17,7 @@ class ResumeRisk(BaseModel):
     why_questioned: Optional[str] = None  # Why an interviewer probes this
     expected_grilling_topics: List[str] = []
     preparation_advice: Optional[str] = None
+    star_defense: Optional[Dict[str, str]] = None # Situation, Task, Action, Result guidance
 
 class SkillMatchItem(BaseModel):
     skill: str
@@ -38,6 +39,11 @@ class ResumeAnalysisResult(BaseModel):
     risks: List[ResumeRisk] = []
     skill_matches: List[SkillMatchItem] = []
     resume_strength_score: int = 80
+    seniority_level: str = "Fresher / Entry Level"
+    star_compliance_score: int = 75
+    action_verb_density_score: int = 75
+    bullet_rewrites: List[Dict[str, str]] = []
+    ats_raw_text_preview: str = ""
     
     # Dynamic Multi-Factor Quality Breakdown
     quality_breakdown: Optional[Dict[str, int]] = Field(default_factory=dict)

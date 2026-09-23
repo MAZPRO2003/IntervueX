@@ -259,7 +259,13 @@ class MockAIService(AIServiceBase):
                         f"How did you apply {skill} in a real project?",
                         f"What problems or bugs did you solve using {skill}?"
                     ],
-                    "preparation_advice": f"Be prepared to detail your hands-on experience with {skill} or clarify your familiarity level."
+                    "preparation_advice": f"Be prepared to detail your hands-on experience with {skill} or clarify your familiarity level.",
+                    "star_defense": {
+                        "situation": f"When asked about {skill}, frame the project background where {skill} was required.",
+                        "task": f"Explain your specific responsibility involving {skill}.",
+                        "action": f"Detail 2-3 specific features, libraries, or APIs of {skill} you personally implemented.",
+                        "result": f"Highlight a positive outcome or bug fix achieved using {skill}."
+                    }
                 })
 
         # Risk Type B: Projects making high claims without metrics
@@ -275,7 +281,13 @@ class MockAIService(AIServiceBase):
                     "why_questioned": f"The description for '{proj['project_title']}' outlines technical scope but lacks quantifiable metrics (e.g. latency, QPS, user count).",
                     "reason": f"Project '{proj['project_title']}' makes architecture claims without specific quantitative metrics or impact measurements.",
                     "expected_grilling_topics": proj["potential_questions"],
-                    "preparation_advice": "Prepare specific metrics (e.g. API response time in ms, database size, test coverage %) for interview follow-ups."
+                    "preparation_advice": "Prepare specific metrics (e.g. API response time in ms, database size, test coverage %) for interview follow-ups.",
+                    "star_defense": {
+                        "situation": f"Outline the scale and target objectives of '{proj['project_title']}'.",
+                        "task": f"Describe your role in designing the architecture for '{proj['project_title']}'.",
+                        "action": f"Explain how you selected technology trade-offs, optimized code, and handled testing.",
+                        "result": f"Provide estimated or real metrics (e.g., 35% latency reduction, 99.9% uptime, 500+ unit tests)."
+                    }
                 })
 
         if not extracted_risks:
@@ -288,7 +300,13 @@ class MockAIService(AIServiceBase):
                 "why_questioned": "Interviewers will expect deep domain mastery and live coding/whiteboarding for claimed core skills.",
                 "reason": f"Interviewers will probe core architectural design patterns, edge case handling, and failure recovery for {extracted_skills[0]}.",
                 "expected_grilling_topics": ["SOLID Principles & Design Patterns", "Database Connection Pooling", "API Error Handling Strategy"],
-                "preparation_advice": "Rehearse a 2-minute architectural breakdown of your primary technical project."
+                "preparation_advice": "Rehearse a 2-minute architectural breakdown of your primary technical project.",
+                "star_defense": {
+                    "situation": f"Set the technical scope for your work with {extracted_skills[0] if extracted_skills else 'core CS'}.",
+                    "task": f"Highlight your core engineering objective and quality standards.",
+                    "action": f"Walk through your step-by-step implementation, error handling, and modular code design.",
+                    "result": f"Demonstrate reliable code execution, passing tests, and clean architecture."
+                }
             })
 
         # Limit to top 5 most relevant risks
@@ -456,6 +474,38 @@ class MockAIService(AIServiceBase):
                 "suggested_rewrite": risk["preparation_advice"]
             })
 
+        # Seniority Level Detection
+        if len(experience_lines) >= 8 or any(w in text_clean.lower() for w in ["lead", "senior", "staff", "architect", "manager", "5+ years", "6+ years"]):
+            seniority_level = "Senior / Lead SDE"
+        elif len(experience_lines) >= 3 or any(w in text_clean.lower() for w in ["sde-2", "2+ years", "3+ years", "4+ years"]):
+            seniority_level = "Mid-Level Software Engineer (SDE-2)"
+        elif len(experience_lines) >= 1 or len(extracted_projects) >= 2:
+            seniority_level = "Junior Software Engineer (SDE-1)"
+        else:
+            seniority_level = "Fresher / Entry Level Candidate"
+
+        # 1-Tap AI Bullet Rewriters
+        bullet_rewrites = [
+            {
+                "original_bullet": f"Developed application using {extracted_skills[0] if extracted_skills else 'Python'} and database.",
+                "rewritten_bullet": f"Architected 10+ RESTful microservices using {extracted_skills[0] if extracted_skills else 'Python'} and PostgreSQL with connection pooling, reducing p99 latency by 35%.",
+                "why_better": "Replaces passive phrasing with strong action verb ('Architected') and adds quantitative latency impact."
+            },
+            {
+                "original_bullet": "Worked on project UI and API backend integration.",
+                "rewritten_bullet": f"Engineered responsive user interface and integrated robust JWT-authenticated REST APIs with {extracted_skills[1] if len(extracted_skills) > 1 else 'SQL'}, supporting 5,000+ daily active users.",
+                "why_better": "Quantifies scale (5,000+ DAU) and details security & API architecture mechanics."
+            },
+            {
+                "original_bullet": "Handled code testing and database query execution.",
+                "rewritten_bullet": "Optimized SQL query execution plans and implemented automated pytest suites, improving query throughput by 45%.",
+                "why_better": "Highlights performance tuning metrics and automated testing best practices."
+            }
+        ]
+
+        star_compliance_score = min(98, max(30, 50 + (25 if has_metrics else 0) + (20 if len(proj_lines) >= 2 else 0)))
+        action_verb_density_score = min(98, max(35, 60 + (20 if any(v in text_clean.lower() for v in ["architected", "spearheaded", "engineered", "optimized", "built"]) else 0)))
+
         # 50 Resume Interview Questions
         resume_50_questions = self._generate_50_resume_questions(
             candidate_name=candidate_name,
@@ -482,6 +532,11 @@ class MockAIService(AIServiceBase):
             "risks": extracted_risks,
             "overall_resume_quality": overall_quality_score,
             "resume_strength_score": overall_quality_score,
+            "seniority_level": seniority_level,
+            "star_compliance_score": star_compliance_score,
+            "action_verb_density_score": action_verb_density_score,
+            "bullet_rewrites": bullet_rewrites,
+            "ats_raw_text_preview": text_clean,
             "quality_breakdown": quality_breakdown,
             "strengths": strengths,
             "weaknesses": weaknesses,

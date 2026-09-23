@@ -1,6 +1,6 @@
 import 'dart:io' as io;
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:intervuex_app/core/theme/app_colors.dart';
@@ -261,6 +261,10 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
     final qualityScore = res['overall_resume_quality'] ?? res['resume_strength_score'] ?? 80;
     final qualityBreakdown = (res['quality_breakdown'] as Map?)?.cast<String, dynamic>() ?? {};
     final atsScore = res['ats_score'] ?? qualityScore;
+    final seniorityLevel = res['seniority_level'] as String? ?? 'Fresher / Entry Level Candidate';
+    final bulletRewrites = res['bullet_rewrites'] as List? ?? [];
+    final atsRawText = res['ats_raw_text_preview'] as String? ?? '';
+
     final atsStrengths = List<String>.from(res['ats_strengths'] ?? []);
     final atsIssues = List<String>.from(res['ats_issues'] ?? []);
     final atsKeywordsFound = List<String>.from(res['ats_keywords_found'] ?? []);
@@ -289,7 +293,17 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(candidateName, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                  Row(
+                    children: [
+                      Flexible(child: Text(candidateName, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis)),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(color: primary.withOpacity(0.12), borderRadius: BorderRadius.circular(4)),
+                        child: Text(seniorityLevel.toUpperCase(), style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: primary)),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 2),
                   Text(
                     '${contactInfo['email'] ?? 'No Email'} • ${contactInfo['phone'] ?? ''}',
@@ -298,10 +312,20 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
                 ],
               ),
             ),
-            OutlinedButton.icon(
-              onPressed: () => setState(() => analysisResult = null),
-              icon: const Icon(Icons.upload_file, size: 14),
-              label: const Text('Re-Analyze', style: TextStyle(fontSize: 12)),
+            Row(
+              children: [
+                if (atsRawText.isNotEmpty)
+                  IconButton(
+                    tooltip: 'Recruiter ATS Text View',
+                    icon: Icon(Icons.smart_toy_outlined, color: primary, size: 20),
+                    onPressed: () => _showAtsRawTextModal(context, atsRawText, isDark, variant),
+                  ),
+                OutlinedButton.icon(
+                  onPressed: () => setState(() => analysisResult = null),
+                  icon: const Icon(Icons.upload_file, size: 14),
+                  label: const Text('Re-Analyze', style: TextStyle(fontSize: 12)),
+                ),
+              ],
             ),
           ],
         ),
@@ -535,6 +559,9 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
           const SizedBox(height: 16),
         ],
 
+        // 1-Tap AI Bullet Rewriter Section
+        _build1TapBulletRewriterSection(bulletRewrites, isDark, variant),
+
         // Target Job Alignment Banner (if target job selected)
         if (isJobTargeted) ...[
           AppCard(
@@ -666,6 +693,7 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
             final whyQuestioned = risk['why_questioned'] ?? risk['reason'] ?? '';
             final prepAdvice = risk['preparation_advice'] ?? '';
             final topics = risk['possible_questions'] as List? ?? risk['expected_grilling_topics'] as List? ?? [];
+            final starDefense = risk['star_defense'] as Map?;
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
@@ -769,6 +797,35 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
                         ),
                       ),
                     ],
+
+                    if (starDefense != null && starDefense.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: primary.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: primary.withOpacity(0.2)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.shield_outlined, size: 14, color: primary),
+                                const SizedBox(width: 4),
+                                Text('STAR INTERVIEW DEFENSE STRATEGY', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: primary, letterSpacing: 0.5)),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            if (starDefense['situation'] != null) Text('Situation: ${starDefense['situation']}', style: const TextStyle(fontSize: 11)),
+                            if (starDefense['task'] != null) Text('Task: ${starDefense['task']}', style: const TextStyle(fontSize: 11)),
+                            if (starDefense['action'] != null) Text('Action: ${starDefense['action']}', style: const TextStyle(fontSize: 11)),
+                            if (starDefense['result'] != null) Text('Result: ${starDefense['result']}', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.success)),
+                          ],
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -857,6 +914,216 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
         // 50 Resume Interview Questions Breakdown
         _build50ResumeQuestionsSection(res, isDark, variant),
       ],
+    );
+  }
+
+  Widget _build1TapBulletRewriterSection(List<dynamic> bulletRewrites, bool isDark, AppThemeVariant variant) {
+    if (bulletRewrites.isEmpty) return const SizedBox.shrink();
+
+    final primary = variant.primary;
+    final secondary = variant.light;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.auto_awesome, color: primary, size: 18),
+                const SizedBox(width: 8),
+                Text('1-TAP AI BULLET REWRITER (STAR METHOD)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: primary, letterSpacing: 0.5)),
+              ],
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(color: primary.withOpacity(0.12), borderRadius: BorderRadius.circular(4)),
+              child: Text('${bulletRewrites.length} Suggestions', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: primary)),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        ...bulletRewrites.map((rw) {
+          final original = rw['original'] ?? rw['original_bullet'] ?? '';
+          final rewritten = rw['rewritten'] ?? rw['star_bullet'] ?? '';
+          final reason = rw['reason'] ?? rw['star_framework'] ?? '';
+          final metric = rw['quantified_impact'] ?? '';
+
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: AppCard(
+              borderColor: primary.withOpacity(0.3),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(color: AppColors.danger.withOpacity(0.12), borderRadius: BorderRadius.circular(4)),
+                        child: const Text('BEFORE', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColors.danger)),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          '"$original"',
+                          style: const TextStyle(fontSize: 11, color: AppColors.textDarkSecondary, fontStyle: FontStyle.italic, height: 1.3),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  const Divider(height: 1),
+                  const SizedBox(height: 10),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(color: AppColors.success.withOpacity(0.15), borderRadius: BorderRadius.circular(4)),
+                        child: const Text('AFTER (STAR)', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColors.success)),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          rewritten,
+                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, height: 1.35),
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (metric.toString().isNotEmpty) ...[
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        const Icon(Icons.trending_up, size: 12, color: AppColors.success),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text('Quantified Impact: $metric', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.success)),
+                        ),
+                      ],
+                    ),
+                  ],
+                  if (reason.toString().isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(reason.toString(), style: TextStyle(fontSize: 10, color: secondary, fontStyle: FontStyle.italic)),
+                  ],
+                  const SizedBox(height: 10),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        visualDensity: VisualDensity.compact,
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      ),
+                      icon: const Icon(Icons.copy, size: 13),
+                      label: const Text('Copy Rewritten Bullet', style: TextStyle(fontSize: 11)),
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(text: rewritten.toString()));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('STAR Rewritten bullet copied to clipboard!'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
+  void _showAtsRawTextModal(BuildContext context, String atsRawText, bool isDark, AppThemeVariant variant) {
+    final primary = variant.primary;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: isDark ? const Color(0xFF0F172A) : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.75,
+          minChildSize: 0.4,
+          maxChildSize: 0.95,
+          expand: false,
+          builder: (_, controller) {
+            return Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.smart_toy_outlined, color: primary, size: 22),
+                          const SizedBox(width: 8),
+                          Text('Recruiter ATS Parsed Raw Text', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: primary)),
+                        ],
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(ctx),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'This is the exact plain text extracted by automated Recruiter Applicant Tracking Systems (ATS). Use this to verify formatting cleanly parses without broken characters.',
+                    style: TextStyle(fontSize: 11, color: AppColors.textDarkMuted),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      OutlinedButton.icon(
+                        icon: const Icon(Icons.copy, size: 14),
+                        label: const Text('Copy Raw Text', style: TextStyle(fontSize: 12)),
+                        onPressed: () {
+                          Clipboard.setData(ClipboardData(text: atsRawText));
+                          ScaffoldMessenger.of(ctx).showSnackBar(
+                            const SnackBar(content: Text('Raw ATS text copied!')),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1)),
+                      ),
+                      child: SingleChildScrollView(
+                        controller: controller,
+                        child: SelectableText(
+                          atsRawText.isNotEmpty ? atsRawText : 'No raw text available.',
+                          style: const TextStyle(fontFamily: 'monospace', fontSize: 11, height: 1.4),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
