@@ -9,7 +9,7 @@ import 'package:intervuex_app/presentation/providers/pack_provider.dart';
 import 'package:intervuex_app/presentation/providers/theme_provider.dart';
 import 'package:intervuex_app/presentation/views/jobs/analyze_job_screen.dart';
 import 'package:intervuex_app/presentation/views/resumes/analyze_resume_screen.dart';
-import 'package:intervuex_app/presentation/views/ai_coach/ai_coach_screen.dart';
+import 'package:intervuex_app/presentation/views/study_plan/study_plan_screen.dart';
 import 'package:intervuex_app/presentation/views/packs/pack_dashboard_screen.dart';
 import 'package:intervuex_app/presentation/views/packs/packs_list_screen.dart';
 import 'package:intervuex_app/presentation/views/questions/question_list_screen.dart';
@@ -251,11 +251,11 @@ class HomeScreen extends ConsumerWidget {
                   Expanded(
                     child: _actionTile(
                       context,
-                      icon: Icons.auto_awesome_rounded,
-                      label: 'AI\nCoach',
+                      icon: Icons.calendar_month_rounded,
+                      label: 'Study\nPlan',
                       color: secondary,
                       onTap: () => Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => const AiCoachScreen())),
+                          MaterialPageRoute(builder: (_) => const StudyPlanScreen())),
                     ),
                   ),
                 ],
