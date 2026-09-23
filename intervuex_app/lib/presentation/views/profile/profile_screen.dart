@@ -6,8 +6,10 @@ import 'package:intervuex_app/core/widgets/app_card.dart';
 import 'package:intervuex_app/core/widgets/report_ai_modal.dart';
 import 'package:intervuex_app/data/services/firebase_service.dart';
 import 'package:intervuex_app/presentation/providers/language_provider.dart';
+import 'package:intervuex_app/presentation/providers/pack_provider.dart';
 import 'package:intervuex_app/presentation/providers/theme_provider.dart';
 import 'package:intervuex_app/presentation/views/profile/account_deletion_screen.dart';
+import 'package:intervuex_app/presentation/views/shell/main_shell_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -425,16 +427,16 @@ class ProfileScreen extends ConsumerWidget {
                 onPressed: () async {
                   final confirmed = await showDialog<bool>(
                     context: context,
-                    builder: (_) => AlertDialog(
+                    builder: (dialogCtx) => AlertDialog(
                       title: const Text('Sign Out'),
                       content: const Text(
                           'Are you sure you want to sign out of IntervueX?'),
                       actions: [
                         TextButton(
-                            onPressed: () => Navigator.pop(context, false),
+                            onPressed: () => Navigator.pop(dialogCtx, false),
                             child: const Text('Cancel')),
                         TextButton(
-                          onPressed: () => Navigator.pop(context, true),
+                          onPressed: () => Navigator.pop(dialogCtx, true),
                           child: const Text('Sign Out',
                               style: TextStyle(color: AppColors.danger)),
                         ),
@@ -442,7 +444,12 @@ class ProfileScreen extends ConsumerWidget {
                     ),
                   );
                   if (confirmed == true) {
+                    if (context.mounted) {
+                      Navigator.of(context, rootNavigator: true).popUntil((route) => route.isFirst);
+                    }
                     await FirebaseService.instance.signOut();
+                    ref.read(shellNavIndexProvider.notifier).state = 0;
+                    ref.read(activePackIdProvider.notifier).state = null;
                   }
                 },
               ),

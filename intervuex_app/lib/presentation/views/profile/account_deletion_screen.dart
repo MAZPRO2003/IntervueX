@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intervuex_app/core/theme/app_colors.dart';
 import 'package:intervuex_app/core/widgets/app_button.dart';
 import 'package:intervuex_app/data/services/api_service.dart';
+import 'package:intervuex_app/data/services/firebase_service.dart';
 
 class AccountDeletionScreen extends StatefulWidget {
   const AccountDeletionScreen({super.key});
@@ -38,8 +39,9 @@ class _AccountDeletionScreenState extends State<AccountDeletionScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.of(context).popUntil((route) => route.isFirst);
+                await FirebaseService.instance.signOut();
               },
               child: const Text('Return to Home'),
             ),
