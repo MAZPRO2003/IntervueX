@@ -286,15 +286,15 @@ class ProfileScreen extends ConsumerWidget {
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      _langChoice('English', ExplanationLanguage.english, lang,
+                      _langChoice(context, 'English', ExplanationLanguage.english, lang,
                           subtextColor, borderColor,
                           () => ref.read(languageProvider.notifier).setLanguage(ExplanationLanguage.english)),
                       const SizedBox(width: 8),
-                      _langChoice('தமிழ் (Tamil)', ExplanationLanguage.tamil,
+                      _langChoice(context, 'தமிழ் (Tamil)', ExplanationLanguage.tamil,
                           lang, subtextColor, borderColor,
                           () => ref.read(languageProvider.notifier).setLanguage(ExplanationLanguage.tamil)),
                       const SizedBox(width: 8),
-                      _langChoice('हिन्दी (Hindi)', ExplanationLanguage.hindi,
+                      _langChoice(context, 'हिन्दी (Hindi)', ExplanationLanguage.hindi,
                           lang, subtextColor, borderColor,
                           () => ref.read(languageProvider.notifier).setLanguage(ExplanationLanguage.hindi)),
                     ],
@@ -545,6 +545,7 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   Widget _langChoice(
+    BuildContext context,
     String label,
     ExplanationLanguage choice,
     ExplanationLanguage current,
@@ -552,25 +553,35 @@ class ProfileScreen extends ConsumerWidget {
     Color borderColor,
     VoidCallback onTap,
   ) {
+    final primary = Theme.of(context).colorScheme.primary;
     final isSelected = choice == current;
     return Expanded(
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(10),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.electricIndigo : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
+            color: isSelected ? primary : Colors.transparent,
+            borderRadius: BorderRadius.circular(10),
             border: Border.all(
-                color: isSelected
-                    ? AppColors.electricIndigo
-                    : borderColor),
+                color: isSelected ? primary : borderColor,
+                width: isSelected ? 1.5 : 1.0),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: primary.withOpacity(0.3),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
           ),
           child: Center(
             child: Text(
               label,
+              textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
