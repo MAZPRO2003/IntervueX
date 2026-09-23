@@ -6,6 +6,7 @@ import 'package:intervuex_app/core/widgets/app_card.dart';
 import 'package:intervuex_app/core/widgets/evidence_badge.dart';
 import 'package:intervuex_app/data/models/pack_model.dart';
 import 'package:intervuex_app/presentation/providers/pack_provider.dart';
+import 'package:intervuex_app/presentation/providers/theme_provider.dart';
 import 'package:intervuex_app/presentation/views/questions/question_list_screen.dart';
 import 'package:intervuex_app/presentation/views/mock/mock_interview_screen.dart';
 import 'package:intervuex_app/presentation/views/study_plan/daily_checkin_screen.dart';
@@ -23,7 +24,7 @@ class _PackDashboardScreenState extends ConsumerState<PackDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final packAsync = ref.watch(activePackProvider);
-    final primary = Theme.of(context).colorScheme.primary;
+    final variant = ref.watch(themeVariantProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -72,9 +73,15 @@ class _PackDashboardScreenState extends ConsumerState<PackDashboardScreen> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
-                    gradient: AppColors.dynamicHeroGradient(context),
+                    gradient: variant.gradient,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: primary.withOpacity(0.4)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: variant.primary.withOpacity(0.35),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,10 +91,10 @@ class _PackDashboardScreenState extends ConsumerState<PackDashboardScreen> {
                         children: [
                           Expanded(
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                               decoration: BoxDecoration(
-                                color: primary.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(6),
+                                color: Colors.black.withOpacity(0.25),
+                                borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
                                 pack.hiringProgram.toUpperCase(),
@@ -98,29 +105,36 @@ class _PackDashboardScreenState extends ConsumerState<PackDashboardScreen> {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          Text(
-                            '${pack.daysRemaining} Days Left',
-                            style: const TextStyle(color: AppColors.warning, fontWeight: FontWeight.bold, fontSize: 12),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              '${pack.daysRemaining} Days Left',
+                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+                            ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
-                      Text(pack.company, style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 12),
+                      Text(pack.company, style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold, letterSpacing: 0.3)),
                       const SizedBox(height: 2),
-                      Text('${pack.role} • ${pack.location}', style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 14)),
+                      Text('${pack.role} • ${pack.location}', style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 14)),
                       const SizedBox(height: 16),
                       Row(
                         children: [
                           Expanded(
-                            child: _metricBox('Readiness', '${pack.readinessPercentage}%', AppColors.success),
+                            child: _metricBox('Readiness', '${pack.readinessPercentage}%', Colors.white),
                           ),
                           const SizedBox(width: 8),
                           Expanded(
-                            child: _metricBox('Questions', '${pack.totalQuestions}', AppColors.indigoLight),
+                            child: _metricBox('Questions', '${pack.totalQuestions}', Colors.white),
                           ),
                           const SizedBox(width: 8),
                           Expanded(
-                            child: _metricBox('Mastered', '${pack.masteredQuestions}', AppColors.cyanAccent),
+                            child: _metricBox('Mastered', '${pack.masteredQuestions}', Colors.white),
                           ),
                         ],
                       ),

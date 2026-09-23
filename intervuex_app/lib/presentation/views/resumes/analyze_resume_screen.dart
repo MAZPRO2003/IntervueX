@@ -8,6 +8,7 @@ import 'package:intervuex_app/core/widgets/app_button.dart';
 import 'package:intervuex_app/core/widgets/app_card.dart';
 import 'package:intervuex_app/data/services/api_service.dart';
 import 'package:intervuex_app/presentation/providers/pack_provider.dart';
+import 'package:intervuex_app/presentation/providers/theme_provider.dart';
 import 'package:intervuex_app/data/models/pack_model.dart';
 import 'package:intervuex_app/presentation/views/resumes/pdf_resume_risk_viewer_screen.dart';
 
@@ -85,6 +86,7 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final variant = ref.watch(themeVariantProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -103,12 +105,13 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
             )
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16),
-              child: analysisResult == null ? _buildInput(isDark) : _buildResult(isDark),
+              child: analysisResult == null ? _buildInput(isDark, variant) : _buildResult(isDark, variant),
             ),
     );
   }
 
-  Widget _buildInput(bool isDark) {
+  Widget _buildInput(bool isDark, AppThemeVariant variant) {
+    final primary = variant.primary;
     final packsAsync = ref.watch(packsListProvider);
     final List<InterviewPackModel> packs = packsAsync.maybeWhen(
       data: (list) => list,
@@ -132,12 +135,12 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Row(
+              Row(
                 children: [
-                  Icon(Icons.track_changes, size: 16, color: AppColors.electricIndigo),
-                  SizedBox(width: 6),
+                  Icon(Icons.track_changes, size: 16, color: primary),
+                  const SizedBox(width: 6),
                   Expanded(
-                    child: Text('TARGET JOB ALIGNMENT (OPTIONAL)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.electricIndigo), overflow: TextOverflow.ellipsis),
+                    child: Text('TARGET JOB ALIGNMENT (OPTIONAL)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: primary), overflow: TextOverflow.ellipsis),
                   ),
                 ],
               ),
@@ -184,18 +187,18 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
             width: double.infinity,
             height: 140,
             decoration: BoxDecoration(
-              border: Border.all(color: AppColors.electricIndigo.withOpacity(0.5), width: 1.5),
+              border: Border.all(color: primary.withOpacity(0.5), width: 1.5),
               borderRadius: BorderRadius.circular(16),
-              color: AppColors.electricIndigo.withOpacity(0.04),
+              color: primary.withOpacity(0.05),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.file_present_outlined, size: 40, color: AppColors.indigoLight),
+                Icon(Icons.file_present_outlined, size: 40, color: primary),
                 const SizedBox(height: 8),
                 Text(
                   pickedFile != null ? pickedFile!.name : 'Click to Upload Resume (PDF / DOCX)',
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: primary),
                 ),
                 const SizedBox(height: 4),
                 const Text('Supports PDF, Word DOCX, and Text', style: TextStyle(fontSize: 12, color: AppColors.textDarkMuted)),
@@ -237,7 +240,9 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
     );
   }
 
-  Widget _buildResult(bool isDark) {
+  Widget _buildResult(bool isDark, AppThemeVariant variant) {
+    final primary = variant.primary;
+    final secondary = variant.light;
     final res = analysisResult!;
     final candidateName = res['candidate_name'] ?? 'Candidate Profile';
     final contactInfo = res['contact_info'] as Map? ?? {};
@@ -298,7 +303,7 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
                             children: [
                               const Text('TARGET JOB ALIGNMENT SCORE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted, letterSpacing: 0.5)),
                               const SizedBox(height: 2),
-                              Text(targetJobTitle, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.indigoLight)),
+                              Text(targetJobTitle, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: secondary)),
                             ],
                           ),
                         ),
@@ -341,29 +346,29 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Expanded(
+                        Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('RESUME TECHNICAL STRENGTH SCORE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted, letterSpacing: 0.5)),
-                              SizedBox(height: 2),
-                              Text('Standalone Quality Review', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.indigoLight)),
+                              const Text('RESUME TECHNICAL STRENGTH SCORE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted, letterSpacing: 0.5)),
+                              const SizedBox(height: 2),
+                              Text('Standalone Quality Review', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: secondary)),
                             ],
                           ),
                         ),
-                        Text('$strengthScore/100', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: AppColors.electricIndigo)),
+                        Text('$strengthScore/100', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: primary)),
                       ],
                     ),
                     const SizedBox(height: 10),
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: AppColors.electricIndigo.withOpacity(0.08),
+                        color: primary.withOpacity(0.08),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.info_outline, size: 16, color: AppColors.indigoLight),
+                          Icon(Icons.info_outline, size: 16, color: secondary),
                           const SizedBox(width: 8),
                           const Expanded(
                             child: Text(
@@ -395,7 +400,7 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(cat.toUpperCase(), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.indigoLight)),
+                    Text(cat.toUpperCase(), style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: secondary)),
                     const SizedBox(height: 4),
                     Wrap(
                       spacing: 6,
@@ -497,7 +502,7 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
         const SizedBox(height: 16),
 
         // Deep Project Claim Questions
-        const Text('PROJECT CLAIM FOLLOW-UP QUESTIONS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.indigoLight, letterSpacing: 0.5)),
+        Text('PROJECT CLAIM FOLLOW-UP QUESTIONS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: secondary, letterSpacing: 0.5)),
         const SizedBox(height: 8),
         ...projects.map((proj) {
           final qList = proj['potential_questions'] as List? ?? [];
@@ -524,20 +529,20 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
                       spacing: 4,
                       children: techList.map((t) => Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(color: AppColors.electricIndigo.withOpacity(0.1), borderRadius: BorderRadius.circular(4)),
-                        child: Text(t, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.electricIndigo)),
+                        decoration: BoxDecoration(color: primary.withOpacity(0.1), borderRadius: BorderRadius.circular(4)),
+                        child: Text(t, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: primary)),
                       )).toList(),
                     ),
                   ],
                   const SizedBox(height: 10),
-                  const Text('4 Technical Grilling Questions:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.indigoLight)),
+                  Text('4 Technical Grilling Questions:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: secondary)),
                   const SizedBox(height: 6),
                   ...qList.map((q) => Padding(
                     padding: const EdgeInsets.only(bottom: 6),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('• ', style: TextStyle(color: AppColors.indigoLight, fontWeight: FontWeight.bold)),
+                        Text('• ', style: TextStyle(color: secondary, fontWeight: FontWeight.bold)),
                         Expanded(child: Text(q.toString(), style: const TextStyle(fontSize: 12, height: 1.3))),
                       ],
                     ),
@@ -597,12 +602,14 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
         const SizedBox(height: 24),
 
         // 50 Resume Interview Questions Breakdown
-        _build50ResumeQuestionsSection(res, isDark),
+        _build50ResumeQuestionsSection(res, isDark, variant),
       ],
     );
   }
 
-  Widget _build50ResumeQuestionsSection(Map<String, dynamic> res, bool isDark) {
+  Widget _build50ResumeQuestionsSection(Map<String, dynamic> res, bool isDark, AppThemeVariant variant) {
+    final primary = variant.primary;
+    final secondary = variant.light;
     final rawQList = res['resume_questions'] as List? ?? [];
     if (rawQList.isEmpty) return const SizedBox.shrink();
 
@@ -626,7 +633,7 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('50 RESUME INTERVIEW QUESTIONS', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.electricIndigo, letterSpacing: 0.5)),
+                  Text('50 RESUME INTERVIEW QUESTIONS', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: primary, letterSpacing: 0.5)),
                   const SizedBox(height: 2),
                   Text('Questions based on your resume claims (${rawQList.length} Total)', style: const TextStyle(fontSize: 11, color: AppColors.textDarkMuted), overflow: TextOverflow.ellipsis),
                 ],
@@ -635,8 +642,8 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
             const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(color: AppColors.electricIndigo.withOpacity(0.12), borderRadius: BorderRadius.circular(6)),
-              child: Text('${rawQList.length} Qs', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.electricIndigo)),
+              decoration: BoxDecoration(color: primary.withOpacity(0.12), borderRadius: BorderRadius.circular(6)),
+              child: Text('${rawQList.length} Qs', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: primary)),
             ),
           ],
         ),
@@ -653,7 +660,7 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
                 child: ChoiceChip(
                   label: Text(cat, style: TextStyle(fontSize: 11, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal, color: isSelected ? Colors.white : null)),
                   selected: isSelected,
-                  selectedColor: AppColors.electricIndigo,
+                  selectedColor: primary,
                   onSelected: (val) {
                     if (val) {
                       setState(() => _selectedQFilter = cat);
@@ -675,7 +682,7 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
           final qAns = q['expected_answer_framework'] ?? '';
           final qEval = q['what_evaluators_look_for'] ?? '';
 
-          Color badgeColor = AppColors.electricIndigo;
+          Color badgeColor = primary;
           if (qDiff == 'High') badgeColor = AppColors.danger;
           if (qDiff == 'Low') badgeColor = AppColors.success;
 
@@ -709,7 +716,7 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9), borderRadius: BorderRadius.circular(4)),
-                        child: Text(qCat.toString(), style: const TextStyle(fontSize: 10, color: AppColors.indigoLight, fontWeight: FontWeight.w600)),
+                        child: Text(qCat.toString(), style: TextStyle(fontSize: 10, color: secondary, fontWeight: FontWeight.w600)),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
@@ -729,7 +736,7 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
                   const SizedBox(height: 4),
                   Text(qAns.toString(), style: const TextStyle(fontSize: 12, height: 1.35)),
                   const SizedBox(height: 8),
-                  const Text('What Evaluators Look For:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.indigoLight)),
+                  Text('What Evaluators Look For:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: secondary)),
                   const SizedBox(height: 4),
                   Text(qEval.toString(), style: const TextStyle(fontSize: 11, color: AppColors.textDarkSecondary, height: 1.3)),
                 ],

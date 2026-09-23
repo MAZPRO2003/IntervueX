@@ -165,13 +165,14 @@ class _PdfResumeRiskViewerScreenState extends ConsumerState<PdfResumeRiskViewerS
     );
   }
 
-  Widget _filterPill(String severity, int count, {String label = 'All', Color color = AppColors.electricIndigo}) {
+  Widget _filterPill(String severity, int count, {String label = 'All', Color? color}) {
+    final activeColor = color ?? Theme.of(context).colorScheme.primary;
     final isSelected = _selectedSeverityFilter == severity;
     return ChoiceChip(
       selected: isSelected,
       label: Text('$label ($count)', style: TextStyle(fontSize: 11, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
-      selectedColor: color.withOpacity(0.2),
-      checkmarkColor: color,
+      selectedColor: activeColor.withOpacity(0.2),
+      checkmarkColor: activeColor,
       onSelected: (val) {
         if (val) {
           setState(() {
@@ -191,7 +192,7 @@ class _PdfResumeRiskViewerScreenState extends ConsumerState<PdfResumeRiskViewerS
       case 'verified_strength':
         return AppColors.success;
       default:
-        return AppColors.electricIndigo;
+        return Theme.of(context).colorScheme.primary;
     }
   }
 
