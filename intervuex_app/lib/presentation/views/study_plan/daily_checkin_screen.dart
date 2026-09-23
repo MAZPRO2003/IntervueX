@@ -4,6 +4,7 @@ import 'package:intervuex_app/core/theme/app_colors.dart';
 import 'package:intervuex_app/core/widgets/app_button.dart';
 import 'package:intervuex_app/data/services/api_service.dart';
 import 'package:intervuex_app/presentation/providers/pack_provider.dart';
+import 'package:intervuex_app/presentation/providers/theme_provider.dart';
 
 class DailyCheckinScreen extends ConsumerStatefulWidget {
   const DailyCheckinScreen({super.key});
@@ -187,6 +188,7 @@ class _DailyCheckinScreenState extends ConsumerState<DailyCheckinScreen> {
   @override
   Widget build(BuildContext context) {
     final activePackId = ref.watch(activePackIdProvider);
+    final variant = ref.watch(themeVariantProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (activePackId == null) {
@@ -231,9 +233,15 @@ class _DailyCheckinScreenState extends ConsumerState<DailyCheckinScreen> {
               width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                gradient: isDark ? AppColors.darkCardGradient : AppColors.primaryGradient,
+                gradient: variant.gradient,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.electricIndigo.withOpacity(0.4)),
+                boxShadow: [
+                  BoxShadow(
+                    color: variant.primary.withOpacity(0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -243,7 +251,7 @@ class _DailyCheckinScreenState extends ConsumerState<DailyCheckinScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppColors.electricIndigo.withOpacity(0.3),
+                          color: Colors.white.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
@@ -255,17 +263,17 @@ class _DailyCheckinScreenState extends ConsumerState<DailyCheckinScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppColors.success.withOpacity(0.2),
+                          color: Colors.white.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: AppColors.success.withOpacity(0.5)),
+                          border: Border.all(color: Colors.white.withOpacity(0.3)),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.bolt, color: AppColors.success, size: 14),
+                            const Icon(Icons.bolt, color: Colors.white, size: 14),
                             const SizedBox(width: 4),
                             Text(
                               '$readinessScore% Readiness',
-                              style: const TextStyle(color: AppColors.success, fontWeight: FontWeight.bold, fontSize: 12),
+                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
                             ),
                           ],
                         ),
@@ -276,12 +284,12 @@ class _DailyCheckinScreenState extends ConsumerState<DailyCheckinScreen> {
                   Text(company, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
                   if (hiringProgram.isNotEmpty) ...[
                     const SizedBox(height: 2),
-                    Text(hiringProgram, style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 12)),
+                    Text(hiringProgram, style: TextStyle(color: Colors.white.withOpacity(0.85), fontSize: 12)),
                   ],
                   const SizedBox(height: 8),
                   Text(
                     dayTitle,
-                    style: const TextStyle(color: AppColors.cyanAccent, fontWeight: FontWeight.w600, fontSize: 13),
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13),
                   ),
                 ],
               ),
@@ -301,7 +309,7 @@ class _DailyCheckinScreenState extends ConsumerState<DailyCheckinScreen> {
                     child: ChoiceChip(
                       label: Text('Day $dIndex'),
                       selected: isSelected,
-                      selectedColor: AppColors.electricIndigo,
+                      selectedColor: variant.primary,
                       labelStyle: TextStyle(
                         color: isSelected ? Colors.white : (isDark ? Colors.white70 : Colors.black87),
                         fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,

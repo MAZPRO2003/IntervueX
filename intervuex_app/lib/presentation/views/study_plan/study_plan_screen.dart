@@ -5,6 +5,7 @@ import 'package:intervuex_app/core/theme/app_colors.dart';
 import 'package:intervuex_app/core/widgets/app_card.dart';
 import 'package:intervuex_app/data/models/study_plan_model.dart';
 import 'package:intervuex_app/presentation/providers/pack_provider.dart';
+import 'package:intervuex_app/presentation/providers/theme_provider.dart';
 import 'package:intervuex_app/presentation/views/study_plan/daily_checkin_screen.dart';
 import 'package:intervuex_app/presentation/views/questions/question_list_screen.dart';
 import 'package:intervuex_app/presentation/views/mock/mock_interview_screen.dart';
@@ -101,6 +102,7 @@ class StudyPlanScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final studyPlanAsync = ref.watch(activeStudyPlanProvider);
+    final variant = ref.watch(themeVariantProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primary = Theme.of(context).colorScheme.primary;
 
@@ -200,11 +202,10 @@ class StudyPlanScreen extends ConsumerWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      gradient: isDark ? AppColors.darkCardGradient : AppColors.primaryGradient,
+                      gradient: variant.gradient,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: primary.withOpacity(0.5)),
                       boxShadow: [
-                        BoxShadow(color: primary.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 4)),
+                        BoxShadow(color: variant.primary.withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 4)),
                       ],
                     ),
                     child: Row(
@@ -212,7 +213,7 @@ class StudyPlanScreen extends ConsumerWidget {
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.15),
+                            color: Colors.white.withOpacity(0.2),
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(Icons.playlist_add_check_circle, color: Colors.white, size: 24),
@@ -237,8 +238,9 @@ class StudyPlanScreen extends ConsumerWidget {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                           decoration: BoxDecoration(
-                            color: AppColors.success,
+                            color: Colors.white.withOpacity(0.25),
                             borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.white.withOpacity(0.4)),
                           ),
                           child: const Text('Check In →', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11)),
                         ),
@@ -317,7 +319,7 @@ class StudyPlanScreen extends ConsumerWidget {
                       const SizedBox(height: 10),
 
                       _skillBar('Technical & OOP', r.technicalScore, primary, isDark),
-                      _skillBar('Resume Claims', r.resumeScore, AppColors.indigoLight, isDark),
+                      _skillBar('Resume Claims', r.resumeScore, variant.light, isDark),
                       _skillBar('Project Defense', r.projectScore, AppColors.cyanAccent, isDark),
                       _skillBar('Coding & DSA', r.codingScore, AppColors.warning, isDark),
                       _skillBar('SQL & Database', r.sqlDbScore, AppColors.danger, isDark),
