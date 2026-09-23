@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intervuex_app/core/theme/app_colors.dart';
@@ -77,7 +78,7 @@ class CodeSandboxScreen extends ConsumerStatefulWidget {
 class _CodeSandboxScreenState extends ConsumerState<CodeSandboxScreen> {
   SandboxQuestionItem? _selectedQuestion;
   String _selectedLanguage = 'Python 3';
-  late TextEditingController _codeController;
+  late CodeSyntaxController _codeController;
   final TextEditingController _searchCtrl = TextEditingController();
 
   String _filterDifficulty = 'All';
@@ -168,10 +169,14 @@ class _CodeSandboxScreenState extends ConsumerState<CodeSandboxScreen> {
   @override
   void initState() {
     super.initState();
-    _codeController = TextEditingController(text: '');
+    _codeController = CodeSyntaxController(
+      language: _selectedLanguage,
+      isDark: true,
+    );
     if (widget.initialQuestion != null) {
       _selectedQuestion = SandboxQuestionItem.fromQuestionModel(widget.initialQuestion!);
       _selectedLanguage = _detectBestLanguage(_selectedQuestion!);
+      _codeController.language = _selectedLanguage;
       if (_selectedQuestion!.codeExample != null && _selectedQuestion!.codeExample!.trim().isNotEmpty) {
         _codeController.text = _selectedQuestion!.codeExample!;
       } else {
@@ -192,6 +197,7 @@ class _CodeSandboxScreenState extends ConsumerState<CodeSandboxScreen> {
     setState(() {
       _selectedQuestion = item;
       _selectedLanguage = detectedLang;
+      _codeController.language = detectedLang;
       _executionResult = null;
       if (item.codeExample != null && item.codeExample!.trim().isNotEmpty) {
         _codeController.text = item.codeExample!;
@@ -303,6 +309,7 @@ class _CodeSandboxScreenState extends ConsumerState<CodeSandboxScreen> {
                   if (val != null) {
                     setState(() {
                       _selectedLanguage = val;
+                      _codeController.language = val;
                       final text = _codeController.text;
                       if (text.isEmpty ||
                           text.startsWith('# Write your') ||
@@ -627,27 +634,17 @@ class _CodeSandboxScreenState extends ConsumerState<CodeSandboxScreen> {
           // Language-Aware Code Editor Toolbar
           _buildToolbarForLanguage(isDark),
 
-          // Monospaced Code Text Area
+          // Real IDE Code Editor Surface with Line Numbers Gutter & Syntax Highlighting
           Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(12),
-              color: isDark ? const Color(0xFF0D1117) : const Color(0xFFFFFFFF),
-              child: TextField(
-                controller: _codeController,
-                maxLines: null,
-                expands: true,
-                keyboardType: TextInputType.multiline,
-                style: GoogleFonts.firaCode(
-                  fontSize: 13,
-                  color: isDark ? const Color(0xFFE6EDE3) : const Color(0xFF0F172A),
-                  height: 1.5,
-                ),
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  hintText: '# Write your code solution here...',
-                  hintStyle: TextStyle(color: Colors.grey),
-                ),
-              ),
+            child: RealCodeEditor(
+              controller: _codeController,
+              language: _selectedLanguage,
+              isDark: isDark,
+              onResetTemplate: () {
+                setState(() {
+                  _codeController.text = _getStarterCodeTemplate(_selectedLanguage, _selectedQuestion!.title);
+                });
+              },
             ),
           ),
 
@@ -923,6 +920,414 @@ class _CodeSandboxScreenState extends ConsumerState<CodeSandboxScreen> {
         difficulty.toUpperCase(),
         style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: color),
       ),
+    );
+  }
+}
+
+// ─── REAL IDE SYNTAX HIGHLIGHTING CONTROLLER ────────────────────────────────
+class CodeSyntaxController extends TextEditingController {
+  String language;
+  final bool isDark;
+
+  CodeSyntaxController({
+    super.text,
+    this.language = 'Python 3',
+    this.isDark = true,
+  });
+
+  @override
+  TextSpan buildTextSpan({
+    required BuildContext context,
+    TextStyle? style,
+    required bool withComposing,
+  }) {
+    final baseStyle = GoogleFonts.firaCode(
+      fontSize: 13,
+      height: 1.45,
+      color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF0F172A),
+    );
+
+    final String textContent = text;
+    if (textContent.isEmpty) {
+      return TextSpan(text: '', style: baseStyle);
+    }
+
+    final spans = _parseSyntaxTokens(textContent, language, isDark, baseStyle);
+    return TextSpan(style: baseStyle, children: spans);
+  }
+
+  static List<TextSpan> _parseSyntaxTokens(
+    String code,
+    String lang,
+    bool isDark,
+    TextStyle baseStyle,
+  ) {
+    final keywordColor = isDark ? const Color(0xFF569CD6) : const Color(0xFF005CC5);
+    final stringColor = isDark ? const Color(0xFFCE9178) : const Color(0xFF032F62);
+    final commentColor = isDark ? const Color(0xFF6A9955) : const Color(0xFF6A737D);
+    final numberColor = isDark ? const Color(0xFFB5CEA8) : const Color(0xFF005CC5);
+    final functionColor = isDark ? const Color(0xFFDCDCAA) : const Color(0xFF6F42C1);
+    final sqlKeywordColor = isDark ? const Color(0xFFC586C0) : const Color(0xFFD73A49);
+
+    final List<TextSpan> spans = [];
+
+    RegExp tokenRegex;
+    if (lang == 'PostgreSQL') {
+      tokenRegex = RegExp(
+        r'(--[^\n]*)|'
+        r'("([^"\\]|\\.)*"|\x27([^\x27\\]|\\.)*\x27)|'
+        r'(\b(?:SELECT|FROM|WHERE|JOIN|LEFT|RIGHT|INNER|OUTER|ON|GROUP|BY|ORDER|HAVING|LIMIT|OFFSET|INSERT|INTO|UPDATE|SET|DELETE|CREATE|TABLE|DROP|ALTER|AND|OR|NOT|IN|IS|NULL|AS|COUNT|SUM|AVG|MIN|MAX|DISTINCT|UNION|ALL|CASE|WHEN|THEN|ELSE|END)\b)|'
+        r'(\b\d+(\.\d+)?\b)|'
+        r'(\b[a-zA-Z_]\w*\b)',
+        caseSensitive: false,
+      );
+    } else if (lang == 'JavaScript') {
+      tokenRegex = RegExp(
+        r'(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|'
+        r'("([^"\\]|\\.)*"|\x27([^\x27\\]|\\.)*\x27|`([^`\\]|\\.)*`)|'
+        r'(\b(?:const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|import|export|default|from|class|extends|new|this|async|await|try|catch|finally|throw|typeof|instanceof|void|yield|null|undefined|true|false)\b)|'
+        r'(\b\d+(\.\d+)?\b)|'
+        r'(\b[a-zA-Z_]\w*(?=\s*\())|'
+        r'(\b[a-zA-Z_]\w*\b)',
+      );
+    } else if (lang == 'Java') {
+      tokenRegex = RegExp(
+        r'(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|'
+        r'("([^"\\]|\\.)*"|\x27([^\x27\\]|\\.)*\x27)|'
+        r'(\b(?:public|private|protected|static|final|abstract|class|interface|extends|implements|void|int|double|float|long|boolean|char|byte|short|return|if|else|for|while|do|switch|case|break|continue|new|this|super|try|catch|finally|throw|throws|null|true|false)\b)|'
+        r'(\b\d+(\.\d+)?\b)|'
+        r'(\b[a-zA-Z_]\w*(?=\s*\())|'
+        r'(\b[a-zA-Z_]\w*\b)',
+      );
+    } else {
+      tokenRegex = RegExp(
+        r'(#[^\n]*)|'
+        r'("([^"\\]|\\.)*"|\x27([^\x27\\]|\\.)*\x27)|'
+        r'(\b(?:def|return|if|elif|else|for|while|in|is|not|and|or|import|from|as|class|try|except|finally|raise|with|pass|break|continue|lambda|yield|global|nonlocal|assert|None|True|False|self)\b)|'
+        r'(\b\d+(\.\d+)?\b)|'
+        r'(\b[a-zA-Z_]\w*(?=\s*\())|'
+        r'(\b[a-zA-Z_]\w*\b)',
+      );
+    }
+
+    int lastIndex = 0;
+    for (final Match match in tokenRegex.allMatches(code)) {
+      if (match.start > lastIndex) {
+        spans.add(TextSpan(
+          text: code.substring(lastIndex, match.start),
+          style: baseStyle,
+        ));
+      }
+
+      final String token = match.group(0)!;
+
+      if (lang == 'PostgreSQL') {
+        if (match.group(1) != null) {
+          spans.add(TextSpan(text: token, style: baseStyle.copyWith(color: commentColor, fontStyle: FontStyle.italic)));
+        } else if (match.group(2) != null) {
+          spans.add(TextSpan(text: token, style: baseStyle.copyWith(color: stringColor)));
+        } else if (match.group(3) != null) {
+          spans.add(TextSpan(text: token.toUpperCase(), style: baseStyle.copyWith(color: sqlKeywordColor, fontWeight: FontWeight.bold)));
+        } else if (match.group(4) != null) {
+          spans.add(TextSpan(text: token, style: baseStyle.copyWith(color: numberColor)));
+        } else {
+          spans.add(TextSpan(text: token, style: baseStyle));
+        }
+      } else {
+        if (match.group(1) != null) {
+          spans.add(TextSpan(text: token, style: baseStyle.copyWith(color: commentColor, fontStyle: FontStyle.italic)));
+        } else if (match.group(2) != null) {
+          spans.add(TextSpan(text: token, style: baseStyle.copyWith(color: stringColor)));
+        } else if (match.group(3) != null) {
+          spans.add(TextSpan(text: token, style: baseStyle.copyWith(color: keywordColor, fontWeight: FontWeight.bold)));
+        } else if (match.group(4) != null) {
+          spans.add(TextSpan(text: token, style: baseStyle.copyWith(color: numberColor)));
+        } else if (match.group(5) != null) {
+          spans.add(TextSpan(text: token, style: baseStyle.copyWith(color: functionColor, fontWeight: FontWeight.w600)));
+        } else {
+          spans.add(TextSpan(text: token, style: baseStyle));
+        }
+      }
+
+      lastIndex = match.end;
+    }
+
+    if (lastIndex < code.length) {
+      spans.add(TextSpan(
+        text: code.substring(lastIndex),
+        style: baseStyle,
+      ));
+    }
+
+    return spans;
+  }
+}
+
+// ─── REAL IDE CODE EDITOR WIDGET (LINE NUMBERS & STATUS BAR) ─────────────────
+class RealCodeEditor extends StatefulWidget {
+  final CodeSyntaxController controller;
+  final String language;
+  final bool isDark;
+  final VoidCallback? onResetTemplate;
+
+  const RealCodeEditor({
+    super.key,
+    required this.controller,
+    required this.language,
+    required this.isDark,
+    this.onResetTemplate,
+  });
+
+  @override
+  State<RealCodeEditor> createState() => _RealCodeEditorState();
+}
+
+class _RealCodeEditorState extends State<RealCodeEditor> {
+  final ScrollController _scrollController = ScrollController();
+  int _lineCount = 1;
+  int _currentLine = 1;
+  int _currentCol = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_updateEditorState);
+    _updateEditorState();
+  }
+
+  @override
+  void didUpdateWidget(covariant RealCodeEditor oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller.removeListener(_updateEditorState);
+      widget.controller.addListener(_updateEditorState);
+      _updateEditorState();
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_updateEditorState);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _updateEditorState() {
+    final text = widget.controller.text;
+    final lines = text.split('\n');
+    final newCount = lines.isEmpty ? 1 : lines.length;
+
+    final sel = widget.controller.selection;
+    int line = 1;
+    int col = 1;
+
+    if (sel.isValid && sel.start >= 0 && sel.start <= text.length) {
+      final sub = text.substring(0, sel.start);
+      final subLines = sub.split('\n');
+      line = subLines.length;
+      col = subLines.last.length + 1;
+    }
+
+    if (mounted) {
+      setState(() {
+        _lineCount = newCount;
+        _currentLine = line;
+        _currentCol = col;
+      });
+    }
+  }
+
+  void _autoFormatCode() {
+    final text = widget.controller.text;
+    final lines = text.split('\n');
+    final formattedLines = <String>[];
+    for (final l in lines) {
+      final trimmedRight = l.trimRight();
+      formattedLines.add(trimmedRight);
+    }
+    widget.controller.text = formattedLines.join('\n');
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Code auto-formatted & trailing whitespace trimmed!'), duration: Duration(seconds: 1)),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+    final isDark = widget.isDark;
+
+    final editorBg = isDark ? const Color(0xFF0D1117) : const Color(0xFFFFFFFF);
+    final gutterBg = isDark ? const Color(0xFF161B22) : const Color(0xFFF1F5F9);
+    final gutterText = isDark ? const Color(0xFF484F58) : const Color(0xFF94A3B8);
+    final statusBarBg = isDark ? const Color(0xFF161B22) : const Color(0xFFF1F5F9);
+    final borderColor = isDark ? const Color(0xFF30363D) : const Color(0xFFE2E8F0);
+
+    return Column(
+      children: [
+        // Main Editor Surface with Line Numbers Gutter
+        Expanded(
+          child: Container(
+            color: editorBg,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Line Numbers Gutter
+                Container(
+                  width: 44,
+                  color: gutterBg,
+                  padding: const EdgeInsets.only(top: 12, bottom: 12, right: 8),
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: List.generate(_lineCount, (index) {
+                        final lineNum = index + 1;
+                        final isCurrent = lineNum == _currentLine;
+                        return Container(
+                          height: 18.85,
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            '$lineNum',
+                            style: GoogleFonts.firaCode(
+                              fontSize: 12,
+                              fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal,
+                              color: isCurrent ? primary : gutterText,
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                ),
+                Container(width: 1, color: borderColor),
+
+                // Monospaced Syntax Editor
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                    child: TextField(
+                      controller: widget.controller,
+                      maxLines: null,
+                      expands: true,
+                      keyboardType: TextInputType.multiline,
+                      style: GoogleFonts.firaCode(
+                        fontSize: 13,
+                        height: 1.45,
+                      ),
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        contentPadding: EdgeInsets.zero,
+                        isDense: true,
+                        hintText: '// Write your code solution here...',
+                        hintStyle: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // IDE Bottom Status Bar (Cursor position, stats, formatting controls)
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: statusBarBg,
+            border: Border(top: BorderSide(color: borderColor)),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: primary.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  widget.language,
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: primary),
+                ),
+              ),
+              const SizedBox(width: 10),
+
+              Text(
+                'Ln $_currentLine, Col $_currentCol',
+                style: GoogleFonts.firaCode(fontSize: 10, color: gutterText, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(width: 8),
+              Text('•', style: TextStyle(fontSize: 10, color: gutterText)),
+              const SizedBox(width: 8),
+
+              Text(
+                '$_lineCount lines (${widget.controller.text.length} chars)',
+                style: GoogleFonts.firaCode(fontSize: 10, color: gutterText),
+              ),
+
+              const Spacer(),
+
+              Tooltip(
+                message: 'Auto-Format & Trim Spacing',
+                child: InkWell(
+                  onTap: _autoFormatCode,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                    child: Row(
+                      children: [
+                        Icon(Icons.cleaning_services_outlined, size: 13, color: primary),
+                        const SizedBox(width: 4),
+                        Text('Format', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: primary)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+
+              Tooltip(
+                message: 'Copy Code',
+                child: InkWell(
+                  onTap: () {
+                    Clipboard.setData(ClipboardData(text: widget.controller.text));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Code copied to clipboard!'), duration: Duration(seconds: 1)),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                    child: Row(
+                      children: [
+                        Icon(Icons.copy, size: 12, color: primary),
+                        const SizedBox(width: 4),
+                        Text('Copy', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: primary)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              if (widget.onResetTemplate != null) ...[
+                const SizedBox(width: 10),
+                Tooltip(
+                  message: 'Reset to Starter Code',
+                  child: InkWell(
+                    onTap: widget.onResetTemplate,
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                      child: Icon(Icons.restart_alt, size: 14, color: AppColors.warning),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
