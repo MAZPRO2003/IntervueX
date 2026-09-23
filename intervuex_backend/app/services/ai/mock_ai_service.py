@@ -484,20 +484,29 @@ class MockAIService(AIServiceBase):
         else:
             seniority_level = "Fresher / Entry Level Candidate"
 
-        # 1-Tap AI Bullet Rewriters
+        # 1-Tap AI Bullet Rewriters (Multi-Framework Support)
         bullet_rewrites = [
             {
                 "original_bullet": f"Developed application using {extracted_skills[0] if extracted_skills else 'Python'} and database.",
+                "star_bullet": f"Architected 10+ RESTful microservices using {extracted_skills[0] if extracted_skills else 'Python'} and PostgreSQL with connection pooling, reducing p99 latency by 35%.",
+                "google_xyz_bullet": f"Accomplished 35% reduction in p99 API latency as measured by Datadog APM metrics by architecting 10+ microservices using {extracted_skills[0] if extracted_skills else 'Python'} and PostgreSQL.",
+                "action_impact_bullet": f"Spearheaded 10+ high-throughput {extracted_skills[0] if extracted_skills else 'Python'} REST services with PostgreSQL connection pooling, driving a 35% latency drop.",
                 "rewritten_bullet": f"Architected 10+ RESTful microservices using {extracted_skills[0] if extracted_skills else 'Python'} and PostgreSQL with connection pooling, reducing p99 latency by 35%.",
                 "why_better": "Replaces passive phrasing with strong action verb ('Architected') and adds quantitative latency impact."
             },
             {
                 "original_bullet": "Worked on project UI and API backend integration.",
+                "star_bullet": f"Engineered responsive user interface and integrated robust JWT-authenticated REST APIs with {extracted_skills[1] if len(extracted_skills) > 1 else 'SQL'}, supporting 5,000+ daily active users.",
+                "google_xyz_bullet": f"Accomplished 99.9% uptime for 5,000+ daily active users as measured by OAuth2 JWT telemetry by engineering responsive UI and backend API integration.",
+                "action_impact_bullet": f"Built & scaled responsive UI with JWT-authenticated {extracted_skills[1] if len(extracted_skills) > 1 else 'SQL'} backend endpoints, serving 5,000+ DAU.",
                 "rewritten_bullet": f"Engineered responsive user interface and integrated robust JWT-authenticated REST APIs with {extracted_skills[1] if len(extracted_skills) > 1 else 'SQL'}, supporting 5,000+ daily active users.",
                 "why_better": "Quantifies scale (5,000+ DAU) and details security & API architecture mechanics."
             },
             {
                 "original_bullet": "Handled code testing and database query execution.",
+                "star_bullet": "Optimized SQL query execution plans and implemented automated pytest suites, improving query throughput by 45%.",
+                "google_xyz_bullet": "Accomplished 45% throughput increase as measured by SQL query execution benchmark suite by implementing automated pytest suites and query tuning.",
+                "action_impact_bullet": "Revamped database query execution pipelines and automated pytest coverage, boosting system query throughput by 45%.",
                 "rewritten_bullet": "Optimized SQL query execution plans and implemented automated pytest suites, improving query throughput by 45%.",
                 "why_better": "Highlights performance tuning metrics and automated testing best practices."
             }
