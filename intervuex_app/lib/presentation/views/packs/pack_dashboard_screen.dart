@@ -326,7 +326,7 @@ class _PackDashboardScreenState extends ConsumerState<PackDashboardScreen> {
                   const SizedBox(height: 14),
                   Row(
                     children: [
-                      const Icon(Icons.quiz_outlined, color: AppColors.electricIndigo, size: 22),
+                      Icon(Icons.quiz_outlined, color: Theme.of(context).colorScheme.primary, size: 22),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -343,7 +343,7 @@ class _PackDashboardScreenState extends ConsumerState<PackDashboardScreen> {
                   const SizedBox(height: 4),
                   Text(
                     roundTitle,
-                    style: const TextStyle(fontSize: 12, color: AppColors.indigoLight, fontWeight: FontWeight.w600),
+                    style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 12),
                   TextField(
@@ -407,6 +407,9 @@ class _PackDashboardScreenState extends ConsumerState<PackDashboardScreen> {
     required List<SampleQuestionModel> questions,
     required bool isLast,
   }) {
+    final primary = Theme.of(context).colorScheme.primary;
+    final secondary = Theme.of(context).colorScheme.secondary;
+
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -417,9 +420,9 @@ class _PackDashboardScreenState extends ConsumerState<PackDashboardScreen> {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: AppColors.electricIndigo,
+                  color: primary,
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.indigoLight, width: 2),
+                  border: Border.all(color: secondary, width: 2),
                 ),
                 child: Center(
                   child: Text('$roundNum', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
@@ -429,7 +432,7 @@ class _PackDashboardScreenState extends ConsumerState<PackDashboardScreen> {
                 Expanded(
                   child: Container(
                     width: 2,
-                    color: AppColors.electricIndigo.withOpacity(0.3),
+                    color: primary.withOpacity(0.35),
                   ),
                 ),
             ],
@@ -461,10 +464,10 @@ class _PackDashboardScreenState extends ConsumerState<PackDashboardScreen> {
                       children: topics.map((t) => Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: AppColors.electricIndigo.withOpacity(0.1),
+                          color: primary.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: Text(t, style: const TextStyle(fontSize: 10, color: AppColors.indigoLight, fontWeight: FontWeight.w600)),
+                        child: Text(t, style: TextStyle(fontSize: 10, color: primary, fontWeight: FontWeight.w600)),
                       )).toList(),
                     ),
                     if (questions.isNotEmpty) ...[
@@ -473,7 +476,7 @@ class _PackDashboardScreenState extends ConsumerState<PackDashboardScreen> {
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          const Icon(Icons.help_outline, size: 14, color: AppColors.indigoLight),
+                          Icon(Icons.help_outline, size: 14, color: primary),
                           const SizedBox(width: 4),
                           Text(
                             'Sample Questions (${questions.length})',
@@ -487,7 +490,7 @@ class _PackDashboardScreenState extends ConsumerState<PackDashboardScreen> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('• ', style: TextStyle(color: AppColors.indigoLight, fontSize: 12)),
+                            Text('• ', style: TextStyle(color: primary, fontSize: 12)),
                             Expanded(
                               child: Text(
                                 q.question,
@@ -506,16 +509,16 @@ class _PackDashboardScreenState extends ConsumerState<PackDashboardScreen> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                           decoration: BoxDecoration(
-                            color: AppColors.electricIndigo.withOpacity(0.15),
+                            color: primary.withOpacity(0.15),
                             borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: AppColors.indigoLight.withOpacity(0.3)),
+                            border: Border.all(color: primary.withOpacity(0.35)),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
                                 'View all ${questions.length} questions & answers',
-                                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.indigoLight),
+                                style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: primary),
                               ),
                               const SizedBox(width: 4),
                               const Icon(Icons.arrow_forward_ios, size: 10, color: AppColors.indigoLight),

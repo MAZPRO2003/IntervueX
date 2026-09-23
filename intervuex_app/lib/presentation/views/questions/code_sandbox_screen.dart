@@ -179,10 +179,13 @@ class _CodeSandboxScreenState extends ConsumerState<CodeSandboxScreen> {
           children: [
             Icon(Icons.code_rounded, color: primary, size: 20),
             const SizedBox(width: 8),
-            Text(
-              _selectedQuestion == null ? 'Code Sandbox' : _selectedQuestion!.title,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              overflow: TextOverflow.ellipsis,
+            Expanded(
+              child: Text(
+                _selectedQuestion == null ? 'Code Sandbox' : _selectedQuestion!.title,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
             ),
           ],
         ),

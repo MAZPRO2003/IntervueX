@@ -27,7 +27,6 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
   Widget build(BuildContext context) {
     final rawIndex = ref.watch(shellNavIndexProvider);
     final currentIndex = rawIndex.clamp(0, 3);
-    final primary = Theme.of(context).colorScheme.primary;
     final secondary = Theme.of(context).colorScheme.secondary;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -77,49 +76,9 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
               selectedIcon: Icon(Icons.quiz_rounded, color: secondary),
               label: 'Practice',
             ),
-            // Mock Interview — center prominent tab
             NavigationDestination(
-              icon: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      primary.withOpacity(0.15),
-                      secondary.withOpacity(0.1),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: currentIndex == 2
-                        ? primary.withOpacity(0.6)
-                        : primary.withOpacity(0.2),
-                    width: 1.5,
-                  ),
-                ),
-                child: Icon(
-                  Icons.mic_rounded,
-                  color: currentIndex == 2 ? primary : primary.withOpacity(0.5),
-                  size: 22,
-                ),
-              ),
-              selectedIcon: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [primary, secondary],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Icon(
-                  Icons.mic_rounded,
-                  color: Colors.white,
-                  size: 22,
-                ),
-              ),
+              icon: const Icon(Icons.mic_outlined),
+              selectedIcon: Icon(Icons.mic_rounded, color: secondary),
               label: 'Mock',
             ),
             NavigationDestination(

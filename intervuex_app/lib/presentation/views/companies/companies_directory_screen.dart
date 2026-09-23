@@ -31,14 +31,14 @@ class _CompaniesDirectoryScreenState extends ConsumerState<CompaniesDirectoryScr
     'Product MNC / E-Commerce'
   ];
 
-  Color _parseColor(String hex) {
+  Color _parseColor(String hex, Color fallback) {
     try {
       final buffer = StringBuffer();
       if (hex.length == 6 || hex.length == 7) buffer.write('ff');
       buffer.write(hex.replaceFirst('#', ''));
       return Color(int.parse(buffer.toString(), radix: 16));
     } catch (_) {
-      return AppColors.electricIndigo;
+      return fallback;
     }
   }
   
@@ -78,6 +78,7 @@ class _CompaniesDirectoryScreenState extends ConsumerState<CompaniesDirectoryScr
   Widget build(BuildContext context) {
     final companiesAsync = ref.watch(companiesListProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primary = Theme.of(context).colorScheme.primary;
 
     return Scaffold(
       appBar: AppBar(
@@ -184,7 +185,7 @@ class _CompaniesDirectoryScreenState extends ConsumerState<CompaniesDirectoryScr
                                   icon: const Icon(Icons.auto_awesome, size: 16),
                                   label: const Text('Generate'),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.electricIndigo,
+                                    backgroundColor: primary,
                                     foregroundColor: Colors.white,
                                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                                   ),
@@ -207,7 +208,7 @@ class _CompaniesDirectoryScreenState extends ConsumerState<CompaniesDirectoryScr
                                 color: isSelected ? Colors.white : (isDark ? Colors.white70 : Colors.black87),
                               )),
                               selected: isSelected,
-                              selectedColor: AppColors.electricIndigo,
+                              selectedColor: primary,
                               backgroundColor: isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0),
                               onSelected: (_) => setState(() => selectedCategory = cat),
                             ),
@@ -230,7 +231,7 @@ class _CompaniesDirectoryScreenState extends ConsumerState<CompaniesDirectoryScr
                         itemCount: filtered.length,
                         itemBuilder: (context, idx) {
                           final comp = filtered[idx];
-                          final cColor = _parseColor(comp.colorHex);
+                          final cColor = _parseColor(comp.colorHex, primary);
 
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 12),
