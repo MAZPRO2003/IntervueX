@@ -26,6 +26,7 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
   bool isLoading = false;
   String? selectedJobId;
   String _selectedQFilter = 'All (50)';
+  String _selectedRewriteFramework = 'STAR'; // 'STAR', 'GOOGLE_XYZ', 'ACTION_IMPACT'
   Map<String, dynamic>? analysisResult;
 
   Future<void> _pickFile() async {
@@ -933,7 +934,7 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
               children: [
                 Icon(Icons.auto_awesome, color: primary, size: 18),
                 const SizedBox(width: 8),
-                Text('1-TAP AI BULLET REWRITER (STAR METHOD)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: primary, letterSpacing: 0.5)),
+                Text('1-TAP AI BULLET REWRITER', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: primary, letterSpacing: 0.5)),
               ],
             ),
             Container(
@@ -944,10 +945,39 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
           ],
         ),
         const SizedBox(height: 8),
+
+        // Multi-Framework Selector Chips (STAR, Google XYZ, Action+Impact)
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              _rewriteFrameworkChip('⭐ STAR Method', 'STAR', isDark, variant),
+              const SizedBox(width: 6),
+              _rewriteFrameworkChip('🎯 Google XYZ Formula', 'GOOGLE_XYZ', isDark, variant),
+              const SizedBox(width: 6),
+              _rewriteFrameworkChip('⚡ Action + Impact', 'ACTION_IMPACT', isDark, variant),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+
         ...bulletRewrites.map((rw) {
           final original = rw['original'] ?? rw['original_bullet'] ?? '';
-          final rewritten = rw['rewritten'] ?? rw['star_bullet'] ?? '';
-          final reason = rw['reason'] ?? rw['star_framework'] ?? '';
+          
+          String rewritten = '';
+          String frameworkBadgeText = 'AFTER (STAR METHOD)';
+          if (_selectedRewriteFramework == 'GOOGLE_XYZ') {
+            rewritten = rw['google_xyz_bullet'] ?? rw['rewritten_bullet'] ?? rw['star_bullet'] ?? '';
+            frameworkBadgeText = 'AFTER (GOOGLE XYZ FORMULA)';
+          } else if (_selectedRewriteFramework == 'ACTION_IMPACT') {
+            rewritten = rw['action_impact_bullet'] ?? rw['rewritten_bullet'] ?? rw['star_bullet'] ?? '';
+            frameworkBadgeText = 'AFTER (ACTION + IMPACT)';
+          } else {
+            rewritten = rw['star_bullet'] ?? rw['rewritten_bullet'] ?? rw['rewritten'] ?? '';
+            frameworkBadgeText = 'AFTER (STAR METHOD)';
+          }
+
+          final reason = rw['why_better'] ?? rw['reason'] ?? rw['star_framework'] ?? '';
           final metric = rw['quantified_impact'] ?? '';
 
           return Padding(
@@ -983,7 +1013,7 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(color: AppColors.success.withOpacity(0.15), borderRadius: BorderRadius.circular(4)),
-                        child: const Text('AFTER (STAR)', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColors.success)),
+                        child: Text(frameworkBadgeText, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColors.success)),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
@@ -1019,13 +1049,13 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       ),
                       icon: const Icon(Icons.copy, size: 13),
-                      label: const Text('Copy Rewritten Bullet', style: TextStyle(fontSize: 11)),
+                      label: Text('Copy ($_selectedRewriteFramework)', style: const TextStyle(fontSize: 11)),
                       onPressed: () {
                         Clipboard.setData(ClipboardData(text: rewritten.toString()));
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('STAR Rewritten bullet copied to clipboard!'),
-                            duration: Duration(seconds: 2),
+                          SnackBar(
+                            content: Text('$_selectedRewriteFramework Rewritten bullet copied to clipboard!'),
+                            duration: const Duration(seconds: 2),
                           ),
                         );
                       },
@@ -1038,6 +1068,40 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
         }),
         const SizedBox(height: 16),
       ],
+    );
+  }
+
+  Widget _rewriteFrameworkChip(String label, String value, bool isDark, AppThemeVariant variant) {
+    final isSelected = _selectedRewriteFramework == value;
+    final primary = variant.primary;
+
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _selectedRewriteFramework = value;
+        });
+      },
+      borderRadius: BorderRadius.circular(6),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          color: isSelected ? primary.withOpacity(0.18) : (isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9)),
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(
+            color: isSelected ? primary : (isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1)),
+            width: isSelected ? 1.5 : 1.0,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            color: isSelected ? primary : (isDark ? Colors.white70 : Colors.black87),
+          ),
+        ),
+      ),
     );
   }
 
