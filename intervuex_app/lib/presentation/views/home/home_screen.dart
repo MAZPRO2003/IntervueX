@@ -9,6 +9,7 @@ import 'package:intervuex_app/presentation/providers/pack_provider.dart';
 import 'package:intervuex_app/presentation/providers/theme_provider.dart';
 import 'package:intervuex_app/presentation/views/jobs/analyze_job_screen.dart';
 import 'package:intervuex_app/presentation/views/resumes/analyze_resume_screen.dart';
+import 'package:intervuex_app/presentation/views/ai_coach/ai_coach_screen.dart';
 import 'package:intervuex_app/presentation/views/packs/pack_dashboard_screen.dart';
 import 'package:intervuex_app/presentation/views/packs/packs_list_screen.dart';
 import 'package:intervuex_app/presentation/views/questions/question_list_screen.dart';
@@ -241,8 +242,9 @@ class HomeScreen extends ConsumerWidget {
                       icon: Icons.upload_file_rounded,
                       label: 'Analyze\nResume',
                       color: const Color(0xFFF97316),
-                      onTap: () => Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => const AnalyzeResumeScreen())),
+                      onTap: () {
+                        ref.read(shellNavIndexProvider.notifier).state = 3;
+                      },
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -252,9 +254,8 @@ class HomeScreen extends ConsumerWidget {
                       icon: Icons.auto_awesome_rounded,
                       label: 'AI\nCoach',
                       color: secondary,
-                      onTap: () {
-                        ref.read(shellNavIndexProvider.notifier).state = 3;
-                      },
+                      onTap: () => Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => const AiCoachScreen())),
                     ),
                   ),
                 ],

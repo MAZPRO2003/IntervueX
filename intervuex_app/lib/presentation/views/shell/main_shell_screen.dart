@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intervuex_app/presentation/views/home/home_screen.dart';
 import 'package:intervuex_app/presentation/views/questions/question_list_screen.dart';
 import 'package:intervuex_app/presentation/views/mock/mock_interview_screen.dart';
-import 'package:intervuex_app/presentation/views/ai_coach/ai_coach_screen.dart';
+import 'package:intervuex_app/presentation/views/resumes/analyze_resume_screen.dart';
 
 /// Shell nav index provider — lets child screens change the active tab
 final shellNavIndexProvider = StateProvider<int>((ref) => 0);
@@ -20,7 +20,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
     HomeScreen(),
     QuestionListScreen(),
     MockInterviewScreen(),
-    AiCoachScreen(),
+    AnalyzeResumeScreen(),
   ];
 
   @override
@@ -82,9 +82,9 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
               label: 'Mock',
             ),
             NavigationDestination(
-              icon: const Icon(Icons.auto_awesome_outlined),
-              selectedIcon: Icon(Icons.auto_awesome_rounded, color: secondary),
-              label: 'AI Coach',
+              icon: const Icon(Icons.description_outlined),
+              selectedIcon: Icon(Icons.description_rounded, color: secondary),
+              label: 'Resume',
             ),
           ],
         ),
