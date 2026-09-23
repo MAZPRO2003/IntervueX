@@ -23,7 +23,7 @@ class _PackDashboardScreenState extends ConsumerState<PackDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final packAsync = ref.watch(activePackProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primary = Theme.of(context).colorScheme.primary;
 
     return Scaffold(
       appBar: AppBar(
@@ -72,9 +72,9 @@ class _PackDashboardScreenState extends ConsumerState<PackDashboardScreen> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
-                    gradient: isDark ? AppColors.darkCardGradient : AppColors.primaryGradient,
+                    gradient: AppColors.dynamicHeroGradient(context),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.electricIndigo.withOpacity(0.4)),
+                    border: Border.all(color: primary.withOpacity(0.4)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,7 +86,7 @@ class _PackDashboardScreenState extends ConsumerState<PackDashboardScreen> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
-                                color: AppColors.electricIndigo.withOpacity(0.2),
+                                color: primary.withOpacity(0.2),
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(

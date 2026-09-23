@@ -225,17 +225,17 @@ class _QuestionDetailScreenState extends ConsumerState<QuestionDetailScreen> {
 
             const SizedBox(height: 16),
 
-            // 3. Code / SQL / System Architecture Example
-            if (q.howToAnswer.codeExample.isNotEmpty) ...[
-              const Text('WORKING CODE / SOLUTION EXAMPLE', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.indigoLight, letterSpacing: 0.5)),
+            // 3. Code / SQL / System Architecture Example (Coding Questions Only)
+            if (q.isCoding && q.howToAnswer.codeExample.isNotEmpty) ...[
+              Text('WORKING CODE / SOLUTION EXAMPLE', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: primary, letterSpacing: 0.5)),
               const SizedBox(height: 8),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF0F172A),
+                  color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: const Color(0xFF334155)),
+                  border: Border.all(color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -259,7 +259,7 @@ class _QuestionDetailScreenState extends ConsumerState<QuestionDetailScreen> {
                       scrollDirection: Axis.horizontal,
                       child: SelectableText(
                         q.howToAnswer.codeExample,
-                        style: const TextStyle(fontFamily: 'monospace', fontSize: 12, color: Color(0xFFE2E8F0), height: 1.4),
+                        style: TextStyle(fontFamily: 'monospace', fontSize: 12, color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF0F172A), height: 1.4),
                       ),
                     ),
                   ],
@@ -295,7 +295,7 @@ class _QuestionDetailScreenState extends ConsumerState<QuestionDetailScreen> {
 
             // 5. Answer Structure
             if (q.howToAnswer.answerStructure.isNotEmpty) ...[
-              const Text('ANSWER STRUCTURE (STEP-BY-STEP)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted, letterSpacing: 0.5)),
+              Text('ANSWER STRUCTURE (STEP-BY-STEP)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: primary, letterSpacing: 0.5)),
               const SizedBox(height: 8),
               AppCard(
                 child: Column(
@@ -304,7 +304,7 @@ class _QuestionDetailScreenState extends ConsumerState<QuestionDetailScreen> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(Icons.check_circle, color: AppColors.indigoLight, size: 16),
+                        Icon(Icons.check_circle, color: primary, size: 16),
                         const SizedBox(width: 10),
                         Expanded(child: Text(step, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500))),
                       ],
@@ -317,7 +317,7 @@ class _QuestionDetailScreenState extends ConsumerState<QuestionDetailScreen> {
 
             // 6. Likely Follow-ups (with AI Practice Follow-up label)
             if (q.followUpQuestions.isNotEmpty) ...[
-              const Text('LIKELY INTERVIEWER FOLLOW-UPS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.indigoLight, letterSpacing: 0.5)),
+              Text('LIKELY INTERVIEWER FOLLOW-UPS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: primary, letterSpacing: 0.5)),
               const SizedBox(height: 8),
               AppCard(
                 child: Column(
@@ -329,17 +329,17 @@ class _QuestionDetailScreenState extends ConsumerState<QuestionDetailScreen> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(Icons.arrow_right_alt, color: AppColors.indigoLight, size: 18),
+                          Icon(Icons.arrow_right_alt, color: primary, size: 18),
                           const SizedBox(width: 8),
                           Expanded(
                             child: RichText(
                               text: TextSpan(
-                                style: const TextStyle(fontSize: 13, color: Colors.white),
+                                style: TextStyle(fontSize: 13, color: isDark ? Colors.white : Colors.black87),
                                 children: [
                                   if (isAiFollowup)
-                                    const TextSpan(
+                                    TextSpan(
                                       text: '[AI Practice Follow-up] ',
-                                      style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.electricIndigo, fontSize: 11),
+                                      style: TextStyle(fontWeight: FontWeight.bold, color: primary, fontSize: 11),
                                     ),
                                   TextSpan(text: text),
                                 ],
@@ -357,20 +357,20 @@ class _QuestionDetailScreenState extends ConsumerState<QuestionDetailScreen> {
 
             // 7. Question & Answer Sources
             if (q.questionSources.isNotEmpty || q.answerSources.isNotEmpty) ...[
-              const Text('SOURCES & VERIFICATION ATTRIBUTION', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted, letterSpacing: 0.5)),
+              Text('SOURCES & VERIFICATION ATTRIBUTION', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: isDark ? AppColors.textDarkMuted : AppColors.textLightMuted, letterSpacing: 0.5)),
               const SizedBox(height: 8),
               AppCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (q.questionSources.isNotEmpty) ...[
-                      const Text('📌 Question Source:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.indigoLight)),
+                      Text('📌 Question Source:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: primary)),
                       const SizedBox(height: 4),
                       ...q.questionSources.map((s) => Padding(
                         padding: const EdgeInsets.only(bottom: 4),
                         child: Text(
                           '• ${s.sourceName} (${s.sourceType})${s.sourceUrl.isNotEmpty ? ' - ${s.sourceUrl}' : ''}',
-                          style: const TextStyle(fontSize: 11, color: AppColors.textDarkSecondary),
+                          style: TextStyle(fontSize: 11, color: isDark ? AppColors.textDarkSecondary : AppColors.textLightSecondary),
                         ),
                       )),
                       const SizedBox(height: 10),
@@ -382,7 +382,7 @@ class _QuestionDetailScreenState extends ConsumerState<QuestionDetailScreen> {
                         padding: const EdgeInsets.only(bottom: 4),
                         child: Text(
                           '• ${s.sourceName} (${s.sourceType})${s.confidence != null ? ' [${s.confidence} Confidence]' : ''}${s.sourceUrl.isNotEmpty ? ' - ${s.sourceUrl}' : ''}',
-                          style: const TextStyle(fontSize: 11, color: AppColors.textDarkSecondary),
+                          style: TextStyle(fontSize: 11, color: isDark ? AppColors.textDarkSecondary : AppColors.textLightSecondary),
                         ),
                       )),
                     ],
@@ -404,14 +404,14 @@ class _QuestionDetailScreenState extends ConsumerState<QuestionDetailScreen> {
                     },
                   ),
                 ),
-                if (q.category.toLowerCase().contains('coding') || q.category.toLowerCase().contains('sql')) ...[
+                if (q.isCoding) ...[
                   const SizedBox(width: 12),
                   Expanded(
                     child: AppButton(
                       label: 'Code Sandbox',
                       icon: Icons.code,
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => const CodeSandboxScreen()));
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => CodeSandboxScreen(initialQuestion: q)));
                       },
                     ),
                   ),
@@ -439,22 +439,24 @@ class _QuestionDetailScreenState extends ConsumerState<QuestionDetailScreen> {
 
   Widget _langButton(String label, ExplanationLanguage lang, ExplanationLanguage current) {
     final isSelected = lang == current;
+    final primary = Theme.of(context).colorScheme.primary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return InkWell(
       onTap: () => ref.read(languageProvider.notifier).setLanguage(lang),
       borderRadius: BorderRadius.circular(6),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.electricIndigo : Colors.transparent,
+          color: isSelected ? primary : Colors.transparent,
           borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: isSelected ? AppColors.electricIndigo : const Color(0xFF475569)),
+          border: Border.all(color: isSelected ? primary : (isDark ? const Color(0xFF475569) : const Color(0xFFCBD5E1))),
         ),
         child: Text(
           label,
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.bold,
-            color: isSelected ? Colors.white : AppColors.textDarkSecondary,
+            color: isSelected ? Colors.white : (isDark ? AppColors.textDarkSecondary : AppColors.textLightSecondary),
           ),
         ),
       ),
@@ -472,4 +474,5 @@ class _QuestionDetailScreenState extends ConsumerState<QuestionDetailScreen> {
     );
   }
 }
+
 

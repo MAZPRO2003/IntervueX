@@ -96,7 +96,7 @@ class _PdfResumeRiskViewerScreenState extends ConsumerState<PdfResumeRiskViewerS
                               Text('${data['job_title'] ?? 'Software Engineer'} • ${data['location'] ?? 'Unknown Location'}', style: const TextStyle(fontSize: 11, color: AppColors.textDarkMuted)),
                               const Divider(height: 20),
 
-                              const Text('PROFESSIONAL EXPERIENCE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 0.5, color: AppColors.indigoLight)),
+                              Text('PROFESSIONAL EXPERIENCE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 0.5, color: Theme.of(context).colorScheme.primary)),
                               const SizedBox(height: 12),
 
                               // Render Highlighted Claims List
@@ -280,14 +280,14 @@ class _PdfResumeRiskViewerScreenState extends ConsumerState<PdfResumeRiskViewerS
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: AppColors.electricIndigo.withOpacity(0.08),
+                    color: Theme.of(context).colorScheme.primary.withOpacity(0.08),
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.electricIndigo.withOpacity(0.2)),
+                    border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.2)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('🎯 EXPECTED INTERVIEWER PROBE QUESTION:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.indigoLight)),
+                      Text('🎯 EXPECTED INTERVIEWER PROBE QUESTION:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary)),
                       const SizedBox(height: 4),
                       Text(hl['interviewer_probe_question'] ?? '', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, height: 1.35)),
                     ],

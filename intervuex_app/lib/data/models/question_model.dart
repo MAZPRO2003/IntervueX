@@ -71,6 +71,16 @@ class HowToAnswerModel {
   }
 }
 
+enum QuestionTypeCategory {
+  coding,
+  technical,
+  hr,
+  behavioral,
+  communication,
+  theory,
+  scenario,
+}
+
 class QuestionModel {
   final String id;
   final String packId;
@@ -132,6 +142,38 @@ class QuestionModel {
     this.needsRevision = false,
   });
 
+  QuestionTypeCategory get typeCategory {
+    final cat = category.toLowerCase().trim();
+    final r = round.toLowerCase().trim();
+    final qt = questionType.toLowerCase().trim();
+    final qText = question.toLowerCase();
+
+    if (cat == 'hr' || r.contains('hr') || qt.contains('hr')) {
+      return QuestionTypeCategory.hr;
+    }
+    if (cat.contains('behavioral') || r.contains('behavioral') || qt.contains('behavioral')) {
+      return QuestionTypeCategory.behavioral;
+    }
+    if (cat.contains('communication') || r.contains('communication') || qt.contains('communication')) {
+      return QuestionTypeCategory.communication;
+    }
+    if (cat.contains('theory') || cat.contains('conceptual') || qt.contains('theory')) {
+      return QuestionTypeCategory.theory;
+    }
+    if (cat.contains('scenario') || cat.contains('situation') || qt.contains('scenario')) {
+      return QuestionTypeCategory.scenario;
+    }
+    if (cat.contains('coding') || cat.contains('dsa') || cat.contains('algorithm') || cat.contains('leetcode') || r.contains('coding')) {
+      return QuestionTypeCategory.coding;
+    }
+    if (cat.contains('sql') || qText.contains('write a function') || qText.contains('write a program') || qText.contains('write code') || qText.contains('write a sql')) {
+      return QuestionTypeCategory.coding;
+    }
+    return QuestionTypeCategory.technical;
+  }
+
+  bool get isCoding => typeCategory == QuestionTypeCategory.coding;
+
   factory QuestionModel.fromJson(Map<String, dynamic> json) {
     return QuestionModel(
       id: json['id'] ?? '',
@@ -169,4 +211,5 @@ class QuestionModel {
     );
   }
 }
+
 

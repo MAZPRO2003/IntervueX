@@ -117,12 +117,15 @@ class _MockInterviewScreenState extends ConsumerState<MockInterviewScreen> {
             orElse: () => session.turns.last,
           );
 
+          final primary = Theme.of(context).colorScheme.primary;
+          final secondary = Theme.of(context).colorScheme.secondary;
+
           return Column(
             children: [
               LinearProgressIndicator(
                 value: session.currentTurnIndex / session.totalTurns,
                 backgroundColor: isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0),
-                color: AppColors.electricIndigo,
+                color: primary,
                 minHeight: 4,
               ),
 
@@ -131,14 +134,14 @@ class _MockInterviewScreenState extends ConsumerState<MockInterviewScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('QUESTION ${session.currentTurnIndex} OF ${session.totalTurns}', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted, letterSpacing: 0.5)),
+                    Text('QUESTION ${session.currentTurnIndex} OF ${session.totalTurns}', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: isDark ? AppColors.textDarkMuted : AppColors.textLightMuted, letterSpacing: 0.5)),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
-                        color: AppColors.electricIndigo.withOpacity(0.12),
+                        color: primary.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(4),
                       ),
-                      child: Text(activeTurn.questionCategory, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.indigoLight)),
+                      child: Text(activeTurn.questionCategory, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: primary)),
                     ),
                   ],
                 ),
@@ -159,8 +162,8 @@ class _MockInterviewScreenState extends ConsumerState<MockInterviewScreen> {
                             Container(
                               width: 36,
                               height: 36,
-                              decoration: const BoxDecoration(
-                                gradient: AppColors.primaryGradient,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(colors: [primary, secondary]),
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(Icons.person, color: Colors.white, size: 20),
@@ -180,7 +183,7 @@ class _MockInterviewScreenState extends ConsumerState<MockInterviewScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text('Interviewer (IntervueX AI)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.indigoLight)),
+                                    Text('Interviewer (IntervueX AI)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: primary)),
                                     const SizedBox(height: 4),
                                     Text(t.interviewerQuestion, style: const TextStyle(fontSize: 14, height: 1.4, fontWeight: FontWeight.w600)),
                                   ],
@@ -200,8 +203,8 @@ class _MockInterviewScreenState extends ConsumerState<MockInterviewScreen> {
                                 child: Container(
                                   padding: const EdgeInsets.all(14),
                                   decoration: BoxDecoration(
-                                    color: AppColors.electricIndigo.withOpacity(0.15),
-                                    border: Border.all(color: AppColors.electricIndigo.withOpacity(0.4)),
+                                    color: primary.withOpacity(0.15),
+                                    border: Border.all(color: primary.withOpacity(0.4)),
                                     borderRadius: const BorderRadius.only(
                                       topLeft: Radius.circular(16),
                                       bottomLeft: Radius.circular(16),
@@ -211,7 +214,7 @@ class _MockInterviewScreenState extends ConsumerState<MockInterviewScreen> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      const Text('You (Candidate)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted)),
+                                      Text('You (Candidate)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: isDark ? AppColors.textDarkMuted : AppColors.textLightMuted)),
                                       const SizedBox(height: 4),
                                       Text(t.candidateAnswer!, style: const TextStyle(fontSize: 13, height: 1.4)),
                                     ],
@@ -222,11 +225,11 @@ class _MockInterviewScreenState extends ConsumerState<MockInterviewScreen> {
                               Container(
                                 width: 36,
                                 height: 36,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFF1E293B),
+                                decoration: BoxDecoration(
+                                  color: isDark ? const Color(0xFF1E293B) : const Color(0xFFCBD5E1),
                                   shape: BoxShape.circle,
                                 ),
-                                child: const Icon(Icons.mic, color: Colors.white, size: 18),
+                                child: Icon(Icons.mic, color: primary, size: 18),
                               ),
                             ],
                           ),
@@ -255,7 +258,7 @@ class _MockInterviewScreenState extends ConsumerState<MockInterviewScreen> {
                     IconButton(
                       icon: Icon(
                         isVoiceRecording ? Icons.mic : Icons.mic_none,
-                        color: isVoiceRecording ? AppColors.danger : AppColors.indigoLight,
+                        color: isVoiceRecording ? AppColors.danger : primary,
                       ),
                       tooltip: 'Voice Mock Recording',
                       onPressed: _simulateVoiceRecording,
@@ -272,7 +275,7 @@ class _MockInterviewScreenState extends ConsumerState<MockInterviewScreen> {
                     ),
                     const SizedBox(width: 8),
                     IconButton(
-                      icon: const Icon(Icons.send, color: AppColors.electricIndigo),
+                      icon: Icon(Icons.send, color: primary),
                       onPressed: _submit,
                     ),
                   ],
@@ -288,20 +291,21 @@ class _MockInterviewScreenState extends ConsumerState<MockInterviewScreen> {
   }
 
   Widget _buildEvaluationCard(AnswerEvaluationModel eval, bool isDark) {
+    final primary = Theme.of(context).colorScheme.primary;
     Color scoreColor = eval.overallScore >= 7.0
         ? AppColors.success
         : (eval.overallScore >= 4.0 ? AppColors.warning : AppColors.danger);
 
     return AppCard(
       padding: const EdgeInsets.all(14),
-      borderColor: AppColors.electricIndigo.withOpacity(0.3),
+      borderColor: primary.withOpacity(0.3),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('AI EVALUATION FEEDBACK', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.indigoLight, letterSpacing: 0.5)),
+              Text('AI EVALUATION FEEDBACK', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: primary, letterSpacing: 0.5)),
               Text('${eval.overallScore}/10', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: scoreColor)),
             ],
           ),
@@ -323,7 +327,7 @@ class _MockInterviewScreenState extends ConsumerState<MockInterviewScreen> {
               eval.pacingFeedback!,
               style: TextStyle(
                 fontSize: 12,
-                color: eval.overallScore < 4.0 ? AppColors.danger : AppColors.indigoLight,
+                color: eval.overallScore < 4.0 ? AppColors.danger : primary,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -345,7 +349,7 @@ class _MockInterviewScreenState extends ConsumerState<MockInterviewScreen> {
           ...eval.whatYouDidWell.map((w) => Text('• $w', style: const TextStyle(fontSize: 12))),
 
           const SizedBox(height: 6),
-          const Text('How to Improve:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.electricIndigo)),
+          Text('How to Improve:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: primary)),
           ...eval.howToImprove.map((h) => Text('• $h', style: const TextStyle(fontSize: 12))),
 
           if (eval.whatYouShouldNotDo.isNotEmpty) ...[
@@ -356,7 +360,7 @@ class _MockInterviewScreenState extends ConsumerState<MockInterviewScreen> {
 
           if (eval.whatCanTheyAskNext.isNotEmpty) ...[
             const SizedBox(height: 8),
-            const Text('What Can They Ask Next? (Predictive Follow-ups):', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.indigoLight)),
+            Text('What Can They Ask Next? (Predictive Follow-ups):', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: primary)),
             ...eval.whatCanTheyAskNext.map((f) => Text('→ $f', style: const TextStyle(fontSize: 12, fontStyle: FontStyle.italic))),
           ],
         ],

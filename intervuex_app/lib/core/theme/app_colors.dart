@@ -154,7 +154,7 @@ class AppColors {
   static const Color textLightSecondary = Color(0xFF475569);
   static const Color textLightMuted = Color(0xFF94A3B8);
 
-  // Legacy gradients (kept for backward compat — screens that hardcode these)
+  // Legacy gradients
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
     begin: Alignment.topLeft,
@@ -173,8 +173,32 @@ class AppColors {
     end: Alignment.bottomRight,
   );
 
+  // Dynamic Theme-Aware Helpers
+  static LinearGradient dynamicPrimaryGradient(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+    final secondary = Theme.of(context).colorScheme.secondary;
+    return LinearGradient(
+      colors: [primary, secondary],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
+  }
+
+  static LinearGradient dynamicHeroGradient(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return LinearGradient(
+      colors: isDark
+          ? [primary.withOpacity(0.35), primaryDark]
+          : [primary.withOpacity(0.12), primaryLight],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
+  }
+
   // Helper: get active accent colors from theme variant
   static Color accentPrimary(AppThemeVariant v) => v.primary;
   static Color accentLight(AppThemeVariant v) => v.light;
   static LinearGradient accentGradient(AppThemeVariant v) => v.gradient;
 }
+

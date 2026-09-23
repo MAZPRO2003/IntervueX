@@ -238,12 +238,12 @@ class _FlashcardsScreenState extends ConsumerState<FlashcardsScreen> with Ticker
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
-                                color: AppColors.electricIndigo.withOpacity(0.12),
+                                color: Theme.of(context).colorScheme.primary.withOpacity(0.12),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
                                 card['category'] ?? 'General',
-                                style: const TextStyle(color: AppColors.indigoLight, fontSize: 11, fontWeight: FontWeight.bold),
+                                style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 11, fontWeight: FontWeight.bold),
                               ),
                             ),
                           ],
@@ -343,7 +343,7 @@ class _FlashcardsScreenState extends ConsumerState<FlashcardsScreen> with Ticker
                             ),
                             ElevatedButton.icon(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.electricIndigo,
+                                backgroundColor: Theme.of(context).colorScheme.primary,
                                 foregroundColor: Colors.white,
                                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -378,6 +378,7 @@ class _FlashcardsScreenState extends ConsumerState<FlashcardsScreen> with Ticker
   }
 
   Widget _buildCardFront(Map<String, dynamic> card, bool isDark) {
+    final primary = Theme.of(context).colorScheme.primary;
     return Container(
       width: double.infinity,
       height: double.infinity,
@@ -422,10 +423,10 @@ class _FlashcardsScreenState extends ConsumerState<FlashcardsScreen> with Ticker
                 return Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColors.electricIndigo.withOpacity(0.08),
+                    color: primary.withOpacity(0.08),
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  child: Text('#$kc', style: const TextStyle(fontSize: 11, color: AppColors.indigoLight, fontWeight: FontWeight.bold)),
+                  child: Text('#$kc', style: TextStyle(fontSize: 11, color: primary, fontWeight: FontWeight.bold)),
                 );
               }).toList(),
             ),
@@ -436,6 +437,7 @@ class _FlashcardsScreenState extends ConsumerState<FlashcardsScreen> with Ticker
   }
 
   Widget _buildCardBack(Map<String, dynamic> card, bool isDark) {
+    final primary = Theme.of(context).colorScheme.primary;
     return Container(
       width: double.infinity,
       height: double.infinity,
@@ -457,7 +459,7 @@ class _FlashcardsScreenState extends ConsumerState<FlashcardsScreen> with Ticker
                 ],
               ),
               const Divider(height: 20),
-              const Text('Core Answer Summary:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.indigoLight)),
+              Text('Core Answer Summary:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: primary)),
               const SizedBox(height: 6),
               Text(
                 card['answer_summary'] ?? '',
@@ -468,14 +470,14 @@ class _FlashcardsScreenState extends ConsumerState<FlashcardsScreen> with Ticker
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: AppColors.electricIndigo.withOpacity(0.08),
+                    color: primary.withOpacity(0.08),
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.electricIndigo.withOpacity(0.2)),
+                    border: Border.all(color: primary.withOpacity(0.2)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('⭐ STAR Breakdown (Behavioral / Technical):', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: AppColors.indigoLight)),
+                      Text('⭐ STAR Breakdown (Behavioral / Technical):', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: primary)),
                       const SizedBox(height: 4),
                       Text(card['star_framework'], style: const TextStyle(fontSize: 12, height: 1.35)),
                     ],
