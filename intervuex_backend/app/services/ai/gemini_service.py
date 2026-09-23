@@ -90,10 +90,13 @@ class GeminiAIService(AIServiceBase):
         )
         return await self._call_gemini(system_prompt, f"Generate company profile for: {company_name}")
 
-    async def analyze_resume(self, resume_text: str, job_context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    async def analyze_resume(self, resume_text: str, job_context: Optional[Dict[str, Any]] = None, layout_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         system_prompt = (
             "You are IntervueX AI Resume & Risk Analyzer. Extract structured data in valid JSON only.\n"
-            "Extract candidate_name, summary, education, skills, projects with potential questions, experience, certifications, risks, skill_matches, overall_match_percentage, and what_to_prepare."
+            "Extract candidate_name, summary, education, skills, categorized_skills, projects with potential questions, experience, certifications, "
+            "quality_breakdown (overall_score, ats_compatibility, content_quality, resume_structure, skills_score, experience_score, projects_score, job_relevance, readability, formatting), "
+            "strengths, weaknesses, recommendations, ats_score, ats_strengths, ats_issues, risks (with title, claimed_item, risk_level, evidence_source, evidence_text, why_questioned, expected_grilling_topics, preparation_advice), "
+            "skill_matches, overall_match_percentage, matching_skills, missing_skills, what_to_prepare, resume_improvements, and resume_questions."
         )
         job_info = json.dumps(job_context) if job_context else "No JD provided"
         return await self._call_gemini(system_prompt, f"Job Context:\n{job_info}\n\nCandidate Resume:\n{resume_text}")

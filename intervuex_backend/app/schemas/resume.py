@@ -9,9 +9,14 @@ class ProjectClaim(BaseModel):
 
 class ResumeRisk(BaseModel):
     claimed_item: str
+    title: Optional[str] = None
     risk_level: str = "Medium" # High, Medium, Low
     reason: str
+    evidence_source: Optional[str] = None # e.g. "Skills Section", "Project: Architecture Engine"
+    evidence_text: Optional[str] = None   # Exact quote / line from candidate resume
+    why_questioned: Optional[str] = None  # Why an interviewer probes this
     expected_grilling_topics: List[str] = []
+    preparation_advice: Optional[str] = None
 
 class SkillMatchItem(BaseModel):
     skill: str
@@ -33,12 +38,30 @@ class ResumeAnalysisResult(BaseModel):
     risks: List[ResumeRisk] = []
     skill_matches: List[SkillMatchItem] = []
     resume_strength_score: int = 80
+    
+    # Dynamic Multi-Factor Quality Breakdown
+    quality_breakdown: Optional[Dict[str, int]] = Field(default_factory=dict)
+    strengths: List[str] = []
+    weaknesses: List[str] = []
+    recommendations: List[str] = []
+
+    # ATS Specific Analysis
+    ats_score: int = 80
+    ats_strengths: List[str] = []
+    ats_issues: List[str] = []
+    ats_keywords_found: List[str] = []
+    ats_keywords_missing: List[str] = []
+
+    # Job Targeting & Alignment
     is_job_targeted: bool = False
     target_job_title: Optional[str] = None
     overall_match_percentage: int = 0
     matching_skills: List[str] = []
     missing_skills: List[str] = []
+
+    # Action Items & 50 Questions
     what_to_prepare: List[str] = []
     resume_improvements: List[str] = []
     resume_questions: List[Dict[str, Any]] = []
+    pdf_risk_highlights: List[Dict[str, Any]] = []
     created_at: str

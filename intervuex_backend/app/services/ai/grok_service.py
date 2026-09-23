@@ -109,14 +109,13 @@ class GrokAIService(AIServiceBase):
         return await self._call_grok(system_prompt, user_prompt)
 
 
-    async def analyze_resume(self, resume_text: str, job_context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    async def analyze_resume(self, resume_text: str, job_context: Optional[Dict[str, Any]] = None, layout_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         system_prompt = (
             "You are IntervueX AI Resume & Risk Analyzer. Extract structured data in valid JSON only.\n"
-            "Extract candidate_name, summary, education, skills, projects with deep claims and potential questions "
-            "(e.g. why tech chosen, how scaled, architecture, testing, failure scenarios), experience, certifications.\n"
-            "CRITICAL: Identify resume risks where candidate claims high expertise (e.g. 'Expert in AWS') and list the grilling topics.\n"
-            "If job_context is provided, compare and classify each skill into 'Strong Match', 'Partial Match', 'Missing', 'Potential Risk' "
-            "and compute overall_match_percentage and what_to_prepare."
+            "Extract candidate_name, summary, education, skills, categorized_skills, projects with deep claims and potential questions, experience, certifications, "
+            "quality_breakdown (overall_score, ats_compatibility, content_quality, resume_structure, skills_score, experience_score, projects_score, job_relevance, readability, formatting), "
+            "strengths, weaknesses, recommendations, ats_score, ats_strengths, ats_issues, risks (with title, claimed_item, risk_level, evidence_source, evidence_text, why_questioned, expected_grilling_topics, preparation_advice), "
+            "skill_matches, overall_match_percentage, matching_skills, missing_skills, what_to_prepare, resume_improvements, and resume_questions."
         )
         job_info = json.dumps(job_context) if job_context else "No JD provided"
         user_prompt = f"Job Context:\n{job_info}\n\nCandidate Resume:\n{resume_text}"

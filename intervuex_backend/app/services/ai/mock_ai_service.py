@@ -1,5 +1,6 @@
 import uuid
 import re
+from datetime import datetime
 from typing import Dict, Any, List, Optional
 from app.services.ai.base import AIServiceBase
 from app.services.ai.company_knowledge import get_company_questions, get_process_for_track
@@ -129,9 +130,12 @@ class MockAIService(AIServiceBase):
         }
 
 
-    async def analyze_resume(self, resume_text: str, job_context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    async def analyze_resume(self, resume_text: str, job_context: Optional[Dict[str, Any]] = None, layout_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         text_clean = (resume_text or "").strip()
         lines = [l.strip() for l in text_clean.splitlines() if l.strip()]
+
+        if not text_clean or len(lines) < 2:
+            raise ValueError("Resume contains insufficient text for analysis. Please upload a valid text-based resume.")
 
         # 1. Dynamic Candidate Name Extraction
         candidate_name = ""
@@ -146,7 +150,7 @@ class MockAIService(AIServiceBase):
                 break
         
         if not candidate_name:
-            candidate_name = "Candidate"
+            candidate_name = "Candidate Profile"
 
         # 2. Dynamic Skills Extraction
         known_skills = [
@@ -154,7 +158,7 @@ class MockAIService(AIServiceBase):
             "FastAPI", "Django", "Flask", "Node.js", "Express", "Spring Boot", "SQL", "PostgreSQL", "MySQL",
             "MongoDB", "Redis", "Docker", "Kubernetes", "AWS", "Azure", "GCP", "Git", "HTML/CSS", "HTML", "CSS",
             "REST API", "Microservices", "Data Structures", "Algorithms", "DSA", "Linux", "Machine Learning",
-            "Deep Learning", "TensorFlow", "PyTorch", "Pandas", "NumPy", "OOP"
+            "Deep Learning", "TensorFlow", "PyTorch", "Pandas", "NumPy", "OOP", "Kafka", "GraphQL", "CI/CD"
         ]
         extracted_skills = []
         text_upper = text_clean.upper()
@@ -170,23 +174,34 @@ class MockAIService(AIServiceBase):
         if not extracted_skills:
             extracted_skills = ["Software Development", "Problem Solving", "Object-Oriented Programming", "SQL", "Git"]
 
-        # 3. Dynamic Projects Extraction
+        # 3. Dynamic Projects & Experience Section Extraction
         extracted_projects = []
         in_projects = False
         proj_lines = []
+        experience_lines = []
+        in_experience = False
+
         for line in lines:
             ll = line.lower()
             if any(h in ll for h in ["projects", "project work", "academic projects", "key projects"]):
                 in_projects = True
+                in_experience = False
                 continue
-            if in_projects:
-                if any(h in ll for h in ["education", "skills", "experience", "work history", "certifications"]):
-                    break
-                if len(line) > 10:
-                    proj_lines.append(line)
+            if any(h in ll for h in ["experience", "work history", "employment", "professional experience"]):
+                in_experience = True
+                in_projects = False
+                continue
+            if any(h in ll for h in ["education", "skills", "certifications"]):
+                in_projects = False
+                in_experience = False
+
+            if in_projects and len(line) > 10:
+                proj_lines.append(line)
+            if in_experience and len(line) > 10:
+                experience_lines.append(line)
 
         if proj_lines:
-            for idx, pline in enumerate(proj_lines[:3], 1):
+            for idx, pline in enumerate(proj_lines[:4], 1):
                 clean_title = pline.split(":")[0].split("-")[0].strip()
                 clean_title = re.sub(r'^\d+[\.\)]\s*', '', clean_title).strip()
                 if len(clean_title) > 50 or len(clean_title) < 3:
@@ -208,8 +223,8 @@ class MockAIService(AIServiceBase):
             top_techs = extracted_skills[:3]
             extracted_projects = [
                 {
-                    "project_title": f"Full-Stack / Backend Application",
-                    "claim_text": f"Built technical solution using {', '.join(top_techs)}.",
+                    "project_title": "Primary Technical Application",
+                    "claim_text": f"Built software solution utilizing {', '.join(top_techs)}.",
                     "technologies": top_techs,
                     "potential_questions": [
                         "Walk me through the architecture of your primary project.",
@@ -219,58 +234,85 @@ class MockAIService(AIServiceBase):
                 }
             ]
 
-        # 4. Dynamic Risk Analysis
+        # 4. Dynamic Traceable Risk & Exaggeration Detector
+        # CRITICAL RULE: Every risk MUST be based on evidence present in candidate's resume!
         extracted_risks = []
-        if any(k in text_upper for k in ["AWS", "AZURE", "GCP", "CLOUD"]):
-            extracted_risks.append({
-                "claimed_item": "Cloud Infrastructure Expertise",
-                "risk_level": "High",
-                "reason": f"{candidate_name}'s resume claims Cloud experience. Technical panels will probe deeply into IAM security, VPC networking, auto-scaling, and production deployment.",
-                "expected_grilling_topics": ["IAM Policies & Security", "VPC Networking & Security Groups", "S3 & Object Storage Security", "Auto-scaling & Load Balancers"]
-            })
-        if any(k in text_upper for k in ["DOCKER", "KUBERNETES", "CONTAINER", "DEVOPS"]):
-            extracted_risks.append({
-                "claimed_item": "Containerization & Deployment",
-                "risk_level": "Medium",
-                "reason": "Container claims trigger detailed questions regarding multi-stage Docker builds, image size optimization, and container security.",
-                "expected_grilling_topics": ["Multi-stage Dockerfiles", "Container resource constraints", "Docker compose networking"]
-            })
-        if any(k in text_upper for k in ["SQL", "POSTGRES", "MYSQL", "DATABASE", "ORACLE"]):
-            extracted_risks.append({
-                "claimed_item": "Database Design & SQL Optimization",
-                "risk_level": "Medium",
-                "reason": "Relational DB claims lead to live query optimization questions, B-Tree index mechanics, and ACID transaction isolation levels.",
-                "expected_grilling_topics": ["B-Tree Indexing & Query Execution Plans", "ACID Isolation Levels", "Complex Join Optimization"]
-            })
+
+        # Risk Type A: Skills listed in Skills section but unsupported by Project/Experience text
+        project_and_exp_text = (" ".join(proj_lines) + " " + " ".join(experience_lines)).upper()
+        for skill in extracted_skills:
+            if skill.upper() in ["HTML", "CSS", "GIT", "PROBLEM SOLVING", "SOFTWARE DEVELOPMENT", "OOP"]:
+                continue
+            # Check if skill appears in project/exp text
+            if skill.upper() not in project_and_exp_text:
+                is_high_risk = skill.upper() in ["AWS", "KUBERNETES", "DOCKER", "REACT", "PYTORCH", "FLUTTER"]
+                extracted_risks.append({
+                    "title": f"Skill '{skill}' Listed Without Supporting Project Evidence",
+                    "claimed_item": skill,
+                    "risk_level": "High" if is_high_risk else "Medium",
+                    "evidence_source": "Skills Section",
+                    "evidence_text": f"'{skill}' listed under Technical Skills section",
+                    "why_questioned": f"'{skill}' is explicitly listed as a technical skill, but no projects or work experiences explain how you applied {skill}.",
+                    "reason": f"'{skill}' is explicitly listed under Skills, but no project or work experience in the resume details how you used {skill}.",
+                    "expected_grilling_topics": [
+                        f"Which specific features of {skill} have you used hands-on?",
+                        f"How did you apply {skill} in a real project?",
+                        f"What problems or bugs did you solve using {skill}?"
+                    ],
+                    "preparation_advice": f"Be prepared to detail your hands-on experience with {skill} or clarify your familiarity level."
+                })
+
+        # Risk Type B: Projects making high claims without metrics
+        for proj in extracted_projects:
+            c_text = proj["claim_text"]
+            if not any(char.isdigit() for char in c_text) and len(c_text) > 30:
+                extracted_risks.append({
+                    "title": f"Architectural Claim Requires Quantitative Metrics: {proj['project_title']}",
+                    "claimed_item": proj["project_title"],
+                    "risk_level": "Medium",
+                    "evidence_source": f"Project: {proj['project_title']}",
+                    "evidence_text": f"\"{c_text}\"",
+                    "why_questioned": f"The description for '{proj['project_title']}' outlines technical scope but lacks quantifiable metrics (e.g. latency, QPS, user count).",
+                    "reason": f"Project '{proj['project_title']}' makes architecture claims without specific quantitative metrics or impact measurements.",
+                    "expected_grilling_topics": proj["potential_questions"],
+                    "preparation_advice": "Prepare specific metrics (e.g. API response time in ms, database size, test coverage %) for interview follow-ups."
+                })
 
         if not extracted_risks:
             extracted_risks.append({
-                "claimed_item": "Technical System Architecture",
+                "title": "Technical Deep Dive Readiness",
+                "claimed_item": extracted_skills[0] if extracted_skills else "Core Technical Skills",
                 "risk_level": "Medium",
-                "reason": f"{candidate_name}'s resume details technical project delivery. Interviewers will probe core OOP design patterns and failure recovery.",
-                "expected_grilling_topics": ["OOP Solid Principles", "API Exception Handling", "System Bottleneck Analysis"]
+                "evidence_source": "Skills & Experience Section",
+                "evidence_text": f"Technical profile featuring {', '.join(extracted_skills[:3])}",
+                "why_questioned": "Interviewers will expect deep domain mastery and live coding/whiteboarding for claimed core skills.",
+                "reason": f"Interviewers will probe core architectural design patterns, edge case handling, and failure recovery for {extracted_skills[0]}.",
+                "expected_grilling_topics": ["SOLID Principles & Design Patterns", "Database Connection Pooling", "API Error Handling Strategy"],
+                "preparation_advice": "Rehearse a 2-minute architectural breakdown of your primary technical project."
             })
 
-        # 5. Dynamic Education & Contact Info
-        edu_lines = [l for l in lines if any(e in l.lower() for e in ["b.tech", "b.e", "b.s", "m.tech", "degree", "university", "college", "gpa", "cgpa", "bachelor", "master"])]
-        edu_degree = edu_lines[0] if edu_lines else "B.Tech / Bachelor's Degree in Computer Science"
+        # Limit to top 5 most relevant risks
+        extracted_risks = extracted_risks[:5]
 
-        # Contact Info extraction
+        # 5. Dynamic Section & Contact Info Parsing
+        edu_lines = [l for l in lines if any(e in l.lower() for e in ["b.tech", "b.e", "b.s", "m.tech", "degree", "university", "college", "gpa", "cgpa", "bachelor", "master"])]
+        edu_degree = edu_lines[0] if edu_lines else "Bachelor's Degree in Computer Science / Technology"
+
         email_match = re.search(r'[\w\.-]+@[\w\.-]+\.\w+', text_clean)
         phone_match = re.search(r'\+?\d[\d\s-]{8,}\d', text_clean)
         contact_info = {
             "name": candidate_name,
-            "email": email_match.group(0) if email_match else "Included on document",
-            "phone": phone_match.group(0) if phone_match else "Included on document",
-            "location": "India / Remote"
+            "email": email_match.group(0) if email_match else "Provided in Resume",
+            "phone": phone_match.group(0) if phone_match else "Provided in Resume",
+            "location": "Remote / Local"
         }
 
         # Categorized Skills
         languages = [s for s in extracted_skills if s in ["Python", "Java", "C++", "C#", "JavaScript", "TypeScript", "HTML/CSS", "HTML", "CSS"]]
         frameworks = [s for s in extracted_skills if s in ["FastAPI", "Django", "Flask", "Node.js", "Express", "Spring Boot", "React", "Angular", "Vue", "Flutter"]]
         databases = [s for s in extracted_skills if s in ["SQL", "PostgreSQL", "MySQL", "MongoDB", "Redis"]]
-        cloud_devops = [s for s in extracted_skills if s in ["AWS", "Azure", "GCP", "Docker", "Kubernetes", "Git", "Linux"]]
-        core_cs = [s for s in extracted_skills if s in ["Data Structures", "Algorithms", "DSA", "Microservices", "REST API", "OOP", "Machine Learning", "Deep Learning", "TensorFlow", "PyTorch", "Pandas", "NumPy"]]
+        cloud_devops = [s for s in extracted_skills if s in ["AWS", "Azure", "GCP", "Docker", "Kubernetes", "Git", "Linux", "CI/CD"]]
+        core_cs = [s for s in extracted_skills if s in ["Data Structures", "Algorithms", "DSA", "Microservices", "REST API", "OOP", "Machine Learning", "Deep Learning", "TensorFlow", "PyTorch", "Pandas", "NumPy", "Kafka", "GraphQL"]]
 
         categorized_skills = {
             "Programming Languages": languages or ["Python", "JavaScript"],
@@ -280,7 +322,7 @@ class MockAIService(AIServiceBase):
             "Core Concepts": core_cs or ["Object-Oriented Programming", "REST APIs"]
         }
 
-        # Job Targeting & Match Percentage
+        # 6. Job Fit Analysis
         is_job_targeted = False
         target_job_title = None
         overall_match_percentage = 0
@@ -296,7 +338,7 @@ class MockAIService(AIServiceBase):
 
             job_skills_data = job_context.get("skills", {})
             req_skills = job_skills_data.get("required_skills", []) + job_skills_data.get("programming_languages", [])
-            req_skills = list(dict.fromkeys(req_skills)) # unique
+            req_skills = list(dict.fromkeys(req_skills))
 
             if not req_skills:
                 req_skills = ["Python", "SQL", "Data Structures", "OOP"]
@@ -309,26 +351,110 @@ class MockAIService(AIServiceBase):
                     missing_skills.append(req)
                     skill_matches.append({"skill": req, "status": "Missing", "category": "Required Skill", "notes": "Not explicitly listed on resume"})
 
-            if req_skills:
-                overall_match_percentage = int((len(matching_skills) / len(req_skills)) * 100)
-            else:
-                overall_match_percentage = 80
+            overall_match_percentage = int((len(matching_skills) / max(1, len(req_skills))) * 100)
         else:
             for s in extracted_skills[:5]:
                 skill_matches.append({"skill": s, "status": "Strong Match", "category": "Technical Skill", "notes": "Verified candidate claim"})
 
-        # Standalone Resume Quality / Strength Score (0 - 100)
-        resume_strength_score = min(100, max(50, 40 + len(extracted_skills) * 4 + len(extracted_projects) * 10))
+        # 7. Dynamic Multi-Factor Quality Breakdown (0 - 100)
+        has_metrics = any(char in text_clean for char in ["%", "ms", "k", "QPS", "reduced", "increased", "optimized"])
+        has_standard_headers = any(h in text_clean.lower() for h in ["skills", "projects", "education", "experience"])
+        
+        ats_comp = min(98, max(55, 70 + (10 if "skills" in text_clean.lower() else 0) + (10 if has_standard_headers else -10) + (5 if len(extracted_skills) >= 4 else 0)))
+        content_qual = min(98, max(50, 68 + (12 if has_metrics else 0) + (10 if len(lines) >= 20 else -10)))
+        structure_score = min(98, max(60, 72 + (10 if proj_lines else 0) + (10 if edu_lines else 0) + (8 if email_match else 0)))
+        skills_score = min(98, max(45, 50 + len(extracted_skills) * 4))
+        exp_score = min(98, max(50, 65 + len(experience_lines) * 5))
+        proj_score = min(98, max(50, 65 + len(extracted_projects) * 8))
+        job_rel = overall_match_percentage if is_job_targeted else min(95, max(65, 70 + len(extracted_skills) * 2))
+        readability_score = min(98, max(60, 80 + (10 if 15 <= len(lines) <= 90 else -10)))
+        formatting_score = min(98, max(65, 78 + (10 if has_standard_headers else 0)))
 
-        # Actionable Resume Improvements
-        resume_improvements = [
-            "Add quantifiable impact metrics to your project descriptions (e.g. 'Reduced API response latency by 35% under 10k requests/min').",
-            "Include explicit architecture keywords (e.g., 'Connection Pooling', 'Indexing', 'JWT Authentication') to increase ATS keyword ranking.",
-            "Highlight automated unit testing (PyTest / Jest) and CI/CD pipelines to demonstrate production engineering standards.",
-            "Ensure GitHub repository links and live project deployment URLs are prominently included near the top header."
+        overall_quality_score = int(
+            (ats_comp + content_qual + structure_score + skills_score + exp_score + proj_score + job_rel + readability_score + formatting_score) / 9
+        )
+
+        quality_breakdown = {
+            "overall_score": overall_quality_score,
+            "ats_compatibility": ats_comp,
+            "content_quality": content_qual,
+            "resume_structure": structure_score,
+            "skills_score": skills_score,
+            "experience_score": exp_score,
+            "projects_score": proj_score,
+            "job_relevance": job_rel,
+            "readability": readability_score,
+            "formatting": formatting_score
+        }
+
+        # Strengths & Weaknesses
+        strengths = [
+            f"Strong technical keyword representation covering {', '.join(extracted_skills[:3])}.",
+            "Clean standard section organization allowing easy recruiter scan.",
+            f"Clear project breakdowns highlighting technical implementations."
+        ]
+        weaknesses = []
+        if not has_metrics:
+            weaknesses.append("Lack of quantifiable impact metrics (e.g. latency, throughput, % efficiency gain) in project descriptions.")
+        if len(extracted_risks) > 2:
+            weaknesses.append("Several technical skills are listed without explicit project or work experience support.")
+        if not weaknesses:
+            weaknesses.append("Can further expand on production engineering practices like unit testing and CI/CD pipelines.")
+
+        recommendations = [
+            "Add quantifiable impact numbers (e.g. 'Optimized DB queries reducing response time by 40%') to strengthen claim credibility.",
+            "Integrate missing target role keywords into your work experience bullet points.",
+            "Be prepared to defend all standalone technical skills with real-world implementation examples."
         ]
 
-        # Generate 50 Tailored Resume Interview Questions
+        # ATS Analysis Details
+        ats_strengths = [
+            "Standard section titles (Skills, Projects, Education) detected.",
+            f"Extracted {len(extracted_skills)} technical keywords compatible with ATS indexers.",
+            "Clean text flow without unparsable graphic artifacts."
+        ]
+        ats_issues = []
+        if missing_skills:
+            ats_issues.append(f"Missing required role keywords: {', '.join(missing_skills[:3])}.")
+        if not has_metrics:
+            ats_issues.append("Project bullets lack numerical metrics, lowering ATS context score.")
+
+        # 8. Dynamic PDF Risk Highlights Mapping
+        pdf_highlights = []
+        page_lines = layout_data.get("page_lines", []) if layout_data else []
+
+        for i, risk in enumerate(extracted_risks):
+            e_text = risk.get("evidence_text", "").lower()
+            c_item = risk.get("claimed_item", "").lower()
+            matched_page = 1
+            matched_y = 20.0 + (i * 14.0)
+            matched_snippet = risk.get("evidence_text") or risk.get("claimed_item")
+
+            if page_lines:
+                for pl in page_lines:
+                    line_lower = pl["line"].lower()
+                    if c_item in line_lower or (len(e_text) > 4 and e_text in line_lower):
+                        matched_page = pl["page"]
+                        matched_y = pl["y_percent"]
+                        matched_snippet = pl["line"]
+                        break
+
+            pdf_highlights.append({
+                "id": f"rh_{i}",
+                "page": matched_page,
+                "severity": risk["risk_level"].lower().replace(" ", "_") + "_warning",
+                "claim_text": matched_snippet,
+                "y_percent": matched_y,
+                "x_percent": 10.0,
+                "width_percent": 80.0,
+                "height_percent": 4.5,
+                "flag_category": risk["title"],
+                "why_flagged": risk["why_questioned"],
+                "interviewer_probe_question": risk["expected_grilling_topics"][0] if risk["expected_grilling_topics"] else "Can you elaborate on this claim?",
+                "suggested_rewrite": risk["preparation_advice"]
+            })
+
+        # 50 Resume Interview Questions
         resume_50_questions = self._generate_50_resume_questions(
             candidate_name=candidate_name,
             skills=extracted_skills,
@@ -336,13 +462,11 @@ class MockAIService(AIServiceBase):
             risks=extracted_risks
         )
 
-        summary_text = f"Candidate ({candidate_name}) specializing in {', '.join(extracted_skills[:4])}."
-
         return {
             "id": f"res_{uuid.uuid4().hex[:8]}",
             "candidate_name": candidate_name,
             "contact_info": contact_info,
-            "summary": summary_text,
+            "summary": f"Technical Candidate specializing in {', '.join(extracted_skills[:4])}.",
             "education": [
                 {"degree": edu_degree, "institution": "University / Institute", "year": "Recent", "score": "First Class"}
             ],
@@ -350,25 +474,35 @@ class MockAIService(AIServiceBase):
             "categorized_skills": categorized_skills,
             "projects": extracted_projects,
             "experience": [
-                {"role": "Software / Technical Developer", "company": "Practical Development / Projects", "duration": "Recent", "highlights": f"Hands-on development using {', '.join(extracted_skills[:3])}."}
+                {"role": "Software Developer / Engineer", "company": "Technical Projects & Development", "duration": "Recent", "highlights": f"Hands-on development using {', '.join(extracted_skills[:3])}."}
             ],
             "certifications": ["Verified Resume Technical Profile"],
             "risks": extracted_risks,
-            "skill_matches": skill_matches,
-            "resume_strength_score": resume_strength_score,
+            "overall_resume_quality": overall_quality_score,
+            "resume_strength_score": overall_quality_score,
+            "quality_breakdown": quality_breakdown,
+            "strengths": strengths,
+            "weaknesses": weaknesses,
+            "recommendations": recommendations,
+            "ats_score": ats_comp,
+            "ats_strengths": ats_strengths,
+            "ats_issues": ats_issues,
+            "ats_keywords_found": extracted_skills,
+            "ats_keywords_missing": missing_skills,
             "is_job_targeted": is_job_targeted,
             "target_job_title": target_job_title,
             "overall_match_percentage": overall_match_percentage,
             "matching_skills": matching_skills,
             "missing_skills": missing_skills,
             "what_to_prepare": [
-                f"Prepare in-depth technical defense for projects built with {', '.join(extracted_skills[:3])}.",
+                f"Prepare detailed technical architectural pitches for projects built with {', '.join(extracted_skills[:3])}.",
                 "Harden core Object-Oriented Programming (OOP) and SQL Query execution skills.",
-                "Rehearse 30-second and 2-minute architectural pitches for claims listed on your resume."
+                "Rehearse live whiteboarding and failure scenario responses for claims listed on your resume."
             ],
-            "resume_improvements": resume_improvements,
+            "resume_improvements": recommendations,
             "resume_questions": resume_50_questions,
-            "created_at": "2026-09-20"
+            "pdf_risk_highlights": pdf_highlights,
+            "created_at": datetime.utcnow().strftime("%Y-%m-%d")
         }
 
     def _generate_50_resume_questions(

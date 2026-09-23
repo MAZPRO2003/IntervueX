@@ -32,7 +32,7 @@ async def test_resume_analysis():
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         response = await ac.post(
             "/api/v1/resumes/analyze",
-            data={"raw_text": "Arun Kumar. B.Tech CSE. Built scalable Inventory API in FastAPI and PostgreSQL. AWS expert."}
+            data={"raw_text": "Arun Kumar\nEducation: B.Tech CSE\nProjects: Built scalable Inventory API in FastAPI and PostgreSQL.\nSkills: Python, SQL, FastAPI, AWS expert."}
         )
         assert response.status_code == 200
         data = response.json()
@@ -53,7 +53,7 @@ async def test_interview_pack_creation_and_questions():
         # 2. Analyze Resume
         res_res = await ac.post(
             "/api/v1/resumes/analyze",
-            data={"raw_text": "Experienced in Python and SQL."}
+            data={"raw_text": "Arun Kumar\nEmail: arun@example.com\nSkills: Python, SQL, Docker, AWS\nWork Experience: Software engineer at Tech Corp\nProjects: Built inventory service with FastAPI and SQL."}
         )
         res_id = res_res.json()["id"]
 
@@ -108,7 +108,7 @@ async def test_interview_pack_creation_and_questions():
 async def test_pdf_generation():
     mock_ai = MockAIService()
     job = await mock_ai.analyze_job("TCS Ninja")
-    resume = await mock_ai.analyze_resume("Python developer")
+    resume = await mock_ai.analyze_resume("Arun Kumar\nSkills: Python, SQL, Docker\nProjects: Built backend API in FastAPI\nEducation: B.Tech CSE")
     process = await mock_ai.analyze_interview_process("TCS", "NQT - Ninja", "Developer", "Fresher", "Chennai")
     questions = await mock_ai.generate_questions(job, resume, count=5)
 
@@ -151,7 +151,8 @@ async def test_flashcards_and_code_execution():
         rm_res = await ac.get("/api/v1/resumes/risk_map")
         assert rm_res.status_code == 200
         rm_data = rm_res.json()
-        assert len(rm_data["risk_highlights"]) > 0
+        hl_list = rm_data.get("pdf_risk_highlights") or rm_data.get("risk_highlights") or []
+        assert len(hl_list) > 0
 
 @pytest.mark.asyncio
 async def test_daily_checkin_and_uncomplete():

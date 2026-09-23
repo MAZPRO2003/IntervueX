@@ -38,7 +38,8 @@ class _PdfResumeRiskViewerScreenState extends ConsumerState<PdfResumeRiskViewerS
       body: SafeArea(
         child: riskMapAsync.when(
           data: (data) {
-            final highlights = List<Map<String, dynamic>>.from(data['risk_highlights'] ?? []);
+            final rawHl = data['pdf_risk_highlights'] ?? data['risk_highlights'] ?? [];
+            final highlights = List<Map<String, dynamic>>.from(rawHl);
             final filteredHighlights = _selectedSeverityFilter == 'All'
                 ? highlights
                 : highlights.where((h) => h['severity'] == _selectedSeverityFilter).toList();
@@ -93,61 +94,91 @@ class _PdfResumeRiskViewerScreenState extends ConsumerState<PdfResumeRiskViewerS
                             children: [
                               // Resume Header
                               Text(data['candidate_name'] ?? 'Candidate Resume', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                              Text('${data['job_title'] ?? 'Software Engineer'} • ${data['location'] ?? 'Unknown Location'}', style: const TextStyle(fontSize: 11, color: AppColors.textDarkMuted)),
+                              Text('${data['job_title'] ?? 'Candidate Profile'} • ${data['location'] ?? 'Uploaded Document'}', style: const TextStyle(fontSize: 11, color: AppColors.textDarkMuted)),
                               const Divider(height: 20),
 
-                              Text('PROFESSIONAL EXPERIENCE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 0.5, color: Theme.of(context).colorScheme.primary)),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('RESUME EVIDENCE & RISK HIGHLIGHT MAP', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 0.5, color: Theme.of(context).colorScheme.primary)),
+                                  Text('${filteredHighlights.length} Highlights', style: const TextStyle(fontSize: 10, color: AppColors.textDarkMuted)),
+                                ],
+                              ),
                               const SizedBox(height: 12),
 
-                              // Render Highlighted Claims List
-                              ...filteredHighlights.map((hl) {
-                                final severity = hl['severity'] ?? 'medium_warning';
-                                final color = _getSeverityColor(severity);
-                                final isSelected = _activeHighlight?['id'] == hl['id'];
+                              if (filteredHighlights.isEmpty)
+                                const Padding(
+                                  padding: EdgeInsets.all(24),
+                                  child: Center(child: Text('No risk highlights found matching filter.', style: TextStyle(fontSize: 12, color: AppColors.textDarkMuted))),
+                                )
+                              else
+                                // Render Highlighted Claims List
+                                ...filteredHighlights.map((hl) {
+                                  final severity = hl['severity'] ?? 'medium_warning';
+                                  final color = _getSeverityColor(severity);
+                                  final isSelected = _activeHighlight?['id'] == hl['id'];
+                                  final pageNum = hl['page_number'] ?? 1;
+                                  final yPos = hl['y_percent'] != null ? (hl['y_percent'] as num).toInt() : null;
+                                  final sectionName = hl['section_name'] ?? 'Resume Section';
 
-                                return GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      _activeHighlight = hl;
-                                    });
-                                    _showRiskDetailsModal(context, hl);
-                                  },
-                                  child: Container(
-                                    margin: const EdgeInsets.only(bottom: 12),
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: color.withOpacity(isSelected ? 0.22 : 0.08),
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(
-                                        color: isSelected ? color : color.withOpacity(0.4),
-                                        width: isSelected ? 2 : 1,
+                                  return GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _activeHighlight = hl;
+                                      });
+                                      _showRiskDetailsModal(context, hl);
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(bottom: 12),
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: color.withOpacity(isSelected ? 0.22 : 0.08),
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                          color: isSelected ? color : color.withOpacity(0.4),
+                                          width: isSelected ? 2 : 1,
+                                        ),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Icon(_getSeverityIcon(severity), size: 16, color: color),
+                                              const SizedBox(width: 6),
+                                              Text(
+                                                hl['flag_category'] ?? 'Risk Flag',
+                                                style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.bold),
+                                              ),
+                                              const Spacer(),
+                                              Container(
+                                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                                decoration: BoxDecoration(
+                                                  color: isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0),
+                                                  borderRadius: BorderRadius.circular(4),
+                                                ),
+                                                child: Text(
+                                                  'Page $pageNum${yPos != null ? ' • $yPos%' : ''}',
+                                                  style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            '• "${hl['claim_text']}"',
+                                            style: const TextStyle(fontSize: 13, height: 1.35, fontWeight: FontWeight.w500),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            'Section: $sectionName',
+                                            style: const TextStyle(fontSize: 10, color: AppColors.textDarkMuted),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Icon(_getSeverityIcon(severity), size: 16, color: color),
-                                            const SizedBox(width: 6),
-                                            Text(
-                                              hl['flag_category'] ?? 'Risk Flag',
-                                              style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.bold),
-                                            ),
-                                            const Spacer(),
-                                            const Text('Tap to inspect ->', style: TextStyle(fontSize: 10, color: AppColors.textDarkMuted)),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 6),
-                                        Text(
-                                          '• "${hl['claim_text']}"',
-                                          style: const TextStyle(fontSize: 13, height: 1.35, fontWeight: FontWeight.w500),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }),
+                                  );
+                                }),
                             ],
                           ),
                         ),

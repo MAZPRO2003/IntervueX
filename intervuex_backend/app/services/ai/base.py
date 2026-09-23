@@ -13,7 +13,7 @@ class AIServiceBase(ABC):
         pass
 
     @abstractmethod
-    async def analyze_resume(self, resume_text: str, job_context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    async def analyze_resume(self, resume_text: str, job_context: Optional[Dict[str, Any]] = None, layout_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Extract projects, claims, detect interview risks, and match against job requirements."""
         pass
 

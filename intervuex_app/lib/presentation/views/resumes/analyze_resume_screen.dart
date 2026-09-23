@@ -77,8 +77,17 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() => isLoading = false);
+      String errMsg = e.toString();
+      // Extract clean server error detail if available
+      if (errMsg.contains("DioException") || errMsg.contains("400")) {
+        errMsg = "Unreadable File: Please upload a readable text PDF, DOCX, or paste resume text.";
+      }
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e'), backgroundColor: AppColors.danger),
+        SnackBar(
+          content: Text(errMsg),
+          backgroundColor: AppColors.danger,
+          duration: const Duration(seconds: 5),
+        ),
       );
     }
   }
@@ -99,7 +108,7 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
                 children: [
                   CircularProgressIndicator(),
                   SizedBox(height: 16),
-                  Text('Analyzing resume claims & identifying risk points...', style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text('Parsing resume layout & extracting evidence...', style: TextStyle(fontWeight: FontWeight.bold)),
                 ],
               ),
             )
@@ -124,7 +133,7 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
         const Text('Upload Candidate Resume', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         const SizedBox(height: 6),
         const Text(
-          'IntervueX parses your resume to detect project architecture claims, technical risk exaggerations, and target job alignment.',
+          'IntervueX parses your actual resume to perform a 9-factor quality review, ATS score audit, and interview risk evidence detection.',
           style: TextStyle(fontSize: 13, color: AppColors.textDarkSecondary),
         ),
         const SizedBox(height: 16),
@@ -226,8 +235,6 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
             alignLabelWithHint: true,
           ),
         ),
-        const SizedBox(height: 8),
-        const SizedBox(height: 8),
 
         const SizedBox(height: 20),
         AppButton(
@@ -245,17 +252,30 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
     final secondary = variant.light;
     final res = analysisResult!;
     final candidateName = res['candidate_name'] ?? 'Candidate Profile';
-    final contactInfo = res['contact_info'] as Map? ?? {};
+    final contactInfo = (res['contact_info'] as Map?)?.cast<String, dynamic>() ?? {};
     final isJobTargeted = res['is_job_targeted'] ?? false;
     final targetJobTitle = res['target_job_title'] ?? 'Target Job';
     final matchPct = res['overall_match_percentage'] ?? 0;
-    final strengthScore = res['resume_strength_score'] ?? 80;
+    
+    // Scores & Quality Factors
+    final qualityScore = res['overall_resume_quality'] ?? res['resume_strength_score'] ?? 80;
+    final qualityBreakdown = (res['quality_breakdown'] as Map?)?.cast<String, dynamic>() ?? {};
+    final atsScore = res['ats_score'] ?? qualityScore;
+    final atsStrengths = List<String>.from(res['ats_strengths'] ?? []);
+    final atsIssues = List<String>.from(res['ats_issues'] ?? []);
+    final atsKeywordsFound = List<String>.from(res['ats_keywords_found'] ?? []);
+    final atsKeywordsMissing = List<String>.from(res['ats_keywords_missing'] ?? []);
+
+    // Feedback lists
+    final strengths = List<String>.from(res['strengths'] ?? []);
+    final weaknesses = List<String>.from(res['weaknesses'] ?? []);
+    final recommendations = List<String>.from(res['recommendations'] ?? res['resume_improvements'] ?? []);
+
     final matchingSkills = List<String>.from(res['matching_skills'] ?? []);
     final missingSkills = List<String>.from(res['missing_skills'] ?? []);
     final categorizedSkills = res['categorized_skills'] as Map? ?? {};
     final projects = res['projects'] as List? ?? [];
     final risks = res['risks'] as List? ?? [];
-    final improvements = List<String>.from(res['resume_improvements'] ?? []);
     final whatToPrepare = res['what_to_prepare'] as List? ?? [];
 
     return Column(
@@ -287,103 +307,252 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
         ),
         const SizedBox(height: 16),
 
-        // Score Banner: Job Match vs Standalone Quality
+        // 1. OVERALL RESUME QUALITY SCORE CARD (Transparent 9-Factor Breakdown)
         AppCard(
           padding: const EdgeInsets.all(16),
-          child: isJobTargeted
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('TARGET JOB ALIGNMENT SCORE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted, letterSpacing: 0.5)),
-                              const SizedBox(height: 2),
-                              Text(targetJobTitle, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: secondary)),
-                            ],
-                          ),
-                        ),
-                        Text('$matchPct%', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: matchPct >= 75 ? AppColors.success : AppColors.warning)),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    if (matchingSkills.isNotEmpty) ...[
-                      const Text('Matching Job Skills:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.success)),
-                      const SizedBox(height: 4),
-                      Wrap(
-                        spacing: 6,
-                        runSpacing: 4,
-                        children: matchingSkills.map((s) => Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                          decoration: BoxDecoration(color: AppColors.success.withOpacity(0.12), borderRadius: BorderRadius.circular(4)),
-                          child: Text(s, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.success)),
-                        )).toList(),
-                      ),
-                      const SizedBox(height: 8),
+          borderColor: primary.withOpacity(0.4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('OVERALL RESUME QUALITY SCORE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted, letterSpacing: 0.5)),
+                      const SizedBox(height: 2),
+                      Text('Dynamic Content & Format Audit', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: secondary)),
                     ],
-                    if (missingSkills.isNotEmpty) ...[
-                      const Text('Missing Required Skills:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.danger)),
-                      const SizedBox(height: 4),
-                      Wrap(
-                        spacing: 6,
-                        runSpacing: 4,
-                        children: missingSkills.map((s) => Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                          decoration: BoxDecoration(color: AppColors.danger.withOpacity(0.12), borderRadius: BorderRadius.circular(4)),
-                          child: Text(s, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.danger)),
-                        )).toList(),
-                      ),
-                    ],
-                  ],
-                )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('RESUME TECHNICAL STRENGTH SCORE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted, letterSpacing: 0.5)),
-                              const SizedBox(height: 2),
-                              Text('Standalone Quality Review', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: secondary)),
-                            ],
-                          ),
-                        ),
-                        Text('$strengthScore/100', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: primary)),
-                      ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: primary.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    const SizedBox(height: 10),
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: primary.withOpacity(0.08),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.info_outline, size: 16, color: secondary),
-                          const SizedBox(width: 8),
-                          const Expanded(
-                            child: Text(
-                              'Standalone review evaluating formatting & claim depth. Select a Target Job on the input screen to view exact Job Match %.',
-                              style: TextStyle(fontSize: 11, height: 1.3),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                    child: Text('$qualityScore/100', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: primary)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              const Text('TRANSPARENT QUALITY FACTORS', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted, letterSpacing: 0.5)),
+              const SizedBox(height: 8),
+
+              // 9-Factor Breakdown Grid
+              _buildQualityFactorGrid(qualityBreakdown, isDark, variant),
+            ],
+          ),
         ),
 
         const SizedBox(height: 16),
+
+        // 2. ATS COMPATIBILITY AUDIT CARD
+        AppCard(
+          padding: const EdgeInsets.all(16),
+          borderColor: AppColors.success.withOpacity(0.4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Row(
+                    children: [
+                      Icon(Icons.assessment_outlined, color: AppColors.success, size: 20),
+                      SizedBox(width: 8),
+                      Text('ATS COMPATIBILITY SCORE', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                  Text('$atsScore/100', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.success)),
+                ],
+              ),
+              const SizedBox(height: 12),
+              
+              if (atsStrengths.isNotEmpty) ...[
+                const Text('ATS Readability Strengths:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.success)),
+                const SizedBox(height: 4),
+                ...atsStrengths.map((s) => Padding(
+                  padding: const EdgeInsets.only(bottom: 3),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.check, size: 13, color: AppColors.success),
+                      const SizedBox(width: 6),
+                      Expanded(child: Text(s, style: const TextStyle(fontSize: 11))),
+                    ],
+                  ),
+                )),
+                const SizedBox(height: 8),
+              ],
+
+              if (atsIssues.isNotEmpty) ...[
+                const Text('ATS Formatting & Parsing Warnings:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.warning)),
+                const SizedBox(height: 4),
+                ...atsIssues.map((issue) => Padding(
+                  padding: const EdgeInsets.only(bottom: 3),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.warning_amber_rounded, size: 13, color: AppColors.warning),
+                      const SizedBox(width: 6),
+                      Expanded(child: Text(issue, style: const TextStyle(fontSize: 11))),
+                    ],
+                  ),
+                )),
+                const SizedBox(height: 8),
+              ],
+
+              if (atsKeywordsFound.isNotEmpty) ...[
+                const Text('Detected Technical Keywords:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted)),
+                const SizedBox(height: 4),
+                Wrap(
+                  spacing: 4,
+                  runSpacing: 4,
+                  children: atsKeywordsFound.map((k) => Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(color: primary.withOpacity(0.1), borderRadius: BorderRadius.circular(4)),
+                    child: Text(k, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: primary)),
+                  )).toList(),
+                ),
+                const SizedBox(height: 8),
+              ],
+
+              if (atsKeywordsMissing.isNotEmpty) ...[
+                const Text('Missing Critical Role Keywords:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.danger)),
+                const SizedBox(height: 4),
+                Wrap(
+                  spacing: 4,
+                  runSpacing: 4,
+                  children: atsKeywordsMissing.map((k) => Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(color: AppColors.danger.withOpacity(0.1), borderRadius: BorderRadius.circular(4)),
+                    child: Text(k, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.danger)),
+                  )).toList(),
+                ),
+              ],
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // 3. STRENGTHS, WEAKNESSES & RECOMMENDATIONS CARD
+        if (strengths.isNotEmpty || weaknesses.isNotEmpty || recommendations.isNotEmpty) ...[
+          AppCard(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (strengths.isNotEmpty) ...[
+                  const Text('VERIFIED RESUME STRENGTHS', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.success, letterSpacing: 0.5)),
+                  const SizedBox(height: 6),
+                  ...strengths.map((st) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.thumb_up_alt_outlined, size: 14, color: AppColors.success),
+                        const SizedBox(width: 8),
+                        Expanded(child: Text(st, style: const TextStyle(fontSize: 12, height: 1.3))),
+                      ],
+                    ),
+                  )),
+                  const SizedBox(height: 12),
+                ],
+
+                if (weaknesses.isNotEmpty) ...[
+                  const Text('AREAS FOR IMPROVEMENT', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.warning, letterSpacing: 0.5)),
+                  const SizedBox(height: 6),
+                  ...weaknesses.map((wk) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.error_outline, size: 14, color: AppColors.warning),
+                        const SizedBox(width: 8),
+                        Expanded(child: Text(wk, style: const TextStyle(fontSize: 12, height: 1.3))),
+                      ],
+                    ),
+                  )),
+                  const SizedBox(height: 12),
+                ],
+
+                if (recommendations.isNotEmpty) ...[
+                  const Text('ACTIONABLE RECOMMENDATIONS', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.info, letterSpacing: 0.5)),
+                  const SizedBox(height: 6),
+                  ...recommendations.map((rec) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.lightbulb_outline, size: 14, color: AppColors.info),
+                        const SizedBox(width: 8),
+                        Expanded(child: Text(rec, style: const TextStyle(fontSize: 12, height: 1.3))),
+                      ],
+                    ),
+                  )),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
+
+        // Target Job Alignment Banner (if target job selected)
+        if (isJobTargeted) ...[
+          AppCard(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('TARGET JOB ALIGNMENT SCORE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted, letterSpacing: 0.5)),
+                          const SizedBox(height: 2),
+                          Text(targetJobTitle, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: secondary)),
+                        ],
+                      ),
+                    ),
+                    Text('$matchPct%', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: matchPct >= 75 ? AppColors.success : AppColors.warning)),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                if (matchingSkills.isNotEmpty) ...[
+                  const Text('Matching Job Skills:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.success)),
+                  const SizedBox(height: 4),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    children: matchingSkills.map((s) => Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(color: AppColors.success.withOpacity(0.12), borderRadius: BorderRadius.circular(4)),
+                      child: Text(s, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.success)),
+                    )).toList(),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+                if (missingSkills.isNotEmpty) ...[
+                  const Text('Missing Required Skills:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.danger)),
+                  const SizedBox(height: 4),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    children: missingSkills.map((s) => Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(color: AppColors.danger.withOpacity(0.12), borderRadius: BorderRadius.circular(4)),
+                      child: Text(s, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.danger)),
+                    )).toList(),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
 
         // Categorized Technical Skills Inventory
         const Text('CATEGORIZED TECHNICAL SKILLS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted, letterSpacing: 0.5)),
@@ -423,7 +592,7 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
 
         const SizedBox(height: 16),
 
-        // Interview Risks & Exaggeration Detector
+        // 4. INTERVIEW RISK & EXAGGERATION DETECTOR (Ground Truth Evidence)
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -440,64 +609,133 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
         ),
         const SizedBox(height: 8),
 
-        ...risks.map((risk) {
-          final level = risk['risk_level'] ?? 'Medium';
-          final topics = risk['expected_grilling_topics'] as List? ?? [];
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: AppCard(
-              borderColor: AppColors.danger.withOpacity(0.4),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
+        if (risks.isEmpty)
+          AppCard(
+            child: const Row(
+              children: [
+                Icon(Icons.check_circle, color: AppColors.success, size: 20),
+                SizedBox(width: 8),
+                Expanded(child: Text('No unbacked claims or exaggeration risks detected in this resume!')),
+              ],
+            ),
+          )
+        else
+          ...risks.map((risk) {
+            final title = risk['title'] ?? risk['claimed_item'] ?? 'Potential Interview Risk';
+            final level = risk['risk_level'] ?? 'Medium';
+            final evidenceSource = risk['evidence_source'] ?? 'Resume Content';
+            final evidenceText = risk['evidence_text'] ?? risk['claimed_item'] ?? '';
+            final whyQuestioned = risk['why_questioned'] ?? risk['reason'] ?? '';
+            final prepAdvice = risk['preparation_advice'] ?? '';
+            final topics = risk['possible_questions'] as List? ?? risk['expected_grilling_topics'] as List? ?? [];
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: AppCard(
+                borderColor: AppColors.danger.withOpacity(0.4),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              const Icon(Icons.warning_amber_rounded, color: AppColors.danger, size: 18),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  title,
+                                  style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.danger, fontSize: 13),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(color: AppColors.danger.withOpacity(0.12), borderRadius: BorderRadius.circular(4)),
+                          child: Text('$level Risk', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.danger)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+
+                    // Traceable Evidence Provenance
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.find_in_page_outlined, size: 12, color: secondary),
+                              const SizedBox(width: 4),
+                              Text('Source: $evidenceSource', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: secondary)),
+                            ],
+                          ),
+                          if (evidenceText.isNotEmpty) ...[
+                            const SizedBox(height: 2),
+                            Text(
+                              '"$evidenceText"',
+                              style: const TextStyle(fontSize: 11, fontStyle: FontStyle.italic, color: AppColors.textDarkSecondary),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+
+                    const Text('Why this may be questioned:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted)),
+                    const SizedBox(height: 2),
+                    Text(whyQuestioned, style: const TextStyle(fontSize: 12, height: 1.35)),
+                    
+                    if (topics.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      const Text('Possible Interviewer Questions:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted)),
+                      const SizedBox(height: 4),
+                      ...topics.map((t) => Padding(
+                        padding: const EdgeInsets.only(bottom: 2),
                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Icon(Icons.warning_amber_rounded, color: AppColors.danger, size: 18),
+                            Text('• ', style: TextStyle(color: secondary, fontWeight: FontWeight.bold)),
+                            Expanded(child: Text(t.toString(), style: const TextStyle(fontSize: 11, height: 1.3))),
+                          ],
+                        ),
+                      )),
+                    ],
+
+                    if (prepAdvice.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(color: AppColors.success.withOpacity(0.08), borderRadius: BorderRadius.circular(6)),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(Icons.check_circle_outline, size: 14, color: AppColors.success),
                             const SizedBox(width: 6),
                             Expanded(
-                              child: Text(
-                                risk['claimed_item'] ?? 'Claimed Item',
-                                style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.danger),
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                              child: Text('Preparation: $prepAdvice', style: const TextStyle(fontSize: 11, color: AppColors.success, fontWeight: FontWeight.w500)),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(color: AppColors.danger.withOpacity(0.12), borderRadius: BorderRadius.circular(4)),
-                        child: Text('$level Risk', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.danger)),
-                      ),
                     ],
-                  ),
-                  const SizedBox(height: 6),
-                  Text(risk['reason'] ?? '', style: const TextStyle(fontSize: 12, height: 1.35)),
-                  const SizedBox(height: 8),
-                  const Text('Expected Grilling Topics:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted)),
-                  const SizedBox(height: 4),
-                  Wrap(
-                    spacing: 6,
-                    runSpacing: 4,
-                    children: topics.map((t) => Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(t.toString(), style: const TextStyle(fontSize: 11)),
-                    )).toList(),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
-        }),
+            );
+          }),
 
         const SizedBox(height: 16),
 
@@ -535,7 +773,7 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
                     ),
                   ],
                   const SizedBox(height: 10),
-                  Text('4 Technical Grilling Questions:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: secondary)),
+                  Text('Technical Grilling Questions:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: secondary)),
                   const SizedBox(height: 6),
                   ...qList.map((q) => Padding(
                     padding: const EdgeInsets.only(bottom: 6),
@@ -555,55 +793,89 @@ class _AnalyzeResumeScreenState extends ConsumerState<AnalyzeResumeScreen> {
 
         const SizedBox(height: 16),
 
-        // Actionable Resume Improvements
-        if (improvements.isNotEmpty) ...[
-          const Text('ACTIONABLE RESUME IMPROVEMENTS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.warning, letterSpacing: 0.5)),
+        // What to prepare summary
+        if (whatToPrepare.isNotEmpty) ...[
+          const Text('WHAT YOU SHOULD PREPARE NEXT', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted, letterSpacing: 0.5)),
           const SizedBox(height: 8),
           AppCard(
-            borderColor: AppColors.warning.withOpacity(0.4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: improvements.map((imp) => Padding(
+              children: whatToPrepare.map((item) => Padding(
                 padding: const EdgeInsets.only(bottom: 6),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.build_circle_outlined, color: AppColors.warning, size: 16),
+                    const Icon(Icons.check_circle_outline, color: AppColors.success, size: 16),
                     const SizedBox(width: 8),
-                    Expanded(child: Text(imp, style: const TextStyle(fontSize: 12, height: 1.35))),
+                    Expanded(child: Text(item.toString(), style: const TextStyle(fontSize: 12, height: 1.35))),
                   ],
                 ),
               )).toList(),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
         ],
-
-        // What to prepare summary
-        const Text('WHAT YOU SHOULD PREPARE NEXT', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textDarkMuted, letterSpacing: 0.5)),
-        const SizedBox(height: 8),
-        AppCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: whatToPrepare.map((item) => Padding(
-              padding: const EdgeInsets.only(bottom: 6),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Icon(Icons.check_circle_outline, color: AppColors.success, size: 16),
-                  const SizedBox(width: 8),
-                  Expanded(child: Text(item.toString(), style: const TextStyle(fontSize: 12, height: 1.35))),
-                ],
-              ),
-            )).toList(),
-          ),
-        ),
-
-        const SizedBox(height: 24),
 
         // 50 Resume Interview Questions Breakdown
         _build50ResumeQuestionsSection(res, isDark, variant),
       ],
+    );
+  }
+
+  Widget _buildQualityFactorGrid(Map<String, dynamic> breakdown, bool isDark, AppThemeVariant variant) {
+    final factors = [
+      {'key': 'ats_compatibility', 'label': 'ATS Compatibility'},
+      {'key': 'content_quality', 'label': 'Content Quality'},
+      {'key': 'resume_structure', 'label': 'Resume Structure'},
+      {'key': 'skills_score', 'label': 'Skills Support'},
+      {'key': 'experience_score', 'label': 'Experience Depth'},
+      {'key': 'projects_score', 'label': 'Project Evidence'},
+      {'key': 'job_relevance', 'label': 'Job Relevance'},
+      {'key': 'readability', 'label': 'Readability'},
+      {'key': 'formatting', 'label': 'Formatting'},
+    ];
+
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: factors.map((f) {
+        final val = (breakdown[f['key']] ?? 75) as int;
+        final label = f['label'] as String;
+        Color valColor = variant.primary;
+        if (val >= 80) valColor = AppColors.success;
+        if (val < 65) valColor = AppColors.warning;
+
+        return Container(
+          width: MediaQuery.of(context).size.width > 360 ? (MediaQuery.of(context).size.width - 56) / 2 : double.infinity,
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(child: Text(label, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis)),
+                  Text('$val', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: valColor)),
+                ],
+              ),
+              const SizedBox(height: 6),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: LinearProgressIndicator(
+                  value: val / 100.0,
+                  backgroundColor: valColor.withOpacity(0.15),
+                  color: valColor,
+                  minHeight: 4,
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
     );
   }
 
